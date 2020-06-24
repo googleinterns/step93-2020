@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "htmlvalidate:recommended"
+  ],
+
+  "rules": {
+    "void-style": ["warn", {"style": "selfclosing"}]
+  }
+}
+
