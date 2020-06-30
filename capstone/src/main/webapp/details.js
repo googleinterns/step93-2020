@@ -51,7 +51,7 @@ function setRestaurantDetails() {
  * Return to home landing page.
  */
 function returnHome() {
-  window.open('/', '_self', false);
+  window.location.href = '/';
 }
 
 
