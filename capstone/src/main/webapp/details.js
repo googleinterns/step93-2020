@@ -22,17 +22,27 @@ function setRestaurantDetails() {
       JSON.parse(sessionStorage.getItem('selectedRestaurant'));
 
   // Set UI elements
-  document.getElementById('title').innerText = currRestaurant.name;
-  document.getElementById('story').innerText = currRestaurant.story;
-  document.getElementById('website').innerHTML = '<a href=\'' +
-      currRestaurant.website + '\'>' + currRestaurant.website + '</a>';
-  document.getElementById('phone').innerText = currRestaurant.phone;
-  const location = currRestaurant.location;
-  const lat = location.latitude;
-  const long = location.longitude;
-  createMap(lat, long);
-  for (let i = 0; i < currRestaurant.cuisine.length; i++) {
-    appendCuisineTag(currRestaurant.cuisine[i]);
+  if (currRestaurant !== null && currRestaurant !== '') {
+    if (document.getElementById('title') !== null) {
+      document.getElementById('title').innerText = currRestaurant.name;
+    }
+    if (document.getElementById('story') !== null) {
+      document.getElementById('story').innerText = currRestaurant.story;
+    }
+    if (document.getElementById('website') !== null) {
+      document.getElementById('website').innerHTML = '<a href=\'' +
+          currRestaurant.website + '\'>' + currRestaurant.website + '</a>';
+    }
+    if (document.getElementById('phone') !== null) {
+      document.getElementById('phone').innerText = currRestaurant.phone;
+    }
+    const location = currRestaurant.location;
+    const lat = location.latitude;
+    const long = location.longitude;
+    createMap(lat, long);
+    for (let i = 0; i < currRestaurant.cuisine.length; i++) {
+      appendCuisineTag(currRestaurant.cuisine[i]);
+    }
   }
 }
 
@@ -87,5 +97,7 @@ function appendCuisineTag(cuisineName) {
   span1.appendChild(span2);
   outerDiv.appendChild(innerDiv);
   outerDiv.appendChild(span1);
-  document.getElementById('cuisines').appendChild(outerDiv);
+  if (document.getElementById('cuisines') !== null) {
+    document.getElementById('cuisines').appendChild(outerDiv);
+  }
 }
