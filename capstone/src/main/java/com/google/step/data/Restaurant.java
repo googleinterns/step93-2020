@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.data;
+package com.google.step.data;
 import com.google.appengine.api.datastore.GeoPt;
-// import com.google.sps.data.Status;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +25,11 @@ public final class Restaurant {
   private final List<String> cuisine;
   private final String phone;
   private final String website;
-  private final int status;
+  private final String status;
   private final double score;
 
-  public Restaurant(String name, GeoPt location, String story, List<String> cuisine, String phone, String website, int status, double score) {
+  public Restaurant(String name, GeoPt location, String story, List<String> cuisine, String phone,
+      String website, String status, double score) {
     this.name = name;
     this.location = location;
     this.story = story;
