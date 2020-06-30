@@ -13,6 +13,7 @@
 // limitations under the License.
 
 package com.google.step.data;
+
 import com.google.appengine.api.datastore.GeoPt;
 import java.util.ArrayList;
 import java.util.List;
