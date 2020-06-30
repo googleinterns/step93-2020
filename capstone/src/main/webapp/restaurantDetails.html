@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>STEP Capstone</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="details.js"></script>
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGsIKEhbCWc-Ej9169cT4xCivgixDZzKY"></script>
+  </head>
+  <body>
+    <header class="mdc-top-app-bar">
+      <div class="mdc-top-app-bar__row">
+        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+          <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Back" onclick="returnHome();">arrow_back</button>
+          <span class="mdc-top-app-bar__title">Restaurant Details</span>
+        </section>
+      </div>
+    </header>
+    <br><br><br>
+    <h1 id="title"></h1>
+    <b>Our story: </b>
+    <p id="story"></p>
+    
+    <b>Cuisine: </b>
+    <div class="mdc-chip-set" role="grid">
+      <div class="mdc-chip" role="row">
+        <div class="mdc-chip__ripple"></div>
+          <span role="gridcell">
+            <span role="button" tabindex="0" class="mdc-chip__primary-action">
+              <span class="mdc-chip__text">American</span>
+            </span>
+          </span>
+        </div>
+         <div class="mdc-chip" role="row">
+          <div class="mdc-chip__ripple"></div>
+          <span role="gridcell">
+            <span role="button" tabindex="-1" class="mdc-chip__primary-action">
+              <span class="mdc-chip__text">Fast food</span>
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <div id="map" class="map"></div>
+  </body>
+</html>
