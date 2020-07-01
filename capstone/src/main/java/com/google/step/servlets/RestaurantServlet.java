@@ -27,6 +27,7 @@ import com.google.step.data.Restaurant;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.Long;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +45,7 @@ public class RestaurantServlet extends HttpServlet {
 
     List<Restaurant> restaurants = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
+      int restaurantKey = ((Long)entity.getProperty("restaurantKey")).intValue();
       String name = (String) entity.getProperty("name");
       GeoPt location = (GeoPt) entity.getProperty("location");
       String story = (String) entity.getProperty("story");
@@ -54,8 +56,8 @@ public class RestaurantServlet extends HttpServlet {
       double score = (double) entity.getProperty("score");
 
       // Restaurant object to hold all info
-      Restaurant restaurant =
-          new Restaurant(name, location, story, cuisine, phone, website, status, score);
+      Restaurant restaurant = new Restaurant(
+          restaurantKey, name, location, story, cuisine, phone, website, status, score);
       restaurants.add(restaurant);
     }
 
@@ -68,7 +70,6 @@ public class RestaurantServlet extends HttpServlet {
 
     JsonObject ret = new JsonObject();
     ret.addProperty("restaurants", json);
-
     response.getWriter().println(ret);
   }
 }

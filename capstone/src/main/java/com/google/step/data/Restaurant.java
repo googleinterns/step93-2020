@@ -20,6 +20,7 @@ import java.util.List;
 
 /** A restaurant to be displayed. */
 public final class Restaurant {
+  private final int restaurantKey;
   private final String name;
   private final GeoPt location;
   private final String story;
@@ -29,8 +30,9 @@ public final class Restaurant {
   private final String status;
   private final double score;
 
-  public Restaurant(String name, GeoPt location, String story, List<String> cuisine, String phone,
-      String website, String status, double score) {
+  public Restaurant(int restaurantKey, String name, GeoPt location, String story,
+      List<String> cuisine, String phone, String website, String status, double score) {
+    this.restaurantKey = restaurantKey;
     this.name = name;
     this.location = location;
     this.story = story;

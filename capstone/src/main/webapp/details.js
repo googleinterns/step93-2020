@@ -18,6 +18,7 @@
  */
 function setRestaurantDetails() {
   // Retrieve stored restaurant from session
+
   const currRestaurant =
       JSON.parse(sessionStorage.getItem('selectedRestaurant'));
 
@@ -45,7 +46,6 @@ function setRestaurantDetails() {
     }
   }
 }
-
 
 /**
  * Return to home landing page.
@@ -76,7 +76,6 @@ function addLandmark(map, lat, lng) {
   const marker =
       new google.maps.Marker({position: {lat: lat, lng: lng}, map: map});
 }
-
 
 /**
  * Appends a material-style tag for
