@@ -12,48 +12,69 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Gets the restaurants using the RestaurantServlet
- * and adds them to the site interface.
- */
-async function getRestaurants() {
-  // Fetch restaurants from servlet
-  const responsePath = '/restaurants';
-  const response = await fetch(responsePath);
-  const resp = await response.json();
 
-  const restaurantArea = document.getElementById('restaurants-list');
-  if (restaurantArea !== null && resp.restaurants !== null) {
-    // Retrieve and parse restaurants JSON from get restaurants response
-    let restaurants = resp.restaurants;
-    restaurants = JSON.parse(restaurants);
-    // Clear restaurant area in case page is being reloaded
-    restaurantArea.innerHTML = '';
 
-    // Append restaurants to page
-    for (let i = 0; i < restaurants.length; i++) {
-      const restaurant = restaurants[i];
-      const restaurantElement = createRestaurantElement(restaurant);
-      restaurantArea.appendChild(restaurantElement);
+function getRestaurants() {
+  fetch('/get-restaurants').then(function(response) {
+    let restaurantsList = document.getElementById('restaurants-list');
+
+    if (response.ok) {
+      response.json().then((restaurants) => {
+        restaurantsList.innerHTML = '';
+
+        restaurants.forEach((restaurant) => {
+          addRestaurant(restaurant, restaurantsList);
+        });
+      })
     }
-  }
+  });
 }
 
-/**
- * Creates an element for a restaurant, including
- * redirecting to its detail page on click.
- */
-function createRestaurantElement(restaurant) {
-  // Article tag to encapsulate restaurant elements
-  const restaurantElement = document.createElement('h2');
-  const linkElement = document.createElement('a');
+function addRestaurant(restaurant, containerElement) {
+  let restaurantDiv = document.createElement('div');
+  restaurantDiv.classList.add('mdc-card', 'restaurant-container');
 
-  // Restaurant element UI details
-  const redirect =
-      '/restaurantDetails.html?restaurantKey=' + restaurant.restaurantKey;
-  linkElement.setAttribute('href', redirect);
-  linkElement.innerText = restaurant.name;
-  restaurantElement.appendChild(linkElement);
+  let restaurantNameDiv = createRestaurantNameDiv(restaurant);
+  let restaurantCuisineDiv = createRestaurantCuisineDiv(restaurant);
+  let restaurantStrugglingDiv = createRestaurantIsStrugglingDiv(restaurant);
 
-  return restaurantElement;
+  restaurantDiv.appendChild(restaurantNameDiv);
+  restaurantDiv.appendChild(restaurantCuisineDiv);
+  restaurantDiv.appendChild(restaurantStrugglingDiv);
+
+  containerElement.appendChild(restaurantDiv);
+}
+
+function createRestaurantNameDiv(restaurant) {
+  let restaurantNameDiv = document.createElement('div');
+  restaurantNameDiv.classList.add('restaurant-name-container', 'mdc-typography--headline6');
+
+  restaurantNameDiv.innerHTML = '<h3>' + restaurant.name + '</h3>';
+
+  return restaurantNameDiv;
+}
+
+function createRestaurantCuisineDiv(restaurant) {
+  let restaurantCuisineDiv = document.createElement('div');
+  restaurantCuisineDiv.classList.add('restaurant-cuisine-container');
+  restaurant.cuisine.forEach((item) => {
+    let cuisineItemButton = document.createElement('button');
+    cuisineItemButton.innerHTML = item;
+    cuisineItemButton.classList.add('mdc-button', 'mdc-ripple-surface');
+    restaurantCuisineDiv.appendChild(cuisineItemButton);
+  });
+
+  return restaurantCuisineDiv;
+}
+
+function createRestaurantIsStrugglingDiv(restaurant) {
+  let restaurantStrugglingDiv = document.createElement('div');
+  restaurantStrugglingDiv.classList.add('restaurant-struggling-container');
+  if (restaurant.isStruggling) {
+    restaurantStrugglingDiv.innerHTML = '<p>This restaurant needs help!</p>'
+  } else {
+    restaurantStrugglingDiv.innerHTML = '<p>Keep this restaurant growing!</p>'
+  }
+
+  return restaurantStrugglingDiv;
 }
