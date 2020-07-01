@@ -1,10 +1,12 @@
-import com.google.appengine.api.datastoreDatastoreService;
+package com.google.step.servlets;
+
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserserviceFactory();
+import com.google.appengine.api.users.UserServiceFactory;
 
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -30,7 +32,7 @@ public class LoginServlet extends HttpServlet {
         UserService userService = UserServiceFactory.getUserService();
         Map<String, Object> login = new HashMap<>();
 
-        if (userService.isLoggedIn()) {
+        if (userService.isUserLoggedIn()) {
             String useremail = userService.getCurrentUser().getEmail();
             String type = checkIfRestaurantOrUser(useremail);
 
@@ -50,7 +52,7 @@ public class LoginServlet extends HttpServlet {
         } else {
 
             String urltoRedirectToAfterUserLogIn = "/";
-            Stromg urltoRedirectAfterUserSignUp = "/user-signup.html";
+            String urltoRedirectAfterUserSignUp = "/user-signup.html";
             String urltoRedirectAfterRestaurantSignUp = "/restaurant-signup.html";
 
             String loginUrl = userService.createLoginURL(urltoRedirectToAfterUserLogIn);
@@ -75,13 +77,13 @@ public class LoginServlet extends HttpServlet {
      */
     private static String checkIfRestaurantOrUser(String email) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Query query = new Query("User").setFilter(new Query.filterPredicate("email", Query.FilterOperator.EQUAL, email));
+        Query query = new Query("User").setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
         PreparedQuery results = datastore.prepare(query);
         Entity entity = results.asSingleEntity();
         if (entity != null) {
             return "User";
         } else {
-            query = new Query("RestaurantUser").setFilter(new Query.filterPredicate("email", Query.filterOperator.EQUAL, email));
+            query = new Query("RestaurantUser").setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
             if (entity != null) {
                 return "Restaurant";
             } else {

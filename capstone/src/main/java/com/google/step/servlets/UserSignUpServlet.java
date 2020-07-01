@@ -1,10 +1,12 @@
-import com.google.appengine.api.datastoreDatastoreService;
+package com.google.step.servlets;
+
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.UserService;
-import com.google.appengine.api.datastore.UserServiceFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 import java.io.IOException;
 import java.io.IOException;
@@ -12,8 +14,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import UserLoginServlet.convertToJsonUsingGson;
 
 /**
  * Servlet that will put the user information in Datastore.
@@ -31,12 +31,12 @@ public class UserSignUpServlet extends HttpServlet {
 
         String userName = request.getParameter("userName");
         String id = userService.getCurrentUser().getUserId();
-        String email = userService.getCurrentUser().getemail();
+        String email = userService.getCurrentUser().getEmail();
 
-        Datastoreservice datastore = DatastoreServiceFactory.getDatastoreService();
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
         // Check if user email already exists.
-        Query query = new Query("User").setFilter(new Query.filterPredicate("email", Query.FilterOperator.EQUAL, email));
+        Query query = new Query("User").setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
         PreparedQuery results = datastore.prepare(query);
         Entity entity = results.asSingleEntity();
         if (entity != null) {
@@ -44,7 +44,7 @@ public class UserSignUpServlet extends HttpServlet {
             return;
         }
 
-        Entity userEntity = new entity("UserInfo", id);
+        Entity userEntity = new Entity("UserInfo", id);
         userEntity.setProperty("id", id);
         userEntity.setProperty("email", email);
         userEntity.setProperty("userName", userName);

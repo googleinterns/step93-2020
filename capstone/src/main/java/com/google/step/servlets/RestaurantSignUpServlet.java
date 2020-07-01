@@ -1,10 +1,12 @@
-import com.google.appengine.api.datastoreDatastoreService;
+package com.google.step.servlets;
+
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.UserService;
-import com.google.appengine.api.datastore.UserServiceFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.GeoPt;
 
 import java.io.IOException;
@@ -17,8 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-
-import UserLoginServlet.convertToJsonUsingGson;
 
 /**
  * Servlet that will put the restaurant information in Datastore.
@@ -37,12 +37,12 @@ public class RestaurantSignUpServlet extends HttpServlet {
         }
 
         String id = userService.getCurrentUser().getUserId();
-        String email = userService.getCurrentUser().getemail();
+        String email = userService.getCurrentUser().getEmail();
 
-        Datastoreservice datastore = DatastoreServiceFactory.getDatastoreService();
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
         // If the restaurant email already exists in datastore don't add it.
-        Query query = new Query("RestaurantUser").setFilter(new Query.filterPredicate("email", Query.FilterOperator.EQUAL, email));
+        Query query = new Query("RestaurantUser").setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
         PreparedQuery results = datastore.prepare(query);
         Entity resultEntity = results.asSingleEntity();
         if (resultEntity != null) {
@@ -75,7 +75,7 @@ public class RestaurantSignUpServlet extends HttpServlet {
         // Hard coded while we don't have Maps API functionality
         GeoPt geoPoint = new GeoPt((float) 42.23422, (float) -87.234987);
 
-        Entity restaurantInfo = new entity("RestaurantInfo", id);
+        Entity restaurantInfo = new Entity("RestaurantInfo", id);
         restaurantInfo.setProperty("restaurantKey", id);
         restaurantInfo.setProperty("name", name);
         restaurantInfo.setProperty("location", geoPoint);
