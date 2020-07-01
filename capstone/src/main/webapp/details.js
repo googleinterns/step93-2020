@@ -31,8 +31,12 @@ function setRestaurantDetails() {
       document.getElementById('story').innerText = currRestaurant.story;
     }
     if (document.getElementById('website') !== null) {
-      document.getElementById('website').innerHTML = '<a href=\'' +
-          currRestaurant.website + '\'>' + currRestaurant.website + '</a>';
+      const link = document.createElement('a');
+      link.setAttribute('href', currRestaurant.website);
+      link.innerText = currRestaurant.website;
+      // Clear out any link that was there before and append the new one
+      document.getElementById('website').innerHTML = '';
+      document.getElementById('website').appendChild(link);
     }
     if (document.getElementById('phone') !== null) {
       document.getElementById('phone').innerText = currRestaurant.phone;
