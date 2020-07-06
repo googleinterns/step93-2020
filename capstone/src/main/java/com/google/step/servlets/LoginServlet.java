@@ -37,7 +37,7 @@ public class LoginServlet extends HttpServlet {
       String type = checkIfRestaurantOrUser(useremail);
 
       // If user is loggedin but not in our system.
-      if (type == null) {
+      if (type.equals("None")) {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         return;
       }
@@ -75,22 +75,29 @@ public class LoginServlet extends HttpServlet {
    * @return String containing the words User or Restaurant.
    */
   private static String checkIfRestaurantOrUser(String email) {
+    boolean restaurant = checkUserTypeExists(email, "Restaurant");
+    boolean user = checkUserTypeExists(email, "User");
+    if (restaurant == true && user == false) {
+      return "Restaurant";
+    } else if (restaurant == false && user == true) {
+      return "User";
+    }
+    return "None";
+  }
+
+  /**
+   * Checks if the user type inputted exists.
+   * @param email email of the user
+   * @param type type of user we are looking for
+   * @return returns a boolean stating true if it exists and false if otherwise.
+   */
+  private static boolean checkUserTypeExists(String email, String type) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("User").setFilter(
-        new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
+    Query query = new Query(type).setFilter(
+            new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
-    if (entity != null) {
-      return "User";
-    } else {
-      query = new Query("RestaurantUser")
-                  .setFilter(new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
-      if (entity != null) {
-        return "Restaurant";
-      } else {
-        return null;
-      }
-    }
+    return entity != null;
   }
 
   /**

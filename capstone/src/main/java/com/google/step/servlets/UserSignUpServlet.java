@@ -32,6 +32,7 @@ public class UserSignUpServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+    // TODO: add a check if the email already exists as a restaurantUser
     // Check if user email already exists.
     Query query = new Query("User").setFilter(
         new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
