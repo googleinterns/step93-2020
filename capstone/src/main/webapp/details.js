@@ -50,7 +50,23 @@ async function setRestaurantDetails() {
         appendCuisineTag(currRestaurant.cuisine[i]);
       }
     }
+
+    // Update page views for this restaurant
+    updatePageViews(currRestaurant.restaurantKey);
   }
+}
+
+/**
+ * Update page views for a restaurant using
+ * the PageViewServlet.
+ */
+async function updatePageViews(restaurantKey) {
+  const params = 'restaurantKey=' + restaurantKey;
+  fetch('/page-view', {
+    method: 'post',
+    body: params,
+    headers: { 'Content-type': 'application/x-www-form-urlencoded' }
+  }); 
 }
 
 /**
