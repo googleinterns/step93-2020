@@ -16,37 +16,36 @@
  * Sets the page details based on the restaurant
  * stored in the session.
  */
-function setRestaurantDetails() {
-  // Retrieve stored restaurant from session
+async function setRestaurantDetails() {
+  const keyString = window.location.search;
+  const urlParam = new URLSearchParams(keyString);
+  const restaurantKey = urlParam.get('restaurantKey');
+  const responsePath = '/restaurant?restaurantKey=' + restaurantKey;
+  const response = await fetch(responsePath);
+  const resp = await response.json();
 
-  const currRestaurant =
-      JSON.parse(sessionStorage.getItem('selectedRestaurant'));
-
-  // Set UI elements
-  if (currRestaurant !== null && currRestaurant !== '') {
-    if (document.getElementById('title') !== null) {
-      document.getElementById('title').innerText = currRestaurant.name;
-    }
-    if (document.getElementById('story') !== null) {
-      document.getElementById('story').innerText = currRestaurant.story;
-    }
-    if (document.getElementById('website') !== null) {
+  if (resp.restaurant !== null) {
+    // Retrieve and parse comments JSON from get restaurants response
+    let currRestaurant = JSON.parse(resp.restaurant);
+    restaurants = JSON.parse(restaurants);
+    // Set UI elements
+    if (document.getElementById('restaurant-detail-area') !== null) {
+      document.getElementById('current-restaurant-title').innerText = currRestaurant.name;
+      document.getElementById('current-restaurant-story').innerText = currRestaurant.story;
       const link = document.createElement('a');
       link.setAttribute('href', currRestaurant.website);
       link.innerText = currRestaurant.website;
       // Clear out any link that was there before and append the new one
-      document.getElementById('website').innerHTML = '';
-      document.getElementById('website').appendChild(link);
-    }
-    if (document.getElementById('phone') !== null) {
-      document.getElementById('phone').innerText = currRestaurant.phone;
-    }
-    const location = currRestaurant.location;
-    const lat = location.latitude;
-    const long = location.longitude;
-    createMap(lat, long);
-    for (let i = 0; i < currRestaurant.cuisine.length; i++) {
-      appendCuisineTag(currRestaurant.cuisine[i]);
+      document.getElementById('current-restaurant-website').innerHTML = '';
+      document.getElementById('current-restaurant-website').appendChild(link);
+      document.getElementById('current-restaurant-phone').innerText = currRestaurant.phone;
+      const location = currRestaurant.location;
+      const lat = location.latitude;
+      const long = location.longitude;
+      createMap(lat, long);
+      for (let i = 0; i < currRestaurant.cuisine.length; i++) {
+        appendCuisineTag(currRestaurant.cuisine[i]);
+      }
     }
   }
 }
@@ -67,7 +66,7 @@ function returnHome() {
 function createMap(latitude, longitude) {
   const google = window.google;
   const map = new google.maps.Map(
-      document.getElementById('map'),
+      document.getElementById('current-restaurant-map'),
       {center: {lat: latitude, lng: longitude}, zoom: 15});
   addLandmark(map, latitude, longitude);
 }
@@ -100,7 +99,7 @@ function appendCuisineTag(cuisineName) {
   span1.appendChild(span2);
   outerDiv.appendChild(innerDiv);
   outerDiv.appendChild(span1);
-  if (document.getElementById('cuisines') !== null) {
-    document.getElementById('cuisines').appendChild(outerDiv);
+  if (document.getElementById('current-restaurant-cuisines') !== null) {
+    document.getElementById('current-restaurant-cuisines').appendChild(outerDiv);
   }
 }

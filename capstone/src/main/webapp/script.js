@@ -18,7 +18,7 @@
  */
 async function getRestaurants() {
   // Fetch restaurants from servlet
-  const responsePath = '/restaurant';
+  const responsePath = '/restaurants';
   const response = await fetch(responsePath);
   const resp = await response.json();
 
@@ -54,9 +54,10 @@ function createRestaurantElement(restaurant) {
 
   restaurantElement.addEventListener('click', () => {
     // Store clicked restaurant in the session
-    sessionStorage.setItem('selectedRestaurant', JSON.stringify(restaurant));
-    // Redirect to restaurant detail page
-    window.location.href = '/restaurantDetails.html';
+    //sessionStorage.setItem('selectedRestaurant', JSON.stringify(restaurant));
+    // Redirect to restaurant detail page with correct restaurant key
+    const redirect = '/restaurantDetails.html?restaurantKey=' + restaurant.restaurantKey;
+    window.location.href = redirect;
   });
   return restaurantElement;
 }
