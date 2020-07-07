@@ -56,11 +56,10 @@ public class RestaurantsServlet extends HttpServlet {
       String phone = (String) entity.getProperty("phone");
       String website = (String) entity.getProperty("website");
       String status = (String) entity.getProperty("status");
-      double score = (double) entity.getProperty("score");
 
       // Restaurant object to hold all info
       Restaurant restaurant = new Restaurant(
-          restaurantKey, name, location, story, cuisine, phone, website, status, score);
+          restaurantKey, name, location, story, cuisine, phone, website, status);
       restaurants.add(restaurant);
     }
 
