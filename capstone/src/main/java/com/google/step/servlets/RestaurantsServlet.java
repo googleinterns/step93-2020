@@ -32,52 +32,47 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet responsible for sending/getting a restaurant to/from Datastore. */
-@WebServlet("/restaurant")
-public class RestaurantServlet extends HttpServlet {
+/** Servlet responsible for getting restaurants from Datastore. */
+@WebServlet("/restaurants")
+public class RestaurantsServlet extends HttpServlet {
 /** 
- * Returns a single Restaurant based on restaurantKey. 
+ * Returns a list of Restaurants. 
  */
+ // TODO: Change this to be connected to search functionality.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String restaurantKeyParam = request.getParameter("restaurantKey");
-    Query query =
-        new Query("RestaurantInfo")
-            .setFilter(new Query.FilterPredicate("restaurantKey", Query.FilterOperator.EQUAL, restaurantKeyParam));
-    System.out.println(restaurantKeyParam);
+    Query query = new Query("RestaurantInfo").addSort("score", SortDirection.ASCENDING);
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-    System.out.println(results);
-    Entity resultEntity = results.asSingleEntity();
-    System.out.println(resultEntity);
-    if (resultEntity == null) {
-      response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-      return;
-    }
-    
-    long restaurantKey = (Long) resultEntity.getProperty("restaurantKey");
-    String name = (String) resultEntity.getProperty("name");
-    GeoPt location = (GeoPt) resultEntity.getProperty("location");
-    String story = (String) resultEntity.getProperty("story");
-    List<String> cuisine = (List<String>) resultEntity.getProperty("cuisine");
-    String phone = (String) resultEntity.getProperty("phone");
-    String website = (String) resultEntity.getProperty("website");
-    String status = (String) resultEntity.getProperty("status");
-    double score = (double) resultEntity.getProperty("score");
 
-    // Restaurant object to hold all info
-    Restaurant restaurant = new Restaurant(
+    List<Restaurant> restaurants = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+      long restaurantKey = (Long) entity.getProperty("restaurantKey");
+      String name = (String) entity.getProperty("name");
+      GeoPt location = (GeoPt) entity.getProperty("location");
+      String story = (String) entity.getProperty("story");
+      List<String> cuisine = (List<String>) entity.getProperty("cuisine");
+      String phone = (String) entity.getProperty("phone");
+      String website = (String) entity.getProperty("website");
+      String status = (String) entity.getProperty("status");
+      double score = (double) entity.getProperty("score");
+
+      // Restaurant object to hold all info
+      Restaurant restaurant = new Restaurant(
           restaurantKey, name, location, story, cuisine, phone, website, status, score);
+      restaurants.add(restaurant);
+    }
 
     // Format restaurant List to JSON for return
     Gson gson = new Gson();
-    String json = gson.toJson(restaurant);
+    String json = gson.toJson(restaurants);
 
     // Send the JSON as the response
     response.setContentType("application/json;");
 
     JsonObject ret = new JsonObject();
-    ret.addProperty("restaurant", json);
+    ret.addProperty("restaurants", json);
     response.getWriter().println(ret);
   }
 }
