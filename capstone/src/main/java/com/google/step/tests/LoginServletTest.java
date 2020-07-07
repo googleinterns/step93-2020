@@ -1,11 +1,13 @@
 package com.google.step.tests;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.repackaged.com.google.gson.JsonObject;
 import com.google.appengine.repackaged.com.google.gson.JsonParser;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.step.servlets.LoginServlet;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;
@@ -14,6 +16,10 @@ import com.meterware.httpunit.WebResponse;
 import com.meterware.servletunit.ServletRunner;
 
 import com.meterware.servletunit.ServletUnitClient;
+
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+import org.junit.runner.RunWith;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +30,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -45,7 +53,7 @@ public class LoginServletTest {
     }
 
     // Run this test twice to prove we're not leaking any state across tests
-    public void checkIfRestaurantOrUserTest() {
+    public void checkIfDatastoreWorks() {
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
         assertEquals(0, datastoreService.prepare(new Query("User")).countEntities(withLimit(10)));
         datastoreService.put(new Entity("User"));
@@ -54,17 +62,38 @@ public class LoginServletTest {
     }
 
     @Test
-    public void testInsert1() {
-        checkIfRestaurantOrUserTest();
+    public void testCheckType1() {
+        checkIfDatastoreWorks();
     }
 
     @Test
-    public void testInsert2() {
-        checkIfRestaurantOrUserTest();
+    public void testCheckType2() {
+        checkIfDatastoreWorks();
+    }
+
+
+    @Test
+    public void testIsLoggedIn() {
+        // Check if this works to set the user as logged in and not the admin
+        helper.setEnvIsAdmin(false).setEnvIsLoggedIn(true);
+        UserService userService = UserServiceFactory.getUserService();
+        assertTrue(userService.isUserLoggedIn());
+        assertFalse(userService.isUserAdmin());
     }
 
     @Test
-    public void testDoGet() throws IOException, SAXException {
+    public void testIsNotLoggedIn() {
+        // Check if it works to show the user is not logged in
+        helper.setEnvIsAdmin(false).setEnvIsLoggedIn(false);
+        UserService userService = UserServiceFactory.getUserService();
+        assertFalse(userService.isUserLoggedIn());
+        // Can't also check if the user is an admin because the method will throw an error since the user is not even logged in.
+    }
+
+    @Test
+    public void testDoGetWithoutLogIn() throws IOException, SAXException {
+        // Testing doGet method without having the user logged in.
+        // Result: {"Loggedin":"false","loginUrl":"someUrl","userSignUpUrl":"someUrl,restaurantSinUpUrl":"someUrl"}
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
         Entity entity = new Entity("User");
         entity.setProperty("email", "mheberling@google.com");
@@ -94,6 +123,52 @@ public class LoginServletTest {
         assertNotNull("Login URL", jsonObject.get("loginUrl").toString());
         assertNotNull("User Sign Up URL", jsonObject.get("userSignUpUrl").toString());
         assertNotNull("Restaurant Sign Up URL", jsonObject.get("restaurantSignUpUrl").toString());
+    }
+
+    // Test that runs the doGet with different types of logged in users.
+    public void testDoGetWithTypeLogIn(String type) throws IOException, SAXException {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        Entity user = new Entity(type);
+        user.setProperty("email", "example@gmail.com");
+        ds.put(user);
+
+        // If you set an email you must also set the auth domain.
+        helper.setEnvIsLoggedIn(true).setEnvIsAdmin(false).setEnvEmail("example@gmail.com").setEnvAuthDomain("example@gmail.com");
+
+        ServletRunner sr = new ServletRunner();
+
+        sr.registerServlet("login", LoginServlet.class.getName());
+        ServletUnitClient sc = sr.newClient();
+
+        WebRequest request = new GetMethodWebRequest("http://localhost:8080/login");
+        WebResponse response = sc.getResponse(request);
+
+        assertNotNull("No response received", response);
+        assertEquals("content type", "application/json", response.getContentType());
+
+        JsonObject jsonObject = turnStringToJson(response.getText());
+
+        assertEquals("Loggedin", "true", jsonObject.get("Loggedin").toString());
+
+        //Have to add the extra quotes in the expected because for some reason the JSON Parser adds them again.
+        assertEquals("Type", "\"" + type + "\"", jsonObject.get("Type").toString());
+        assertEquals("Email", "\"example@gmail.com\"", jsonObject.get("Email").toString());
+
+        assertNotNull("Log out url", jsonObject.get("logOutUrl").toString());
+    }
+
+    @Test
+    @Parameters
+    public void testDoGetWithUserLogIn() throws IOException, SAXException{
+        // Returns: {"Loggedin":"true","Type":"User", "Email":"example@gmail.com", "logOutUrl":"someUrl"}
+        testDoGetWithTypeLogIn("User");
+    }
+
+    @Test
+    @Parameters
+    public void testDoGetWithRestaurantLogIn() throws IOException, SAXException{
+        // Returns: {"Loggedin":"true","Type":"Restaurant", "Email":"example@gmail.com", "logOutUrl":"someUrl"}
+        testDoGetWithTypeLogIn("Restaurant");
     }
 
     /**

@@ -72,7 +72,7 @@ public class LoginServlet extends HttpServlet {
   /**
    * Checks if the current email is from a user or a restaurant.
    * @param email of the current user.
-   * @return String containing the words User or Restaurant.
+   * @return String containing the words User/Restaurant/Both/None.
    */
   private static String checkIfRestaurantOrUser(String email) {
     boolean restaurant = checkUserTypeExists(email, "Restaurant");
@@ -81,6 +81,8 @@ public class LoginServlet extends HttpServlet {
       return "Restaurant";
     } else if (restaurant == false && user == true) {
       return "User";
+    } else if (restaurant == true && user == true) {
+      return "Both";
     }
     return "None";
   }
