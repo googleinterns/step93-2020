@@ -44,7 +44,7 @@ public class RestaurantServlet extends HttpServlet {
 
     List<Restaurant> restaurants = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      int restaurantKey = ((Long)entity.getProperty("restaurantKey")).intValue();
+      long restaurantKey = (Long) entity.getProperty("restaurantKey");
       String name = (String) entity.getProperty("name");
       GeoPt location = (GeoPt) entity.getProperty("location");
       String story = (String) entity.getProperty("story");
