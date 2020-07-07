@@ -22,7 +22,7 @@ async function getRestaurants() {
   const response = await fetch(responsePath);
   const resp = await response.json();
 
-  const restaurantArea = document.getElementById('restaurant-space');
+  const restaurantArea = document.getElementById('restaurants-list');
   if (restaurantArea !== null && resp.restaurants !== null) {
     // Retrieve and parse restaurants JSON from get restaurants response
     let restaurants = resp.restaurants;

@@ -28,10 +28,9 @@ public final class Restaurant {
   private final String phone;
   private final String website;
   private final String status;
-  private final double score;
 
   public Restaurant(long restaurantKey, String name, GeoPt location, String story,
-      List<String> cuisine, String phone, String website, String status, double score) {
+      List<String> cuisine, String phone, String website, String status) {
     this.restaurantKey = restaurantKey;
     this.name = name;
     this.location = location;
@@ -40,6 +39,5 @@ public final class Restaurant {
     this.phone = phone;
     this.website = website;
     this.status = status;
-    this.score = score;
   }
 }

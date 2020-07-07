@@ -60,11 +60,10 @@ public class RestaurantServlet extends HttpServlet {
     String phone = (String) resultEntity.getProperty("phone");
     String website = (String) resultEntity.getProperty("website");
     String status = (String) resultEntity.getProperty("status");
-    double score = (double) resultEntity.getProperty("score");
 
     // Restaurant object to hold all info
     Restaurant restaurant = new Restaurant(
-        restaurantKey, name, location, story, cuisine, phone, website, status, score);
+        restaurantKey, name, location, story, cuisine, phone, website, status);
 
     // Format restaurant List to JSON for return
     Gson gson = new Gson();
