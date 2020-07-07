@@ -7,13 +7,10 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
 import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -96,7 +93,7 @@ public class LoginServlet extends HttpServlet {
   private static boolean checkUserTypeExists(String email, String type) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query(type).setFilter(
-            new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
+        new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
     return entity != null;

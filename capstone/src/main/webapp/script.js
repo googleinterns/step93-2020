@@ -13,7 +13,7 @@
 // limitations under the License.
 
 async function testFetch() {
-    const response = await fetch("/login");
-    const message = await response.json();
-    console.log(message);
+  const response = await fetch('/login');
+  const message = await response.json();
+  console.log(message);
 }
