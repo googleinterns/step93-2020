@@ -91,7 +91,7 @@ public class LoginServlet extends HttpServlet {
    * @param type type of user we are looking for
    * @return returns a boolean stating true if it exists and false if otherwise.
    */
-  private static boolean checkUserTypeExists(String email, String type) {
+  private boolean checkUserTypeExists(String email, String type) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query(type).setFilter(
             new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));
