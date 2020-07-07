@@ -35,26 +35,23 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for sending/getting a restaurant to/from Datastore. */
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
-/** 
- * Returns a single Restaurant based on restaurantKey. 
- */
+  /**
+   * Returns a single Restaurant based on restaurantKey.
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String restaurantKeyParam = request.getParameter("restaurantKey");
-    Query query =
-        new Query("RestaurantInfo")
-            .setFilter(new Query.FilterPredicate("restaurantKey", Query.FilterOperator.EQUAL, restaurantKeyParam));
-    System.out.println(restaurantKeyParam);
+    Long restaurantKeyParam = Long.parseLong(request.getParameter("restaurantKey"));
+    Query query = new Query("RestaurantInfo")
+                      .setFilter(new Query.FilterPredicate(
+                          "restaurantKey", Query.FilterOperator.EQUAL, restaurantKeyParam));
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-    System.out.println(results);
     Entity resultEntity = results.asSingleEntity();
-    System.out.println(resultEntity);
     if (resultEntity == null) {
       response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
       return;
     }
-    
+
     long restaurantKey = (Long) resultEntity.getProperty("restaurantKey");
     String name = (String) resultEntity.getProperty("name");
     GeoPt location = (GeoPt) resultEntity.getProperty("location");
@@ -67,7 +64,7 @@ public class RestaurantServlet extends HttpServlet {
 
     // Restaurant object to hold all info
     Restaurant restaurant = new Restaurant(
-          restaurantKey, name, location, story, cuisine, phone, website, status, score);
+        restaurantKey, name, location, story, cuisine, phone, website, status, score);
 
     // Format restaurant List to JSON for return
     Gson gson = new Gson();
