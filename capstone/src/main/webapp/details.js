@@ -17,6 +17,7 @@
  * stored in the session.
  */
 async function setRestaurantDetails() {
+  // Get restaurant key from URL and query for individual restaurant
   const keyString = window.location.search;
   const urlParam = new URLSearchParams(keyString);
   const restaurantKey = urlParam.get('restaurantKey');
@@ -25,20 +26,22 @@ async function setRestaurantDetails() {
   const resp = await response.json();
 
   if (resp.restaurant !== null) {
-    // Retrieve and parse comments JSON from get restaurants response
-    let currRestaurant = JSON.parse(resp.restaurant);
-    restaurants = JSON.parse(restaurants);
+    // Retrieve and parse restaurant JSON from get restaurant response
+    const currRestaurant = JSON.parse(resp.restaurant);
     // Set UI elements
     if (document.getElementById('restaurant-detail-area') !== null) {
-      document.getElementById('current-restaurant-title').innerText = currRestaurant.name;
-      document.getElementById('current-restaurant-story').innerText = currRestaurant.story;
+      document.getElementById('current-restaurant-title').innerText =
+          currRestaurant.name;
+      document.getElementById('current-restaurant-story').innerText =
+          currRestaurant.story;
       const link = document.createElement('a');
       link.setAttribute('href', currRestaurant.website);
       link.innerText = currRestaurant.website;
       // Clear out any link that was there before and append the new one
       document.getElementById('current-restaurant-website').innerHTML = '';
       document.getElementById('current-restaurant-website').appendChild(link);
-      document.getElementById('current-restaurant-phone').innerText = currRestaurant.phone;
+      document.getElementById('current-restaurant-phone').innerText =
+          currRestaurant.phone;
       const location = currRestaurant.location;
       const lat = location.latitude;
       const long = location.longitude;
@@ -100,6 +103,7 @@ function appendCuisineTag(cuisineName) {
   outerDiv.appendChild(innerDiv);
   outerDiv.appendChild(span1);
   if (document.getElementById('current-restaurant-cuisines') !== null) {
-    document.getElementById('current-restaurant-cuisines').appendChild(outerDiv);
+    document.getElementById('current-restaurant-cuisines')
+        .appendChild(outerDiv);
   }
 }

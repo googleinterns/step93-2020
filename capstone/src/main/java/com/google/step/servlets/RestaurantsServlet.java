@@ -35,10 +35,10 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for getting restaurants from Datastore. */
 @WebServlet("/restaurants")
 public class RestaurantsServlet extends HttpServlet {
-/** 
- * Returns a list of Restaurants. 
- */
- // TODO: Change this to be connected to search functionality.
+  /**
+   * Returns a list of Restaurants.
+   */
+  // TODO: Change this to be connected to search functionality.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query("RestaurantInfo").addSort("score", SortDirection.ASCENDING);

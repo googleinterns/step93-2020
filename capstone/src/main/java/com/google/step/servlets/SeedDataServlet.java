@@ -18,21 +18,18 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.GeoPt;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.math.BigDecimal;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.File;
-import java.io.IOException;
- 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -49,59 +46,62 @@ public class SeedDataServlet extends HttpServlet {
     JSONParser jsonParser = new JSONParser();
     try (FileReader reader = new FileReader("RestaurantInfoSeedData.json")) {
       Object json = jsonParser.parse(reader);
-      JSONArray restaurantList = (JSONArray)json;
+      JSONArray restaurantList = (JSONArray) json;
       // Parse all the restaurants in the list and add them to datastore
-      restaurantList.forEach(restaurant -> finalizeRestaurantInfoEntity((JSONObject)restaurant));
+      restaurantList.forEach(restaurant -> finalizeRestaurantInfoEntity((JSONObject) restaurant));
     } catch (FileNotFoundException e) {
-        System.out.println(e);
+      System.out.println(e);
     } catch (IOException e) {
-        System.out.println(e);
+      System.out.println(e);
     } catch (ParseException e) {
-        System.out.println(e);
+      System.out.println(e);
     }
-    
+
     // Open and parse the restaurant user info json file
     try (FileReader userReader = new FileReader("RestaurantUserSeedData.json")) {
       Object userJson = jsonParser.parse(userReader);
-      JSONArray restaurantUserList = (JSONArray)userJson;
+      JSONArray restaurantUserList = (JSONArray) userJson;
       // Parse all restaurant users in the list and add them to datastore
-      restaurantUserList.forEach(restaurantUser -> finalizeRestaurantUserEntity((JSONObject)restaurantUser));
+      restaurantUserList.forEach(
+          restaurantUser -> finalizeRestaurantUserEntity((JSONObject) restaurantUser));
     } catch (FileNotFoundException e) {
-        System.out.println(e);
+      System.out.println(e);
     } catch (IOException e) {
-        System.out.println(e);
+      System.out.println(e);
     } catch (ParseException e) {
-        System.out.println(e);
+      System.out.println(e);
     }
   }
 
-/** 
- * Parse a JSONObject with all fields for a RestaurantInfo
- * Entity. Build the Entity and add it to Datastore.
- */
+  /**
+   * Parse a JSONObject with all fields for a RestaurantInfo
+   * Entity. Build the Entity and add it to Datastore.
+   */
   private static void finalizeRestaurantInfoEntity(JSONObject restaurant) {
     Entity restaurantInfo = new Entity("RestaurantInfo");
-    restaurantInfo.setProperty("restaurantKey", (long)restaurant.get("restaurantKey"));
-    restaurantInfo.setProperty("name", (String)restaurant.get("name"));
-    restaurantInfo.setProperty("location", new GeoPt(((Double)restaurant.get("latitude")).floatValue(), ((Double)restaurant.get("longitude")).floatValue()));
-    restaurantInfo.setProperty("story", (String)restaurant.get("story"));
-    List<String> cuisineList = Arrays.asList(((String)restaurant.get("cuisine")).split(","));
+    restaurantInfo.setProperty("restaurantKey", (long) restaurant.get("restaurantKey"));
+    restaurantInfo.setProperty("name", (String) restaurant.get("name"));
+    restaurantInfo.setProperty("location",
+        new GeoPt(((Double) restaurant.get("latitude")).floatValue(),
+            ((Double) restaurant.get("longitude")).floatValue()));
+    restaurantInfo.setProperty("story", (String) restaurant.get("story"));
+    List<String> cuisineList = Arrays.asList(((String) restaurant.get("cuisine")).split(","));
     restaurantInfo.setProperty("cuisine", cuisineList);
-    restaurantInfo.setProperty("phone", (String)restaurant.get("phone"));
-    restaurantInfo.setProperty("website", (String)restaurant.get("website"));
-    restaurantInfo.setProperty("score", (double)restaurant.get("score"));
-    restaurantInfo.setProperty("status", (String)restaurant.get("status"));
+    restaurantInfo.setProperty("phone", (String) restaurant.get("phone"));
+    restaurantInfo.setProperty("website", (String) restaurant.get("website"));
+    restaurantInfo.setProperty("score", (double) restaurant.get("score"));
+    restaurantInfo.setProperty("status", (String) restaurant.get("status"));
     datastore.put(restaurantInfo);
   }
 
-/** 
- * Parse a JSONObject with all fields for a RestaurantUser
- * Entity. Build the Entity and add it to Datastore.
- */
+  /**
+   * Parse a JSONObject with all fields for a RestaurantUser
+   * Entity. Build the Entity and add it to Datastore.
+   */
   private static void finalizeRestaurantUserEntity(JSONObject restaurantUser) {
     Entity restaurantUserEntity = new Entity("RestaurantUser");
-    restaurantUserEntity.setProperty("restaurantKey", (long)restaurantUser.get("restaurantKey"));
-    restaurantUserEntity.setProperty("email", (String)restaurantUser.get("email"));
+    restaurantUserEntity.setProperty("restaurantKey", (long) restaurantUser.get("restaurantKey"));
+    restaurantUserEntity.setProperty("email", (String) restaurantUser.get("email"));
     datastore.put(restaurantUserEntity);
   }
 }

@@ -24,7 +24,7 @@ async function getRestaurants() {
 
   const restaurantArea = document.getElementById('restaurant-space');
   if (restaurantArea !== null && resp.restaurants !== null) {
-    // Retrieve and parse comments JSON from get restaurants response
+    // Retrieve and parse restaurants JSON from get restaurants response
     let restaurants = resp.restaurants;
     restaurants = JSON.parse(restaurants);
     // Clear restaurant area in case page is being reloaded
@@ -53,10 +53,9 @@ function createRestaurantElement(restaurant) {
   restaurantElement.appendChild(title);
 
   restaurantElement.addEventListener('click', () => {
-    // Store clicked restaurant in the session
-    //sessionStorage.setItem('selectedRestaurant', JSON.stringify(restaurant));
     // Redirect to restaurant detail page with correct restaurant key
-    const redirect = '/restaurantDetails.html?restaurantKey=' + restaurant.restaurantKey;
+    const redirect =
+        '/restaurantDetails.html?restaurantKey=' + restaurant.restaurantKey;
     window.location.href = redirect;
   });
   return restaurantElement;
