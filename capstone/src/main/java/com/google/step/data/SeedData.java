@@ -32,11 +32,21 @@ public class SeedData {
  * for different types of testing when needed.
  */
   public static void main(String[] args) {
-    seedRestaurantInfo(0, "McDonald's", new GeoPt((float) 42.297522, (float) -87.956039), "We're a global business with the best french fries around.", "American,Fast food", "(847)362-3040", "https://www.mcdonalds.com/us/en-us/location/il/libertyville/1330-n-milwaukee-ave/119.html?cid=RF:YXT:GMB::Clicks", "GOOD", 3.5);
-    seedRestaurantInfo(1, "Casa Bonita", new GeoPt((float) 42.289267, (float) -87.954920), "Classic Mexican eats & over 150 tequilas in a colorful, fiesta setting with a heated patio."," Mexican", "(847)362-4400", "https://www.casabonitalibertyville.com","OKAY", 2.5);
-    seedRestaurantInfo(2, "Lauretta's", new GeoPt((float) 42.2532875, (float) -88.0003111), "Quaint cafe & bakeshop whipping up Italian favorites, cakes & cookies in a snug space with a patio.","Italian,Cafe,Bakery","(847)566-0883","https://www.laurettasbakeshop.info","STRUGGLING", 2.0);
-    seedRestaurantInfo(3, "Thai Noodles Cafe", new GeoPt((float) 42.2803482, (float) -87.9528155), "Relaxed Thai eatery serving traditional dishes in a quaint setting inside a converted house.","Thai","(847)362-3494","https://www.easyordering.com/local/thainoodlecafe","OKAY",2.3);
-    seedRestaurantInfo(4, "Wildfire", new GeoPt((float) 42.1784405, (float) -87.9284299), "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.","Steakhouse,American","(847)279-7900","https://www.wildfirerestaurant.com","STRUGGLING", 1.1);
+    seedRestaurantInfo(0, "McDonald's", new GeoPt((float) 42.297522, (float) -87.956039), 
+        "We're a global business with the best french fries around.", "American,Fast food", "(847)362-3040",
+        "https://www.mcdonalds.com/us/en-us/location/il/libertyville/1330-n-milwaukee-ave/119.html?cid=RF:YXT:GMB::Clicks", "GOOD", 3.5);
+    seedRestaurantInfo(1, "Casa Bonita", new GeoPt((float) 42.289267, (float) -87.954920),
+        "Classic Mexican eats & over 150 tequilas in a colorful, fiesta setting with a heated patio."," Mexican",
+        "(847)362-4400", "https://www.casabonitalibertyville.com","OKAY", 2.5);
+    seedRestaurantInfo(2, "Lauretta's", new GeoPt((float) 42.2532875, (float) -88.0003111), 
+        "Quaint cafe & bakeshop whipping up Italian favorites, cakes & cookies in a snug space with a patio.",
+        "Italian,Cafe,Bakery","(847)566-0883","https://www.laurettasbakeshop.info","STRUGGLING", 2.0);
+    seedRestaurantInfo(3, "Thai Noodles Cafe", new GeoPt((float) 42.2803482, (float) -87.9528155), 
+        "Relaxed Thai eatery serving traditional dishes in a quaint setting inside a converted house.",
+        "Thai","(847)362-3494","https://www.easyordering.com/local/thainoodlecafe","OKAY",2.3);
+    seedRestaurantInfo(4, "Wildfire", new GeoPt((float) 42.1784405, (float) -87.9284299), 
+        "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.","Steakhouse,American",
+        "(847)279-7900","https://www.wildfirerestaurant.com","STRUGGLING", 1.1);
 
     seedRestaurantUser(0, "mcdonalds@gmail.com");
     seedRestaurantUser(1, "casabonita@gmail.com");
