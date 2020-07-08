@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for getting restaurants from Datastore. */
 @WebServlet("/restaurants")
 public class RestaurantsServlet extends HttpServlet {
+  private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   /**
    * Returns a list of Restaurants.
    */
@@ -42,24 +43,12 @@ public class RestaurantsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query("RestaurantInfo").addSort("score", SortDirection.ASCENDING);
-
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
     List<Restaurant> restaurants = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      long restaurantKey = (Long) entity.getProperty("restaurantKey");
-      String name = (String) entity.getProperty("name");
-      GeoPt location = (GeoPt) entity.getProperty("location");
-      String story = (String) entity.getProperty("story");
-      List<String> cuisine = (List<String>) entity.getProperty("cuisine");
-      String phone = (String) entity.getProperty("phone");
-      String website = (String) entity.getProperty("website");
-      String status = (String) entity.getProperty("status");
-
       // Restaurant object to hold all info
-      Restaurant restaurant = new Restaurant(
-          restaurantKey, name, location, story, cuisine, phone, website, status);
+      Restaurant restaurant = Restaurant.fromEntity(entity);
       restaurants.add(restaurant);
     }
 
