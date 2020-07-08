@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Gives back information regarding the current user to the frontend.
+    // Output (ex): {"Loggedin":true, "Type":"User", "Email":"example@gmail.com", "logOutUrl":"exampleUrl"}
     response.setContentType("application/json;");
 
     UserService userService = UserServiceFactory.getUserService();
@@ -77,9 +79,9 @@ public class LoginServlet extends HttpServlet {
   private static String checkIfRestaurantOrUser(String email) {
     boolean restaurant = checkUserTypeExists(email, "Restaurant");
     boolean user = checkUserTypeExists(email, "User");
-    if (restaurant == true && user == false) {
+    if (restaurant && !user) {
       return "Restaurant";
-    } else if (restaurant == false && user == true) {
+    } else if (!restaurant && user) {
       return "User";
     }
     return "None";
@@ -91,7 +93,7 @@ public class LoginServlet extends HttpServlet {
    * @param type type of user we are looking for
    * @return returns a boolean stating true if it exists and false if otherwise.
    */
-  private boolean checkUserTypeExists(String email, String type) {
+  private static boolean checkUserTypeExists(String email, String type) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query(type).setFilter(
             new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email));

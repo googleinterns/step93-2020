@@ -45,7 +45,7 @@ public class RestaurantSignUpServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     Entity resultEntity = results.asSingleEntity();
     if (resultEntity != null) {
-      response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
 
