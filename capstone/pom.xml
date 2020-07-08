@@ -61,6 +61,12 @@
       <groupId>httpunit</groupId>
       <artifactId>httpunit</artifactId>
       <version>1.7</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-testing</artifactId>
+      <version>1.9.59</version>
       <scope>test</scope>
     </dependency>
 
@@ -78,6 +84,11 @@
       <scope>compile</scope>
     </dependency>
 
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-stubs</artifactId>
+      <version>1.9.59</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -89,7 +100,7 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
-          <deploy.projectId>PROJECT-ID-HERE</deploy.projectId>
+          <deploy.projectId>katielund-new-step=2020</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>
