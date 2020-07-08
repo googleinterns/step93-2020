@@ -35,6 +35,8 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for sending/getting a restaurant to/from Datastore. */
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
+  private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
   /**
    * Returns a single Restaurant based on restaurantKey.
    */
@@ -44,26 +46,15 @@ public class RestaurantServlet extends HttpServlet {
     Query query = new Query("RestaurantInfo")
                       .setFilter(new Query.FilterPredicate(
                           "restaurantKey", Query.FilterOperator.EQUAL, restaurantKeyParam));
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     Entity resultEntity = results.asSingleEntity();
     if (resultEntity == null) {
-      response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
 
-    long restaurantKey = (Long) resultEntity.getProperty("restaurantKey");
-    String name = (String) resultEntity.getProperty("name");
-    GeoPt location = (GeoPt) resultEntity.getProperty("location");
-    String story = (String) resultEntity.getProperty("story");
-    List<String> cuisine = (List<String>) resultEntity.getProperty("cuisine");
-    String phone = (String) resultEntity.getProperty("phone");
-    String website = (String) resultEntity.getProperty("website");
-    String status = (String) resultEntity.getProperty("status");
-
     // Restaurant object to hold all info
-    Restaurant restaurant = new Restaurant(
-        restaurantKey, name, location, story, cuisine, phone, website, status);
+    Restaurant restaurant = Restaurant.fromEntity(resultEntity);
 
     // Format restaurant List to JSON for return
     Gson gson = new Gson();

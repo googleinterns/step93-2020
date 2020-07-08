@@ -52,11 +52,16 @@ function createRestaurantElement(restaurant) {
   title.innerText = restaurant.name;
   restaurantElement.appendChild(title);
 
-  restaurantElement.addEventListener('click', () => {
+  restaurantElement.addEventListener('click', (event) => {
     // Redirect to restaurant detail page with correct restaurant key
     const redirect =
         '/restaurantDetails.html?restaurantKey=' + restaurant.restaurantKey;
-    window.location.href = redirect;
+    if (event.ctrlKey) {
+      // If ctrl+click, open in new tab
+      window.open(redirect);
+    } else {
+      window.open(redirect, '_self');
+    }
   });
   return restaurantElement;
 }
