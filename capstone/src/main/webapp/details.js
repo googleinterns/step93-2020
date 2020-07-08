@@ -65,8 +65,8 @@ async function updatePageViews(restaurantKey) {
   fetch('/page-view', {
     method: 'post',
     body: params,
-    headers: { 'Content-type': 'application/x-www-form-urlencoded' }
-  }); 
+    headers: {'Content-type': 'application/x-www-form-urlencoded'},
+  });
 }
 
 /**
