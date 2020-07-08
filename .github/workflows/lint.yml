@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Maven compile
-      run: mvn package -f portfolio/
+      run: mvn package -f capstone/
     - name: install node dependencies
       if: always()
       run: npm install clang-format prettier css-validator html-validate eslint eslint-config-google
