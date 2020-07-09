@@ -39,6 +39,22 @@ public class RestaurantServlet extends HttpServlet {
 
   /**
    * Returns a single Restaurant based on restaurantKey.
+   * @param response All details for the requested restaurant, in the following json format:
+    {
+      "restaurant" : {
+        "restaurantKey": <long>,
+        "name": <String>,
+        "location": <GeoPt>,
+        "story": <String>,
+        "cuisine": <List<String>>,
+        "phone": <String>,
+        "website": <String>,
+        "status": <String>
+      }
+    }
+   * @param request Specifies restaurant key, in the following format:
+     /restaurant?restaurantKey=<int>
+   * @return Possible SC_NOT_FOUND error if no restaurant with the requested key is found in Datastore.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

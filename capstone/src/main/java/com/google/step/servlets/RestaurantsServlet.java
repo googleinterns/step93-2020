@@ -37,7 +37,19 @@ import javax.servlet.http.HttpServletResponse;
 public class RestaurantsServlet extends HttpServlet {
   private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   /**
-   * Returns a list of Restaurants.
+   * Returns a list of RestaurantHeaders, with a snapshot of restaurant details.
+   * @param response A list of restaurant details, in the following json format:
+    {
+      "restaurants" : [
+        { "name": <String>,
+          "cuisine": <List<String>>,
+          "message": <String, details status of restaurant based on score>,
+        },
+        ...
+      ]
+    }
+   * @param request Specifies relevant search params. //TODO: update exact search param format
+   * @return //TODO: add any error codes thrown once search is implemented.
    */
   // TODO: Change this to be connected to search functionality.
   @Override
