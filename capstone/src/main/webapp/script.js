@@ -45,23 +45,29 @@ async function getRestaurants() {
  */
 function createRestaurantElement(restaurant) {
   // Article tag to encapsulate restaurant elements
-  const restaurantElement = document.createElement('article');
+  const restaurantElement = document.createElement('h2');
+  const linkElement = document.createElement('a');
 
   // Restaurant element UI details
-  const title = document.createElement('h2');
-  title.innerText = restaurant.name;
-  restaurantElement.appendChild(title);
+  const redirect =
+      '/restaurantDetails.html?restaurantKey=' + restaurant.restaurantKey;
+  linkElement.setAttribute('href', redirect);
+  linkElement.innerText = restaurant.name;
+  //   const title = document.createElement('h2');
+  //   title.innerText = restaurant.name;
+  restaurantElement.appendChild(linkElement);
 
-  restaurantElement.addEventListener('click', (event) => {
-    // Redirect to restaurant detail page with correct restaurant key
-    const redirect =
-        '/restaurantDetails.html?restaurantKey=' + restaurant.restaurantKey;
-    if (event.ctrlKey) {
-      // If ctrl+click, open in new tab
-      window.open(redirect);
-    } else {
-      window.open(redirect, '_self');
-    }
-  });
+  //   restaurantElement.addEventListener('click', (event) => {
+  //     // Redirect to restaurant detail page with correct restaurant key
+  //     const redirect =
+  //         '/restaurantDetails.html?restaurantKey=' +
+  //         restaurant.restaurantKey;
+  //     if (event.ctrlKey) {
+  //       // If ctrl+click, open in new tab
+  //       window.open(redirect);
+  //     } else {
+  //       window.open(redirect, '_self');
+  //     }
+  //   });
   return restaurantElement;
 }

@@ -16,6 +16,7 @@ package com.google.step.data;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.GeoPt;
+import java.lang.IllegalArgumentException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +50,8 @@ public final class Restaurant {
    */
   public static Restaurant fromEntity(Entity entity) {
     if (!entity.getKind().equals("RestaurantInfo")) {
-      return null;
+      throw new IllegalArgumentException(
+          "Element of type " + entity.getKind() + ", should be RestaurantInfo");
     }
     long restaurantKey = (Long) entity.getProperty("restaurantKey");
     String name = (String) entity.getProperty("name");

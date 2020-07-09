@@ -29,8 +29,9 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import java.lang.IllegalArgumentException;
 
-/** */
+/** Test class for the Restaurant.java class */
 @RunWith(JUnit4.class)
 public final class RestaurantTest {
   private final LocalServiceTestHelper helper =
@@ -50,13 +51,10 @@ public final class RestaurantTest {
  * Test that the factory method returns null when
  * given the wrong entity type.
  */
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void incorrectEntityKind() {
     Entity wrongKind = new Entity("RestaurantUser");
-    Restaurant actual = Restaurant.fromEntity(wrongKind);
-    Restaurant expected = null;
-
-    Assert.assertEquals(expected, actual);
+    Restaurant exception = Restaurant.fromEntity(wrongKind);
   }
 
 /**
