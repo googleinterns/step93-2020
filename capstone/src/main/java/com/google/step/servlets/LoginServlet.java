@@ -25,9 +25,15 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+
+    /**
+     * Method that get's login information from the front end.
+     * @param request send from the frontend.
+     * @param response sent to the frontend with login information in json format.
+     * @throws IOException
+     */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Gives back information regarding the current user to the frontend.
     // Output (ex): {"Loggedin":true, "Email":"example@gmail.com", "logOutUrl":"exampleUrl"}
     response.setContentType("application/json;");
 
