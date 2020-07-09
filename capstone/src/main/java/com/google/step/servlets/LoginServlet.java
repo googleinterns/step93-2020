@@ -28,34 +28,41 @@ public class LoginServlet extends HttpServlet {
 
     /**
      * Method that get's login information from the front end.
-     * @param request send from the frontend.
-     * @param response sent to the frontend with login information in json format.
+     * @param request sent from the frontend without any parameters, or headers.
+     * @param response depends on if the user is logged in.
+     *                 Sent to the frontend with login information in json format:
+     *                 {
+     *                 "LoggedIn": <boolean>,
+     *                 "Email": <string, only specified if loggedIn is true>,
+     *                 "logOutURL": <string, only specified if loggedIn is true>,
+     *                 "loginURL": <string, only specified if loggedIn is false>
+     *                 }
+     *
      * @throws IOException
      */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Output (ex): {"Loggedin":true, "Email":"example@gmail.com", "logOutUrl":"exampleUrl"}
     response.setContentType("application/json;");
 
     UserService userService = UserServiceFactory.getUserService();
     Map<String, Object> login = new HashMap<>();
 
     if (userService.isUserLoggedIn()) {
-      String useremail = userService.getCurrentUser().getEmail();
+      String userEmail = userService.getCurrentUser().getEmail();
 
-      String urltoRedirectToAfterUserLogsOut = "/";
-      String logoutUrl = userService.createLogoutURL(urltoRedirectToAfterUserLogsOut);
+      String urlToRedirectToAfterUserLogsOut = "/";
+      String logoutURL = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
 
-      login.put("Loggedin", true);
-      login.put("Email", useremail);
-      login.put("logOutUrl", logoutUrl);
+      login.put("LoggedIn", true);
+      login.put("Email", userEmail);
+      login.put("logOutURL", logoutURL);
     } else {
-      String urltoRedirectToAfterUserLogIn = "/";
+      String urlToRedirectToAfterUserLogIn = "/";
 
-      String loginUrl = userService.createLoginURL(urltoRedirectToAfterUserLogIn);
+      String loginURL = userService.createLoginURL(urlToRedirectToAfterUserLogIn);
 
-      login.put("Loggedin", false);
-      login.put("loginUrl", loginUrl);
+      login.put("LoggedIn", false);
+      login.put("loginURL", loginURL);
     }
 
     String json = convertToJsonUsingGson(login);
