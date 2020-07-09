@@ -54,7 +54,7 @@ public class RestaurantServlet extends HttpServlet {
     }
    * @param request Specifies restaurant key, in the following format:
      /restaurant?restaurantKey=<int>
-   * @return Possible SC_NOT_FOUND error if no restaurant with the requested key is found in Datastore.
+   * @throws SC_NOT_FOUND if no restaurant with the requested key is found in Datastore.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

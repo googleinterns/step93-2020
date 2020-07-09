@@ -40,8 +40,9 @@ public class RestaurantsServlet extends HttpServlet {
    * Returns a list of RestaurantHeaders, with a snapshot of restaurant details.
    * @param response A list of restaurant details, in the following json format:
     {
-      "restaurants" : [
-        { "name": <String>,
+      "restaurantHeaders" : [
+        { 
+          "name": <String>,
           "cuisine": <List<String>>,
           "message": <String, details status of restaurant based on score>,
         },
@@ -49,7 +50,7 @@ public class RestaurantsServlet extends HttpServlet {
       ]
     }
    * @param request Specifies relevant search params. //TODO: update exact search param format
-   * @return //TODO: add any error codes thrown once search is implemented.
+   * @throws //TODO: add any error codes thrown once search is implemented.
    */
   // TODO: Change this to be connected to search functionality.
   @Override
