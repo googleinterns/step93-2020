@@ -53,21 +53,7 @@ function createRestaurantElement(restaurant) {
       '/restaurantDetails.html?restaurantKey=' + restaurant.restaurantKey;
   linkElement.setAttribute('href', redirect);
   linkElement.innerText = restaurant.name;
-  //   const title = document.createElement('h2');
-  //   title.innerText = restaurant.name;
   restaurantElement.appendChild(linkElement);
 
-  //   restaurantElement.addEventListener('click', (event) => {
-  //     // Redirect to restaurant detail page with correct restaurant key
-  //     const redirect =
-  //         '/restaurantDetails.html?restaurantKey=' +
-  //         restaurant.restaurantKey;
-  //     if (event.ctrlKey) {
-  //       // If ctrl+click, open in new tab
-  //       window.open(redirect);
-  //     } else {
-  //       window.open(redirect, '_self');
-  //     }
-  //   });
   return restaurantElement;
 }
