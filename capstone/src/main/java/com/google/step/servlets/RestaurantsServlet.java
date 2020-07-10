@@ -41,7 +41,7 @@ public class RestaurantsServlet extends HttpServlet {
    * @param response A list of restaurant details, in the following json format:
     {
       "restaurantHeaders" : [
-        { 
+        {
           "name": <String>,
           "cuisine": <List<String>>,
           "message": <String, details status of restaurant based on score>,
@@ -55,7 +55,7 @@ public class RestaurantsServlet extends HttpServlet {
   // TODO: Change this to be connected to search functionality.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query("RestaurantInfo").addSort("score", SortDirection.ASCENDING);
+    Query query = new Query("RestaurantInfo");
     PreparedQuery results = datastore.prepare(query);
 
     List<Restaurant> restaurants = new ArrayList<>();

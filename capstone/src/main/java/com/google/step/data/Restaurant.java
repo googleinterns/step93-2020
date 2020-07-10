@@ -67,6 +67,62 @@ public final class Restaurant {
   }
 
   /**
+   * @return long restaurantKey, unique identifier for the restaurant
+   */
+  public long getRestaurantKey() {
+    return this.restaurantKey;
+  }
+
+  /**
+   * @return String name, name of the restaurant
+   */
+  public String getName() {
+    return this.name;
+  }
+
+  /**
+   * @return GeoPt location, containing latitude and longitude of the restaurant
+   */
+  public GeoPt getLocation() {
+    return this.location;
+  }
+
+  /**
+   * @return String story, personal story of the restaurant
+   */
+  public String getStory() {
+    return this.story;
+  }
+
+  /**
+   * @return List<String> cuisine, list of cuisines for the restaurant
+   */
+  public List<String> getCuisine() {
+    return this.cuisine;
+  }
+
+  /**
+   * @return String phone, phone number of the restaurant
+   */
+  public String getPhone() {
+    return this.phone;
+  }
+
+  /**
+   * @return String website, website of the restaurant
+   */
+  public String getWebsite() {
+    return this.website;
+  }
+
+  /**
+   * @return String status, either STRUGGLING, OKAY, or GOOD
+   */
+  public String getStatus() {
+    return this.status;
+  }
+
+  /**
    * equals method for use in testing.
    */
   @Override
@@ -116,5 +172,23 @@ public final class Restaurant {
     } else if (!website.equals(other.website))
       return false;
     return true;
+  }
+
+  /**
+   * hashCode method for use in testing.
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((cuisine == null) ? 0 : cuisine.hashCode());
+    result = prime * result + ((location == null) ? 0 : location.hashCode());
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    result = prime * result + ((phone == null) ? 0 : phone.hashCode());
+    result = prime * result + (int) (restaurantKey ^ (restaurantKey >>> 32));
+    result = prime * result + ((status == null) ? 0 : status.hashCode());
+    result = prime * result + ((story == null) ? 0 : story.hashCode());
+    result = prime * result + ((website == null) ? 0 : website.hashCode());
+    return result;
   }
 }
