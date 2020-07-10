@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>STEP Capstone</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="details.js"></script>
+    <link
+      href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGsIKEhbCWc-Ej9169cT4xCivgixDZzKY"></script>
+  </head>
+  <body onload="setRestaurantDetails();">
+    <button
+      class="material-icons mdc-top-app-bar__action-item mdc-icon-button"
+      aria-label="Back"
+      onclick="returnHome();"
+      type="button"
+    >
+      arrow_back
+    </button>
+    <section id="restaurant-detail-area">
+      <h1 id="current-restaurant-title">Loading...</h1>
+      <b>Our story: </b>
+      <p id="current-restaurant-story"></p>
+      <b>Cuisine: </b>
+      <section class="mdc-chip-set" role="grid" id="current-restaurant-cuisines"></section>
+      <b>Website: </b>
+      <p id="current-restaurant-website"></p>
+      <b>Phone: </b>
+      <p id="current-restaurant-phone"></p>
+      <section id="current-restaurant-map" class="map"></section>
+    </section>
+  </body>
+</html>
