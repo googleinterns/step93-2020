@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.step;
+package com.google.step.clients;
 
 import java.util.ArrayList;
 import java.util.List;
 import com.google.appengine.api.datastore.Entity;
+import com.google.step.clients.RestaurantClient;
 import com.google.step.data.Restaurant;
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -33,7 +34,7 @@ import java.lang.IllegalArgumentException;
 
 /** Test class for the Restaurant.java class */
 @RunWith(JUnit4.class)
-public final class RestaurantTest {
+public final class RestaurantClientTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
@@ -54,7 +55,7 @@ public final class RestaurantTest {
   @Test(expected = IllegalArgumentException.class)
   public void incorrectEntityKind() {
     Entity wrongKind = new Entity("RestaurantUser");
-    Restaurant exception = Restaurant.fromEntity(wrongKind);
+    Restaurant exception = RestaurantClient.fromEntity(wrongKind);
   }
 
 /**
@@ -78,7 +79,7 @@ public final class RestaurantTest {
     restaurantInfo.setProperty("score", 3.5);
     restaurantInfo.setProperty("status", "GOOD");
 
-    Restaurant actual = Restaurant.fromEntity(restaurantInfo);
+    Restaurant actual = RestaurantClient.fromEntity(restaurantInfo);
     Restaurant expected = new Restaurant(0, "McDonald's", new GeoPt((float)42.297522, (float)-87.956039), 
         "We're a global business with the best french fries around.", cuisineList, "(847)362-3040", 
         "https://www.mcdonalds.com/us/en-us/location/il/libertyville/1330-n-milwaukee-ave/119.html?cid=RF:YXT:GMB::Clicks", "GOOD");

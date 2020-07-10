@@ -14,9 +14,7 @@
 
 package com.google.step.data;
 
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.GeoPt;
-import java.lang.IllegalArgumentException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,29 +39,6 @@ public final class Restaurant {
     this.phone = phone;
     this.website = website;
     this.status = status;
-  }
-
-  /**
-   * Factory method to return a Restaurant based on an Entity
-   * @param entity
-   * @return Restaurant, or null if the entity is the wrong kind
-   */
-  public static Restaurant fromEntity(Entity entity) {
-    if (!entity.getKind().equals("RestaurantInfo")) {
-      throw new IllegalArgumentException(
-          "Element of type " + entity.getKind() + ", should be RestaurantInfo");
-    }
-    long restaurantKey = (Long) entity.getProperty("restaurantKey");
-    String name = (String) entity.getProperty("name");
-    GeoPt location = (GeoPt) entity.getProperty("location");
-    String story = (String) entity.getProperty("story");
-    List<String> cuisine = (List<String>) entity.getProperty("cuisine");
-    String phone = (String) entity.getProperty("phone");
-    String website = (String) entity.getProperty("website");
-    String status = (String) entity.getProperty("status");
-
-    // Return Restaurant object holding all info
-    return new Restaurant(restaurantKey, name, location, story, cuisine, phone, website, status);
   }
 
   /**
@@ -98,7 +73,7 @@ public final class Restaurant {
    * @return List<String> cuisine, list of cuisines for the restaurant
    */
   public List<String> getCuisine() {
-    return this.cuisine;
+    return new ArrayList<>(this.cuisine);
   }
 
   /**
