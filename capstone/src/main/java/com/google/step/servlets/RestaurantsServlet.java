@@ -24,7 +24,6 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.step.data.Restaurant;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,55 +32,48 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet responsible for sending/getting a restaurant to/from Datastore. */
-@WebServlet("/restaurant")
-public class RestaurantServlet extends HttpServlet {
+/** Servlet responsible for getting restaurants from Datastore. */
+@WebServlet("/restaurants")
+public class RestaurantsServlet extends HttpServlet {
   private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
   /**
-   * Returns a single Restaurant based on restaurantKey.
-   * @param response All details for the requested restaurant, in the following json format:
+   * Returns a list of RestaurantHeaders, with a snapshot of restaurant details.
+   * @param response A list of restaurant details, in the following json format:
     {
-      "restaurant" : {
-        "restaurantKey": <long>,
-        "name": <String>,
-        "location": <GeoPt>,
-        "story": <String>,
-        "cuisine": <List<String>>,
-        "phone": <String>,
-        "website": <String>,
-        "status": <String>
-      }
+      "restaurantHeaders" : [
+        {
+          "name": <String>,
+          "cuisine": <List<String>>,
+          "message": <String, details status of restaurant based on score>,
+        },
+        ...
+      ]
     }
-   * @param request Specifies restaurant key, in the following format:
-     /restaurant?restaurantKey=<int>
-   * @throws SC_NOT_FOUND if no restaurant with the requested key is found in Datastore.
+   * @param request Specifies relevant search params. //TODO: update exact search param format
+   * @throws //TODO: add any error codes thrown once search is implemented.
    */
+  // TODO: Change this to be connected to search functionality.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Long restaurantKeyParam = Long.parseLong(request.getParameter("restaurantKey"));
-    Query query = new Query("RestaurantInfo")
-                      .setFilter(new Query.FilterPredicate(
-                          "restaurantKey", Query.FilterOperator.EQUAL, restaurantKeyParam));
+    Query query = new Query("RestaurantInfo");
     PreparedQuery results = datastore.prepare(query);
-    Entity resultEntity = results.asSingleEntity();
-    if (resultEntity == null) {
-      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-      return;
-    }
 
-    // Restaurant object to hold all info
-    Restaurant restaurant = Restaurant.fromEntity(resultEntity);
+    List<Restaurant> restaurants = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+      // Restaurant object to hold all info
+      Restaurant restaurant = Restaurant.fromEntity(entity);
+      restaurants.add(restaurant);
+    }
 
     // Format restaurant List to JSON for return
     Gson gson = new Gson();
-    String json = gson.toJson(restaurant);
+    String json = gson.toJson(restaurants);
 
     // Send the JSON as the response
     response.setContentType("application/json;");
 
     JsonObject ret = new JsonObject();
-    ret.addProperty("restaurant", json);
+    ret.addProperty("restaurants", json);
     response.getWriter().println(ret);
   }
 }
