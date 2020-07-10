@@ -46,8 +46,7 @@ public class RestaurantClient {
    * Gets all RestaurantInfo entities from datastore and returns them as a list.
    * TODO: Change this method to return a list of RestaurantHeaders instead of Restaurants.
    * TODO: Add location or other filters.
-   * @return List<RestaurantHeader>, list of necessary restaurant info for display on search
-   *     page</RestaurantHeader>
+   * @return List<RestaurantHeader>, list of necessary restaurant info for display on search page
    */
   public static List<Restaurant> getRestaurantsNoFilter() {
     Query query = new Query("RestaurantInfo");
