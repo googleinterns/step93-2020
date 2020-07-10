@@ -24,6 +24,7 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.step.data.Restaurant;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
