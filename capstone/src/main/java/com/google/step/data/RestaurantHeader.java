@@ -17,12 +17,13 @@ package com.google.step.data;
 import com.google.appengine.api.datastore.GeoPt;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-
 import java.util.List;
 
 
 /**
- *
+ * A {@code RestaurantHeader} is an object that hold as subset of information about a restaurant.
+ * It holds a {@code Restaurant.restaurantKey}, a {@code Restaurant.name} a {@code Restaurant.location},
+ * and a {@code Restaurant.cuisine}.
  */
 public final class RestaurantHeader {
   private final long restaurantKey;
