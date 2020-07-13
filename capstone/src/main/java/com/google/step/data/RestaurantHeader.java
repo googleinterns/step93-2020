@@ -17,6 +17,7 @@ package com.google.step.data;
 import com.google.appengine.api.datastore.GeoPt;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.Collections;
 import java.util.List;
 
 
