@@ -21,17 +21,14 @@ import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.step.data.Restaurant;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import com.google.step.data.Restaurant;
-
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -41,8 +38,6 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for sending/getting a restaurant to/from Datastore. */
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
-
-
   private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   /**
