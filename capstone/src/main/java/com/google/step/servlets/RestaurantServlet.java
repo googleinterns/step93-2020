@@ -14,7 +14,6 @@
 
 package com.google.step.servlets;
 
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -34,6 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for sending/getting a restaurant to/from Datastore. */
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
+  private RestaurantClient restaurantClient = new RestaurantClient();
+
   /**
    * Will put the information gathered from the signup page and add the
    * information into their respective properties for .
@@ -59,7 +60,7 @@ public class RestaurantServlet extends HttpServlet {
       return;
     }
 
-    String id = userService.getCurrentUser().getUserId();
+    long id = Long.parseLong(userService.getCurrentUser().getUserId());
     String email = userService.getCurrentUser().getEmail();
 
     String name = request.getParameter("name");
@@ -80,21 +81,13 @@ public class RestaurantServlet extends HttpServlet {
     // Hard coded while we don't have Maps API functionality
     GeoPt geoPoint = new GeoPt((float) 42.23422, (float) -87.234987);
 
-    Entity restaurantInfo = new Entity("RestaurantInfo", id);
-    restaurantInfo.setProperty("restaurantKey", id);
-    restaurantInfo.setProperty("name", name);
-    restaurantInfo.setProperty("email", email);
-    restaurantInfo.setProperty("location", geoPoint);
-    restaurantInfo.setProperty("story", story);
-    restaurantInfo.setProperty("cuisine", cuisineList);
-    restaurantInfo.setProperty("phone", phone);
-    restaurantInfo.setProperty("website", website);
+    // The following value is hardcoded while we implement the properties.
+    String status = "OKAY";
 
-    // Both of the following values are hardcoded while we implement the properties.
-    restaurantInfo.setProperty("score", 2.5);
-    restaurantInfo.setProperty("status", "OKAY");
+    Restaurant restaurant =
+        new Restaurant(id, name, geoPoint, story, cuisineList, phone, website, status);
 
-    RestaurantClient.putEntity(restaurantInfo);
+    restaurantClient.putRestaurant(restaurant, email);
 
     response.sendRedirect("/index.html");
   }
@@ -126,7 +119,7 @@ public class RestaurantServlet extends HttpServlet {
     Long restaurantKeyParam = Long.parseLong(request.getParameter("restaurantKey"));
 
     // Restaurant object to hold all info
-    Restaurant restaurant = RestaurantClient.getSingleRestaurant(restaurantKeyParam);
+    Restaurant restaurant = restaurantClient.getSingleRestaurant(restaurantKeyParam);
 
     // Format restaurant List to JSON for return
     Gson gson = new Gson();

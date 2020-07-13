@@ -29,6 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for getting restaurants from Datastore. */
 @WebServlet("/restaurants")
 public class RestaurantsServlet extends HttpServlet {
+  private RestaurantClient restaurantClient = new RestaurantClient();
+
   /**
    * Returns a list of RestaurantHeaders, with a snapshot of restaurant details.
    * @param response A list of restaurant details, in the following json format:
@@ -48,7 +50,7 @@ public class RestaurantsServlet extends HttpServlet {
   // TODO: Change this to be connected to search functionality.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<Restaurant> restaurants = RestaurantClient.getRestaurantsNoFilter();
+    List<Restaurant> restaurants = restaurantClient.getRestaurantsNoFilter();
 
     // Format restaurant List to JSON for return
     Gson gson = new Gson();

@@ -16,10 +16,36 @@ public class RestaurantClient {
 
   /**
    * Puts a single entity of any kind into datastore.
-   * @param entity, any kind, to be put into datastore
+   * @param restaurant, to be processed into an Entity and put into datastore
+   * @param email, separate from Restaurant class and passed from UserService in the servlet
    */
-  public static void putEntity(Entity entity) {
-    datastore.put(entity);
+  public void putRestaurant(Restaurant restaurant, String email) {
+    // Retrieve restaurant properties
+    long id = restaurant.getRestaurantKey();
+    String name = restaurant.getName();
+    GeoPt location = restaurant.getLocation();
+    String story = restaurant.getStory();
+    List<String> cuisineList = restaurant.getCuisine();
+    String phone = restaurant.getPhone();
+    String website = restaurant.getWebsite();
+    String status = restaurant.getStatus();
+
+    // Parse into a RestaurantInfo Entity
+    Entity restaurantInfo = new Entity("RestaurantInfo", id);
+    restaurantInfo.setProperty("restaurantKey", id);
+    restaurantInfo.setProperty("name", name);
+    restaurantInfo.setProperty("email", email);
+    restaurantInfo.setProperty("location", location);
+    restaurantInfo.setProperty("story", story);
+    restaurantInfo.setProperty("cuisine", cuisineList);
+    restaurantInfo.setProperty("phone", phone);
+    restaurantInfo.setProperty("website", website);
+    restaurantInfo.setProperty("status", status);
+
+    // The following value is hardcoded while we implement the properties.
+    restaurantInfo.setProperty("score", 2.5);
+
+    datastore.put(restaurantInfo);
   }
 
   /**
@@ -28,7 +54,7 @@ public class RestaurantClient {
    * @return Restaurant, parsed from the datastore properties
    * @throws NoSuchElementException if no RestaurantInfo entity is found with the requested key
    */
-  public static Restaurant getSingleRestaurant(long restaurantKey) {
+  public Restaurant getSingleRestaurant(long restaurantKey) {
     Query query = new Query("RestaurantInfo")
                       .setFilter(new Query.FilterPredicate(
                           "restaurantKey", Query.FilterOperator.EQUAL, restaurantKey));
@@ -48,7 +74,7 @@ public class RestaurantClient {
    * TODO: Add location or other filters.
    * @return List<RestaurantHeader>, list of necessary restaurant info for display on search page
    */
-  public static List<Restaurant> getRestaurantsNoFilter() {
+  public List<Restaurant> getRestaurantsNoFilter() {
     Query query = new Query("RestaurantInfo");
     PreparedQuery results = datastore.prepare(query);
 
