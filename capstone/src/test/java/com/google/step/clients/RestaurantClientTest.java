@@ -38,10 +38,37 @@ import java.util.NoSuchElementException;
 public final class RestaurantClientTest {
   private final LocalServiceTestHelper helper =
           new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+  private Entity restaurantEntity1;
+  private Entity restaurantEntity2;
 
   @Before
   public void setUp() {
     helper.setUp();
+
+    // Set random params for two different restaurants
+    String name1 = "Wildfire";
+    GeoPt location1 = new GeoPt((float) 42.17844, (float) -87.92843);
+    List<String> cuisineList1 = new ArrayList<>();
+    cuisineList1.add("Steakhouse");
+    cuisineList1.add("American");
+    String story1 = "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.";
+    String phone1 = "(847)279-7900";
+    String website1 = "https://www.wildfirerestaurant.com";
+    long score1 = (long)1.1;
+    String status1 = "STRUGGLING";
+    restaurantEntity1 = makeRestaurantInfoEntityWithVals(name1, location1, story1, cuisineList1, phone1, website1, score1, status1);
+
+    String name2 = "Burger King";
+    GeoPt location2 = new GeoPt((float) 42.17844, (float) -87.92843);
+    List<String> cuisineList2 = new ArrayList<>();
+    cuisineList2.add("Fast food");
+    cuisineList2.add("American");
+    String story2 = "Fast food burger chain.";
+    String phone2 = "(847)279-7911";
+    String website2 = "https://www.burgerking.com";
+    long score2 = (long)2.5;
+    String status2 = "OKAY";
+    restaurantEntity2 = makeRestaurantInfoEntityWithVals(name2, location2, story2, cuisineList2, phone2, website2, score2, status2);
   }
 
   @After
@@ -53,10 +80,10 @@ public final class RestaurantClientTest {
   // Run this test twice to prove we're not leaking any state across tests
   public void checkIfDatastoreWorks() {
     DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
-    assertEquals(0, datastoreService.prepare(new Query("User")).countEntities(withLimit(10)));
-    datastoreService.put(new Entity("User"));
-    datastoreService.put(new Entity("User"));
-    assertEquals(2, datastoreService.prepare(new Query("User")).countEntities(withLimit(10)));
+    assertEquals(0, datastoreService.prepare(new Query("RestaurantInfo")).countEntities(withLimit(10)));
+    datastoreService.put(new Entity("RestaurantInfo"));
+    datastoreService.put(new Entity("RestaurantInfo"));
+    assertEquals(2, datastoreService.prepare(new Query("RestaurantInfo")).countEntities(withLimit(10)));
   }
 
   @Test
@@ -77,29 +104,23 @@ public final class RestaurantClientTest {
   public void testGetSingleRestaurant() {
     DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
 
-    // Set random params for a restaurant
-    String name = "Wildfire";
-    GeoPt location = new GeoPt((float) 42.17844, (float) -87.92843);
-    List<String> cuisineList1 = new ArrayList<>();
-    cuisineList1.add("Steakhouse");
-    cuisineList1.add("American");
-    String story = "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.";
-    String phone = "(847)279-7900";
-    String website = "https://www.wildfirerestaurant.com";
-    long score = (long)1.1;
-    String status = "STRUGGLING";
-    // Put restaurant in the mock datastore service
-    Entity returned = putRestaurantInfoEntityWithVals(datastoreService, name, location, story, cuisineList1, phone, website, score, status);
+    // Put a restaurant Entity in the mock datastore service
+    datastoreService.put(restaurantEntity1);
 
     // Get restaurant key from entity that was put into Datastore, as it was assigned by Datastore
-    long restaurantKey = (long)returned.getProperty("restaurantKey");
+    long restaurantKey = (long)restaurantEntity1.getProperty("restaurantKey");
 
     // Run client method
     RestaurantClient restaurantClient = new RestaurantClient();
     Restaurant result = restaurantClient.getSingleRestaurant(restaurantKey);
     assertNotNull("No response received", result);
 
-    Restaurant expected = new Restaurant(name, location, story, cuisineList1, phone, website, status);
+    List<String> cuisineList = new ArrayList<>();
+    cuisineList.add("Steakhouse");
+    cuisineList.add("American");
+    Restaurant expected = new Restaurant("Wildfire", new GeoPt((float) 42.17844, (float) -87.92843),
+            "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.",
+            cuisineList, "(847)279-7900", "https://www.wildfirerestaurant.com", "STRUGGLING");
     expected.setRestaurantKey(restaurantKey);
 
     assertEquals(expected, result);
@@ -113,49 +134,39 @@ public final class RestaurantClientTest {
   public void testGetRestaurantsNoFilter() {
     DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
 
-    // Set random params for two different restaurants
-    // Put them into the mock datastore service
-    String name = "Wildfire";
-    GeoPt location = new GeoPt((float) 42.17844, (float) -87.92843);
+    // Put a restaurant Entities in the mock datastore service
+    datastoreService.put(restaurantEntity1);
+    datastoreService.put(restaurantEntity2);
+
+    // Get restaurant keys from entities that were put into Datastore, as they were assigned by Datastore
+    long restaurantKey1 = (long)restaurantEntity1.getProperty("restaurantKey");
+    long restaurantKey2 = (long)restaurantEntity1.getProperty("restaurantKey");
+
+    // Create expected list
+    // TODO: make expected list be of RestaurantHeaders.
     List<String> cuisineList1 = new ArrayList<>();
     cuisineList1.add("Steakhouse");
     cuisineList1.add("American");
-    String story = "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.";
-    String phone = "(847)279-7900";
-    String website = "https://www.wildfirerestaurant.com";
-    long score = (long)1.1;
-    String status = "STRUGGLING";
-    Entity returned1 = putRestaurantInfoEntityWithVals(datastoreService, name, location, story, cuisineList1, phone, website, score, status);
+    Restaurant rest1 = new Restaurant("Wildfire", new GeoPt((float) 42.17844, (float) -87.92843),
+            "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.",
+            cuisineList1, "(847)279-7900", "https://www.wildfirerestaurant.com", "STRUGGLING");
+    rest1.setRestaurantKey(restaurantKey1);
 
-    String name2 = "Burger King";
-    GeoPt location2 = new GeoPt((float) 42.17844, (float) -87.92843);
     List<String> cuisineList2 = new ArrayList<>();
     cuisineList2.add("Fast food");
     cuisineList2.add("American");
-    String story2 = "Fast food burger chain.";
-    String phone2 = "(847)279-7911";
-    String website2 = "https://www.burgerking.com";
-    long score2 = (long)2.5;
-    String status2 = "OKAY";
-    Entity returned2 = putRestaurantInfoEntityWithVals(datastoreService, name2, location2, story2, cuisineList2, phone2, website2, score2, status2);
+    Restaurant rest2 = new Restaurant("Burger King", new GeoPt((float) 42.17844, (float) -87.92843),
+            "Fast food burger chain.", cuisineList2, "(847)279-7911", "https://www.burgerking.com", "OKAY");
+    rest2.setRestaurantKey(restaurantKey2);
 
-    long restaurantKey = (long)returned1.getProperty("restaurantKey");
-    long restaurantKey2 = (long)returned2.getProperty("restaurantKey");
+    List<Restaurant> expected = new ArrayList<>();
+    expected.add(rest1);
+    expected.add(rest2);
 
     // Run client method
     RestaurantClient restaurantClient = new RestaurantClient();
     List<Restaurant> result = restaurantClient.getRestaurantsNoFilter();
     assertNotNull("No response received", result);
-
-    // Create expected list
-    // TODO: make expected list be of RestaurantHeaders.
-    Restaurant rest1 = new Restaurant(name, location, story, cuisineList1, phone, website, status);
-    rest1.setRestaurantKey(restaurantKey);
-    Restaurant rest2 = new Restaurant(name2, location2, story2, cuisineList2, phone2, website2, status2);
-    rest2.setRestaurantKey(restaurantKey2);
-    List<Restaurant> expected = new ArrayList<>();
-    expected.add(rest1);
-    expected.add(rest2);
 
     assertEquals(expected, result);
   }
@@ -201,10 +212,9 @@ public final class RestaurantClientTest {
    */
 
   /**
-   * Helper to create and insert a RestaurantInfo Entity into a mock
-   * datastore service based on all necessary params.
+   * Helper to create a RestaurantInfo Entity based on all necessary params.
    */
-  public static Entity putRestaurantInfoEntityWithVals(DatastoreService datastoreService, String name, GeoPt location, String story, List<String> cuisine, String phone, String website, long score, String status) {
+  public static Entity makeRestaurantInfoEntityWithVals(String name, GeoPt location, String story, List<String> cuisine, String phone, String website, long score, String status) {
     Entity restaurantInfo = new Entity("RestaurantInfo");
     long id = restaurantInfo.getKey().getId();
     restaurantInfo.setProperty("restaurantKey", id);
@@ -216,7 +226,6 @@ public final class RestaurantClientTest {
     restaurantInfo.setProperty("website",website);
     restaurantInfo.setProperty("score", score);
     restaurantInfo.setProperty("status", status);
-    datastoreService.put(restaurantInfo);
     return restaurantInfo;
   }
 
