@@ -20,7 +20,7 @@ import java.util.List;
 
 /** A restaurant to be displayed. */
 public final class Restaurant {
-  private final long restaurantKey;
+  private long restaurantKey;
   private final String name;
   private final GeoPt location;
   private final String story;
@@ -29,9 +29,8 @@ public final class Restaurant {
   private final String website;
   private final String status;
 
-  public Restaurant(long restaurantKey, String name, GeoPt location, String story,
+  public Restaurant(String name, GeoPt location, String story,
       List<String> cuisine, String phone, String website, String status) {
-    this.restaurantKey = restaurantKey;
     this.name = name;
     this.location = location;
     this.story = story;
@@ -39,6 +38,13 @@ public final class Restaurant {
     this.phone = phone;
     this.website = website;
     this.status = status;
+  }
+
+  /**
+   * @param restaurantKey, the datastore key for this restaurant
+   */
+  public void setRestaurantKey(long restaurantKey) {
+    this.restaurantKey = restaurantKey;
   }
 
   /**

@@ -81,7 +81,7 @@ public class RestaurantClient {
     List<Restaurant> restaurants = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
       // Restaurant object to hold all info
-      Restaurant restaurant = RestaurantClient.fromEntity(entity);
+      Restaurant restaurant = fromEntity(entity);
       restaurants.add(restaurant);
     }
     return restaurants;
@@ -93,7 +93,7 @@ public class RestaurantClient {
    * @return Restaurant, based on properties of the entity
    * @throws IllegalArgumentException if the entity is not of type RestaurantInfo
    */
-  public static Restaurant fromEntity(Entity entity) {
+  private Restaurant fromEntity(Entity entity) {
     if (!entity.getKind().equals("RestaurantInfo")) {
       throw new IllegalArgumentException(
           "Element of type " + entity.getKind() + ", should be RestaurantInfo");
@@ -107,7 +107,10 @@ public class RestaurantClient {
     String website = (String) entity.getProperty("website");
     String status = (String) entity.getProperty("status");
 
+    Restaurant result = new Restaurant(name, location, story, cuisine, phone, website, status);
+    result.setRestaurantKey(restaurantKey);
+
     // Return Restaurant object holding all info
-    return new Restaurant(restaurantKey, name, location, story, cuisine, phone, website, status);
+    return result;
   }
 }
