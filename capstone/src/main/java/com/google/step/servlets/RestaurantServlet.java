@@ -84,9 +84,6 @@ public class RestaurantServlet extends HttpServlet {
     // The following value is hardcoded while we implement the properties.
     String status = "OKAY";
 
-    // Dummy value as id will be set in the client using the Entity's id.
-    long id = 0;
-
     Restaurant restaurant =
         new Restaurant(null, name, geoPoint, story, cuisineList, phone, website, status);
 
