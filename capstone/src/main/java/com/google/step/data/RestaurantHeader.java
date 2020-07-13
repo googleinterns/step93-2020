@@ -38,7 +38,7 @@ public final class RestaurantHeader {
     this.restaurantKey = restaurantKey;
     this.name = name;
     this.location = location;
-    this.cuisine = cuisine;
+    this.cuisine = Collections.unmodifiableList(cuisine);
   }
 
   /**
