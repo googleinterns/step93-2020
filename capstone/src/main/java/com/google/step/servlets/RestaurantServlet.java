@@ -60,7 +60,6 @@ public class RestaurantServlet extends HttpServlet {
       return;
     }
 
-    long id = Long.parseLong(userService.getCurrentUser().getUserId());
     String email = userService.getCurrentUser().getEmail();
 
     String name = request.getParameter("name");
@@ -83,6 +82,9 @@ public class RestaurantServlet extends HttpServlet {
 
     // The following value is hardcoded while we implement the properties.
     String status = "OKAY";
+
+    // Dummy value as id will be set in the client using the Entity's id.
+    long id = 0;
 
     Restaurant restaurant =
         new Restaurant(id, name, geoPoint, story, cuisineList, phone, website, status);
@@ -116,7 +118,7 @@ public class RestaurantServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Long restaurantKeyParam = Long.parseLong(request.getParameter("restaurantKey"));
+    long restaurantKeyParam = Long.parseLong(request.getParameter("restaurantKey"));
 
     // Restaurant object to hold all info
     Restaurant restaurant = restaurantClient.getSingleRestaurant(restaurantKeyParam);

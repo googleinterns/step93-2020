@@ -21,7 +21,6 @@ public class RestaurantClient {
    */
   public void putRestaurant(Restaurant restaurant, String email) {
     // Retrieve restaurant properties
-    long id = restaurant.getRestaurantKey();
     String name = restaurant.getName();
     GeoPt location = restaurant.getLocation();
     String story = restaurant.getStory();
@@ -31,7 +30,8 @@ public class RestaurantClient {
     String status = restaurant.getStatus();
 
     // Parse into a RestaurantInfo Entity
-    Entity restaurantInfo = new Entity("RestaurantInfo", id);
+    Entity restaurantInfo = new Entity("RestaurantInfo");
+    long id = restaurantInfo.getKey().getId();
     restaurantInfo.setProperty("restaurantKey", id);
     restaurantInfo.setProperty("name", name);
     restaurantInfo.setProperty("email", email);
