@@ -15,12 +15,7 @@
 package com.google.step.data;
 
 import com.google.appengine.api.datastore.GeoPt;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,14 +24,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-@RunWith(MockitoJUnitRunner.class)
 public final class RestaurantHeaderTest {
-  @Mock
-  Restaurant RESTAURANT_MOCK_1;
-
-  @Mock
-  Restaurant RESTAURANT_MOCK_2;
-
   private final long KEY_1 = 12345L;
   private final long KEY_2 = 1111L;
 
@@ -49,38 +37,28 @@ public final class RestaurantHeaderTest {
   private final List<String> CUISINE_1 = Collections.unmodifiableList(Arrays.asList("pizza", "American"));
   private final List<String> CUISINE_2 = Collections.singletonList("Indian");
 
-  @Before
-  public void setUp() {
-    Mockito.when(RESTAURANT_MOCK_1.getCuisine()).thenReturn(CUISINE_1);
-    Mockito.when(RESTAURANT_MOCK_1.getLocation()).thenReturn(LOC_1);
-    Mockito.when(RESTAURANT_MOCK_1.getName()).thenReturn(NAME_1);
-    Mockito.when(RESTAURANT_MOCK_1.getRestaurantKey()).thenReturn(KEY_1);
-
-    Mockito.when(RESTAURANT_MOCK_2.getCuisine()).thenReturn(CUISINE_2);
-    Mockito.when(RESTAURANT_MOCK_2.getLocation()).thenReturn(LOC_2);
-    Mockito.when(RESTAURANT_MOCK_2.getName()).thenReturn(NAME_2);
-    Mockito.when(RESTAURANT_MOCK_2.getRestaurantKey()).thenReturn(KEY_2);
-  }
+  private final Restaurant RESTAURANT_1 = new Restaurant(KEY_1, NAME_1, LOC_1, "", CUISINE_1, "", "", "");
+  private final Restaurant RESTAURANT_2 = new Restaurant(KEY_2, NAME_2, LOC_2, "", CUISINE_2, "", "", "");
 
   @Test
   public void testLikeRestaurantHeadersEqual() {
-    RestaurantHeader restaurantHeader1 = RestaurantHeader.createRestaurantHeader(RESTAURANT_MOCK_1);
-    RestaurantHeader restaurantHeader2 = RestaurantHeader.createRestaurantHeader(RESTAURANT_MOCK_1);
+    RestaurantHeader restaurantHeader1 = RestaurantHeader.createRestaurantHeader(RESTAURANT_1);
+    RestaurantHeader restaurantHeader2 = RestaurantHeader.createRestaurantHeader(RESTAURANT_1);
 
     assertEquals(restaurantHeader1, restaurantHeader2);
   }
 
   @Test
   public void testDifferentRestaurantHeadersNotEqual() {
-    RestaurantHeader restaurantHeader1 = RestaurantHeader.createRestaurantHeader(RESTAURANT_MOCK_1);
-    RestaurantHeader restaurantHeader2 = RestaurantHeader.createRestaurantHeader(RESTAURANT_MOCK_2);
+    RestaurantHeader restaurantHeader1 = RestaurantHeader.createRestaurantHeader(RESTAURANT_1);
+    RestaurantHeader restaurantHeader2 = RestaurantHeader.createRestaurantHeader(RESTAURANT_2);
 
     assertNotEquals(restaurantHeader1, restaurantHeader2);
   }
 
   @Test
   public void testFieldsSetCorrectly() {
-    RestaurantHeader restaurantHeader = RestaurantHeader.createRestaurantHeader(RESTAURANT_MOCK_1);
+    RestaurantHeader restaurantHeader = RestaurantHeader.createRestaurantHeader(RESTAURANT_1);
 
     assertEquals(KEY_1, restaurantHeader.getRestaurantKey());
     assertEquals(NAME_1, restaurantHeader.getName());
