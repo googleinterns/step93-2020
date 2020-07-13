@@ -1,39 +1,26 @@
 package com.google.step.servlets;
 
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static org.junit.Assert.*;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.repackaged.com.google.gson.JsonObject;
 import com.google.appengine.repackaged.com.google.gson.JsonParser;
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.step.servlets.LoginServlet;
 import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 import com.meterware.servletunit.ServletRunner;
 import com.meterware.servletunit.ServletUnitClient;
 import java.io.IOException;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.xml.sax.SAXException;
 
 public class LoginServletTest {
     private final LocalServiceTestHelper helper =
-            new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+            new LocalServiceTestHelper();
 
     @Before
     public void setUp() {
@@ -43,25 +30,6 @@ public class LoginServletTest {
     @After
     public void tearDown() {
         helper.tearDown();
-    }
-
-    // Run this test twice to prove we're not leaking any state across tests
-    public void checkIfDatastoreWorks() {
-        DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
-        assertEquals(0, datastoreService.prepare(new Query("User")).countEntities(withLimit(10)));
-        datastoreService.put(new Entity("User"));
-        datastoreService.put(new Entity("User"));
-        assertEquals(2, datastoreService.prepare(new Query("User")).countEntities(withLimit(10)));
-    }
-
-    @Test
-    public void testCheckType1() {
-        checkIfDatastoreWorks();
-    }
-
-    @Test
-    public void testCheckType2() {
-        checkIfDatastoreWorks();
     }
 
     @Test
@@ -108,8 +76,8 @@ public class LoginServletTest {
         assertNotNull("Return Json", response.getText());
         assertEquals("Json Loggedin", "false", jsonObject.get("LoggedIn").toString());
 
-        // Can't check for the link to be correct, but we can check that it is not null.
-        assertNotNull("Login URL", jsonObject.get("loginURL").toString());
+        UserService userService = UserServiceFactory.getUserService();
+        assertEquals("Login URL", "\"" + userService.createLoginURL("/") + "\"", jsonObject.get("loginURL".toString()).toString());
     }
 
     @Test
@@ -139,7 +107,8 @@ public class LoginServletTest {
         // them again.
         assertEquals("Email", "\"example@gmail.com\"", jsonObject.get("Email").toString());
 
-        assertNotNull("Log out url", jsonObject.get("logOutURL").toString());
+        UserService userService = UserServiceFactory.getUserService();
+        assertEquals("Log out URL", "\"" + userService.createLogoutURL("/") + "\"", jsonObject.get("logOutURL").toString());
     }
 
     /**
