@@ -3,29 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <title>STEP Capstone</title>
-    <script src="script.js"></script>
+    <script src="signUp.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
   </head>
   <body>
     <h1>Sign Up as a Restaurant!</h1>
-    <div id="sign-up-form">
-      <form action="/restaurant" method="POST">
-        <p>Name:</p>
-        <textarea name="name"></textarea>
+    <div id="sign-up">
+      <p>Name:</p>
+      <textarea id="name"></textarea>
 
-        <p>Cuisine:</p>
-        <textarea name="cuisine"></textarea>
+      <p>Cuisine:</p>
+      <textarea id="cuisine"></textarea>
 
-        <p>Story:</p>
-        <textarea name="story"></textarea>
+      <p>Story:</p>
+      <textarea id="story"></textarea>
 
-        <p>Phone:</p>
-        <textarea name="phone"></textarea>
+      <p>Phone:</p>
+      <textarea id="phone"></textarea>
 
-        <p>Website:</p>
-        <textarea name="website"></textarea>
-        <input type="submit" />
-      </form>
+      <p>Website:</p>
+      <textarea id="website"></textarea>
+      <button type="submit" onclick="sendSignUpInfo()">Submit</button>
     </div>
   </body>
 </html>
