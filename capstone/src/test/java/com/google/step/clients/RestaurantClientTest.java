@@ -32,6 +32,7 @@ import org.junit.runners.JUnit4;
 
 import java.lang.IllegalArgumentException;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /** Test class for the Restaurant.java class */
 @RunWith(JUnit4.class)
@@ -76,26 +77,6 @@ public final class RestaurantClientTest {
     helper.tearDown();
   }
 
-  /** General datastore tests to ensure mock works correctly */
-  // Run this test twice to prove we're not leaking any state across tests
-  public void checkIfDatastoreWorks() {
-    DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
-    assertEquals(0, datastoreService.prepare(new Query("RestaurantInfo")).countEntities(withLimit(10)));
-    datastoreService.put(new Entity("RestaurantInfo"));
-    datastoreService.put(new Entity("RestaurantInfo"));
-    assertEquals(2, datastoreService.prepare(new Query("RestaurantInfo")).countEntities(withLimit(10)));
-  }
-
-  @Test
-  public void testCheckType1() {
-    checkIfDatastoreWorks();
-  }
-
-  @Test
-  public void testCheckType2() {
-    checkIfDatastoreWorks();
-  }
-
   /**
    * Test the getSingleRestaurant method for the RestaurantClient.
    * Insert an entity into the mock Datastore and retrieve it by key.
@@ -112,18 +93,21 @@ public final class RestaurantClientTest {
 
     // Run client method
     RestaurantClient restaurantClient = new RestaurantClient();
-    Restaurant result = restaurantClient.getSingleRestaurant(restaurantKey);
+    Optional<Restaurant> result = restaurantClient.getSingleRestaurant(restaurantKey);
+    Restaurant actual = null;
+    if (result.isPresent()) {
+      actual = result.get();
+    } 
     assertNotNull("No response received", result);
 
     List<String> cuisineList = new ArrayList<>();
     cuisineList.add("Steakhouse");
     cuisineList.add("American");
-    Restaurant expected = new Restaurant("Wildfire", new GeoPt((float) 42.17844, (float) -87.92843),
+    Restaurant expected = new Restaurant(restaurantKey, "Wildfire", new GeoPt((float) 42.17844, (float) -87.92843),
             "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.",
             cuisineList, "(847)279-7900", "https://www.wildfirerestaurant.com", "STRUGGLING");
-    expected.setRestaurantKey(restaurantKey);
 
-    assertEquals(expected, result);
+    assertEquals(expected, actual);
   }
 
   /**
@@ -147,17 +131,15 @@ public final class RestaurantClientTest {
     List<String> cuisineList1 = new ArrayList<>();
     cuisineList1.add("Steakhouse");
     cuisineList1.add("American");
-    Restaurant rest1 = new Restaurant("Wildfire", new GeoPt((float) 42.17844, (float) -87.92843),
+    Restaurant rest1 = new Restaurant(restaurantKey1, "Wildfire", new GeoPt((float) 42.17844, (float) -87.92843),
             "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.",
             cuisineList1, "(847)279-7900", "https://www.wildfirerestaurant.com", "STRUGGLING");
-    rest1.setRestaurantKey(restaurantKey1);
 
     List<String> cuisineList2 = new ArrayList<>();
     cuisineList2.add("Fast food");
     cuisineList2.add("American");
-    Restaurant rest2 = new Restaurant("Burger King", new GeoPt((float) 42.17844, (float) -87.92843),
+    Restaurant rest2 = new Restaurant(restaurantKey2, "Burger King", new GeoPt((float) 42.17844, (float) -87.92843),
             "Fast food burger chain.", cuisineList2, "(847)279-7911", "https://www.burgerking.com", "OKAY");
-    rest2.setRestaurantKey(restaurantKey2);
 
     List<Restaurant> expected = new ArrayList<>();
     expected.add(rest1);
@@ -190,7 +172,7 @@ public final class RestaurantClientTest {
     String website = "https://www.wildfirerestaurant.com";
     String email = "wildfire@gmail.com";
     String status = "STRUGGLING";
-    Restaurant restaurant = new Restaurant(name, location, story, cuisineList1, phone, website, status);
+    Restaurant restaurant = new Restaurant(null, name, location, story, cuisineList1, phone, website, status);
 
     // Run client method
     RestaurantClient restaurantClient = new RestaurantClient();
@@ -198,9 +180,6 @@ public final class RestaurantClientTest {
 
     // Run query for restaurant with this name
     Restaurant actual = getRestaurantForTest(datastoreService, name);
-
-    // Set key for expected restaurant to whatever datastore assigned
-    restaurant.setRestaurantKey(actual.getRestaurantKey());
 
     assertEquals(restaurant, actual);
   }
@@ -249,8 +228,7 @@ public final class RestaurantClientTest {
     String website = (String) entity.getProperty("website");
     String status = (String) entity.getProperty("status");
 
-    Restaurant result = new Restaurant(name, location, story, cuisine, phone, website, status);
-    result.setRestaurantKey(restaurantKey);
+    Restaurant result = new Restaurant(restaurantKey, name, location, story, cuisine, phone, website, status);
 
     // Return Restaurant object holding all info
     return result;

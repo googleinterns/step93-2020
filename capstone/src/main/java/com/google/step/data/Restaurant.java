@@ -16,11 +16,13 @@ package com.google.step.data;
 
 import com.google.appengine.api.datastore.GeoPt;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /** A restaurant to be displayed. */
 public final class Restaurant {
-  private long restaurantKey;
+  private final Long restaurantKey;
   private final String name;
   private final GeoPt location;
   private final String story;
@@ -29,8 +31,9 @@ public final class Restaurant {
   private final String website;
   private final String status;
 
-  public Restaurant(String name, GeoPt location, String story,
+  public Restaurant(Long restaurantKey, String name, GeoPt location, String story,
       List<String> cuisine, String phone, String website, String status) {
+    this.restaurantKey = restaurantKey;
     this.name = name;
     this.location = location;
     this.story = story;
@@ -41,17 +44,10 @@ public final class Restaurant {
   }
 
   /**
-   * @param restaurantKey, the datastore key for this restaurant
-   */
-  public void setRestaurantKey(long restaurantKey) {
-    this.restaurantKey = restaurantKey;
-  }
-
-  /**
    * @return long restaurantKey, unique identifier for the restaurant
    */
-  public long getRestaurantKey() {
-    return this.restaurantKey;
+  public Optional<Long> getRestaurantKey() {
+    return Optional.ofNullable(restaurantKey);
   }
 
   /**
@@ -79,7 +75,7 @@ public final class Restaurant {
    * @return List<String> cuisine, list of cuisines for the restaurant
    */
   public List<String> getCuisine() {
-    return new ArrayList<>(this.cuisine);
+    return Collections.unmodifiableList(cuisine);
   }
 
   /**
@@ -134,8 +130,6 @@ public final class Restaurant {
       if (other.phone != null)
         return false;
     } else if (!phone.equals(other.phone))
-      return false;
-    if (restaurantKey != other.restaurantKey)
       return false;
     if (status == null) {
       if (other.status != null)

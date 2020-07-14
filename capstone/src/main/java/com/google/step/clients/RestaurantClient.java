@@ -9,17 +9,17 @@ import com.google.appengine.api.datastore.Query;
 import com.google.step.data.Restaurant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class RestaurantClient {
   private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   /**
-   * Puts a single entity of any kind into datastore.
+   * Puts a single entity of type RestaurantInfo into datastore.
    * @param restaurant, to be processed into an Entity and put into datastore
-   * @param email, separate from Restaurant class and passed from UserService in the servlet
+   * @param ownerEmail, separate from Restaurant class and passed from UserService in the servlet
    */
-  public void putRestaurant(Restaurant restaurant, String email) {
+  public void putRestaurant(Restaurant restaurant, String ownerEmail) {
     // Retrieve restaurant properties
     String name = restaurant.getName();
     GeoPt location = restaurant.getLocation();
@@ -34,7 +34,7 @@ public class RestaurantClient {
     long id = restaurantInfo.getKey().getId();
     restaurantInfo.setProperty("restaurantKey", id);
     restaurantInfo.setProperty("name", name);
-    restaurantInfo.setProperty("email", email);
+    restaurantInfo.setProperty("email", ownerEmail);
     restaurantInfo.setProperty("location", location);
     restaurantInfo.setProperty("story", story);
     restaurantInfo.setProperty("cuisine", cuisineList);
@@ -51,21 +51,20 @@ public class RestaurantClient {
   /**
    * Queries for a single restaurant in datastore based on restaurantKey.
    * @param restaurantKey, unique key of the restaurant to query for
-   * @return Restaurant, parsed from the datastore properties
-   * @throws NoSuchElementException if no RestaurantInfo entity is found with the requested key
+   * @return Optional<Restaurant>, parsed from the datastore properties or empty if not found
    */
-  public Restaurant getSingleRestaurant(long restaurantKey) {
+  public Optional<Restaurant> getSingleRestaurant(long restaurantKey) {
     Query query = new Query("RestaurantInfo")
                       .setFilter(new Query.FilterPredicate(
                           "restaurantKey", Query.FilterOperator.EQUAL, restaurantKey));
     PreparedQuery results = datastore.prepare(query);
     Entity resultEntity = results.asSingleEntity();
     if (resultEntity == null) {
-      throw new NoSuchElementException("No RestaurantInfo found with key " + restaurantKey);
+      return Optional.empty();
     }
 
     // Return Restaurant object with all info from the Entity
-    return fromEntity(resultEntity);
+    return Optional.of(fromEntity(resultEntity));
   }
 
   /**
@@ -93,7 +92,7 @@ public class RestaurantClient {
    * @return Restaurant, based on properties of the entity
    * @throws IllegalArgumentException if the entity is not of type RestaurantInfo
    */
-  private Restaurant fromEntity(Entity entity) {
+  private static Restaurant fromEntity(Entity entity) {
     if (!entity.getKind().equals("RestaurantInfo")) {
       throw new IllegalArgumentException(
           "Element of type " + entity.getKind() + ", should be RestaurantInfo");
@@ -107,10 +106,7 @@ public class RestaurantClient {
     String website = (String) entity.getProperty("website");
     String status = (String) entity.getProperty("status");
 
-    Restaurant result = new Restaurant(name, location, story, cuisine, phone, website, status);
-    result.setRestaurantKey(restaurantKey);
-
     // Return Restaurant object holding all info
-    return result;
+    return new Restaurant(restaurantKey, name, location, story, cuisine, phone, website, status);
   }
 }

@@ -28,10 +28,10 @@ public class LoginServlet extends HttpServlet {
    * @param response depends on if the user is logged in.
    *                 Sent to the frontend with login information in json format:
    *                 {
-   *                 "LoggedIn": <boolean>,
-   *                 "Email": <string, only specified if loggedIn is true>,
-   *                 "logOutURL": <string, only specified if loggedIn is true>,
-   *                 "loginURL": <string, only specified if loggedIn is false>
+   *                 "LoggedIn": boolean,
+   *                 "Email": string, only specified if loggedIn is true>,
+   *                 "logOutURL": string, only specified if loggedIn is true>,
+   *                 "loginURL": string, only specified if loggedIn is false>
    *                 }
    *
    * @throws IOException

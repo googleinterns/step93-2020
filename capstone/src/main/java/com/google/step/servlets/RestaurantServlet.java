@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -84,7 +85,7 @@ public class RestaurantServlet extends HttpServlet {
     String status = "OKAY";
 
     Restaurant restaurant =
-        new Restaurant(name, geoPoint, story, cuisineList, phone, website, status);
+        new Restaurant(null, name, geoPoint, story, cuisineList, phone, website, status);
 
     restaurantClient.putRestaurant(restaurant, email);
 
@@ -100,35 +101,37 @@ public class RestaurantServlet extends HttpServlet {
    * @param response All details for the requested restaurant, in the following json format:
     {
       "restaurant" : {
-        "restaurantKey": <long>,
-        "name": <String>,
-        "location": <GeoPt>,
-        "story": <String>,
-        "cuisine": <List<String>>,
-        "phone": <String>,
-        "website": <String>,
-        "status": <String>
+        "restaurantKey": long,
+        "name": String,
+        "location": GeoPt,
+        "story": String,
+        "cuisine": List<String>,
+        "phone": String,
+        "website": String,
+        "status": String
       }
     }
    * @param request Specifies restaurant key, in the following format:
-     /restaurant?restaurantKey=<int>
+     /restaurant?restaurantKey=int
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long restaurantKeyParam = Long.parseLong(request.getParameter("restaurantKey"));
 
     // Restaurant object to hold all info
-    Restaurant restaurant = restaurantClient.getSingleRestaurant(restaurantKeyParam);
+    Optional<Restaurant> restaurant = restaurantClient.getSingleRestaurant(restaurantKeyParam);
 
-    // Format restaurant List to JSON for return
-    Gson gson = new Gson();
-    String json = gson.toJson(restaurant);
+    if (restaurant.isPresent()) {
+      // Format restaurant List to JSON for return
+      Gson gson = new Gson();
+      String json = gson.toJson(restaurant);
 
-    // Send the JSON as the response
-    response.setContentType("application/json;");
+      // Send the JSON as the response
+      response.setContentType("application/json;");
 
-    JsonObject ret = new JsonObject();
-    ret.addProperty("restaurant", json);
-    response.getWriter().println(ret);
+      JsonObject ret = new JsonObject();
+      ret.addProperty("restaurant", json);
+      response.getWriter().println(ret);
+    }
   }
 }
