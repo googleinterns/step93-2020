@@ -58,7 +58,8 @@ public class LoginServletTest {
         assertEquals("Json Loggedin", "false", jsonObject.get("LoggedIn").toString());
 
         UserService userService = UserServiceFactory.getUserService();
-        assertEquals("Login URL", "\"" + userService.createLoginURL("/") + "\"", jsonObject.get("LoginURL".toString()).toString());
+        assertEquals("Login URL", "\"" + userService.createLoginURL("/") + "\"",
+                jsonObject.get("LoginURL".toString()).toString());
     }
 
     @Test
@@ -89,7 +90,8 @@ public class LoginServletTest {
         assertEquals("Email", "\"example@gmail.com\"", jsonObject.get("Email").toString());
 
         UserService userService = UserServiceFactory.getUserService();
-        assertEquals("Log out URL", "\"" + userService.createLogoutURL("/") + "\"", jsonObject.get("LogOutURL").toString());
+        assertEquals("Log out URL", "\"" + userService.createLogoutURL("/") + "\"",
+                jsonObject.get("LogOutURL").toString());
     }
 
     /**
@@ -99,7 +101,6 @@ public class LoginServletTest {
      */
     private static JsonObject turnStringToJson(String json) {
         JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
-
         return jsonObject;
     }
 }
