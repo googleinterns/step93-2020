@@ -55,14 +55,14 @@ public class LoginServlet extends HttpServlet {
 
       login.put("LoggedIn", true);
       login.put("Email", userEmail);
-      login.put("logOutURL", logoutURL);
+      login.put("LogOutURL", logoutURL);
     } else {
       String urlToRedirectToAfterUserLogIn = "/";
 
       String loginURL = userService.createLoginURL(urlToRedirectToAfterUserLogIn);
 
       login.put("LoggedIn", false);
-      login.put("loginURL", loginURL);
+      login.put("LoginURL", loginURL);
     }
 
     String json = convertToJsonUsingGson(login);

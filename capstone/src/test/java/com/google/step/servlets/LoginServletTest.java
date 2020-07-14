@@ -33,25 +33,6 @@ public class LoginServletTest {
     }
 
     @Test
-    public void testIsLoggedIn() {
-        // Check if this works to set the user as logged in and not the admin
-        helper.setEnvIsAdmin(false).setEnvIsLoggedIn(true);
-        UserService userService = UserServiceFactory.getUserService();
-        assertTrue(userService.isUserLoggedIn());
-        assertFalse(userService.isUserAdmin());
-    }
-
-    @Test
-    public void testIsNotLoggedIn() {
-        // Check if it works to show the user is not logged in
-        helper.setEnvIsAdmin(false).setEnvIsLoggedIn(false);
-        UserService userService = UserServiceFactory.getUserService();
-        assertFalse(userService.isUserLoggedIn());
-        // Can't also check if the user is an admin because the method will throw an error since the
-        // user is not even logged in.
-    }
-
-    @Test
     public void testDoGetWithoutLogIn() throws IOException, SAXException {
         // Testing doGet method without having the user logged in.
         // Result: {"LoggedIn":"false","loginURL":"someURL"}
@@ -77,7 +58,7 @@ public class LoginServletTest {
         assertEquals("Json Loggedin", "false", jsonObject.get("LoggedIn").toString());
 
         UserService userService = UserServiceFactory.getUserService();
-        assertEquals("Login URL", "\"" + userService.createLoginURL("/") + "\"", jsonObject.get("loginURL".toString()).toString());
+        assertEquals("Login URL", "\"" + userService.createLoginURL("/") + "\"", jsonObject.get("LoginURL".toString()).toString());
     }
 
     @Test
@@ -108,7 +89,7 @@ public class LoginServletTest {
         assertEquals("Email", "\"example@gmail.com\"", jsonObject.get("Email").toString());
 
         UserService userService = UserServiceFactory.getUserService();
-        assertEquals("Log out URL", "\"" + userService.createLogoutURL("/") + "\"", jsonObject.get("logOutURL").toString());
+        assertEquals("Log out URL", "\"" + userService.createLogoutURL("/") + "\"", jsonObject.get("LogOutURL").toString());
     }
 
     /**
@@ -117,7 +98,6 @@ public class LoginServletTest {
      * @return JsonObject corresponding to the string.
      */
     private static JsonObject turnStringToJson(String json) {
-        JsonParser jsonParser = new JsonParser();
         JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
 
         return jsonObject;
