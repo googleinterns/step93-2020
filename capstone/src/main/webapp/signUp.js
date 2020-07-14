@@ -16,18 +16,39 @@
  * Gets the information from the textboxes to send to datastore.
  */
 function sendSignUpInfo() {
-  const name = document.getElementById('name').value;
-  const cuisine = document.getElementById('cuisine').value;
-  const story = document.getElementById('story').value;
-  const phone = document.getElementById('phone').value;
-  const website = document.getElementById('website').value;
+  const name = document.getElementById('new-restaurant-name').value;
+  const cuisine = document.getElementById('new-restaurant-cuisine').value;
+  const story = document.getElementById('new-restaurant-story').value;
+  const phone = document.getElementById('new-restaurant-phone').value;
+  const website = document.getElementById('new-restaurant-website').value;
 
-  const params = new URLSearchParams();
-  params.append('name', name);
-  params.append('cuisine', cuisine);
-  params.append('story', story);
-  params.append('phone', phone);
-  params.append('website', website);
+  // Check if any area doesn't contain any text.
+  if (name == '' || cuisine == '' || story == '' || phone == '' ||
+      website == '') {
+    const pElement = createP('You must fill all text boxes!');
+    const error = document.getElementById('missing-information-error');
+    error.appendChild(pElement);
+  } else {
+    // Build params for POST request.
+    const params = new URLSearchParams();
+    params.append('name', name);
+    params.append('cuisine', cuisine);
+    params.append('story', story);
+    params.append('phone', phone);
+    params.append('website', website);
 
-  fetch('/restaurant', {method: 'POST', body: params});
+    fetch('/restaurant', {method: 'POST', body: params});
+  }
+}
+
+/**
+ * Create a p tag to add text to an area.
+ * @param content that I want to be shown as text.
+ * @return {HTMLParagraphElement} Completed p tag with text.
+ */
+function createP(content) {
+  const pTag = document.createElement('p');
+  const node = document.createTextNode(content);
+  pTag.appendChild(node);
+  return pTag;
 }

@@ -8,21 +8,27 @@
   </head>
   <body>
     <h1>Sign Up as a Restaurant!</h1>
-    <div id="sign-up">
-      <p>Name:</p>
-      <textarea id="name"></textarea>
+    <div id="restaurant-sign-up">
+      <label for="new-restaurant-name">Name: </label>
+      <input type="text" id="new-restaurant-name" />
+      <br />
 
-      <p>Cuisine:</p>
-      <textarea id="cuisine"></textarea>
+      <label for="new-restaurant-cuisine">Cuisine: </label>
+      <textarea id="new-restaurant-cuisine"></textarea>
+      <br />
 
-      <p>Story:</p>
-      <textarea id="story"></textarea>
+      <label for="new-restaurant-story">Story: </label>
+      <textarea id="new-restaurant-story"></textarea>
+      <br />
 
-      <p>Phone:</p>
-      <textarea id="phone"></textarea>
+      <label for="new-restaurant-phone">Phone: </label>
+      <input type="text" id="new-restaurant-phone" />
+      <br />
 
-      <p>Website:</p>
-      <textarea id="website"></textarea>
+      <label for="new-restaurant-website">Website: </label>
+      <input type="text" id="new-restaurant-website" />
+      <br />
+      <div id="missing-information-error"></div>
       <button type="submit" onclick="sendSignUpInfo()">Submit</button>
     </div>
   </body>
