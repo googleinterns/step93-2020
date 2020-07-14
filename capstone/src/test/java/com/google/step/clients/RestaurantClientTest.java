@@ -14,8 +14,7 @@
 
 package com.google.step.clients;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.google.appengine.api.datastore.*;
 import com.google.step.data.Restaurant;
@@ -31,8 +30,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.lang.IllegalArgumentException;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 /** Test class for the Restaurant.java class */
 @RunWith(JUnit4.class)
@@ -49,9 +46,7 @@ public final class RestaurantClientTest {
     // Set random params for two different restaurants
     String name1 = "Wildfire";
     GeoPt location1 = new GeoPt((float) 42.17844, (float) -87.92843);
-    List<String> cuisineList1 = new ArrayList<>();
-    cuisineList1.add("Steakhouse");
-    cuisineList1.add("American");
+    List<String> cuisineList1 = Arrays.asList("Steakhouse", "American");
     String story1 = "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.";
     String phone1 = "(847)279-7900";
     String website1 = "https://www.wildfirerestaurant.com";
@@ -61,9 +56,7 @@ public final class RestaurantClientTest {
 
     String name2 = "Burger King";
     GeoPt location2 = new GeoPt((float) 42.17844, (float) -87.92843);
-    List<String> cuisineList2 = new ArrayList<>();
-    cuisineList2.add("Fast food");
-    cuisineList2.add("American");
+    List<String> cuisineList2 = Arrays.asList("Fast food", "American");
     String story2 = "Fast food burger chain.";
     String phone2 = "(847)279-7911";
     String website2 = "https://www.burgerking.com";
@@ -94,15 +87,10 @@ public final class RestaurantClientTest {
     // Run client method
     RestaurantClient restaurantClient = new RestaurantClient();
     Optional<Restaurant> result = restaurantClient.getSingleRestaurant(restaurantKey);
-    Restaurant actual = null;
-    if (result.isPresent()) {
-      actual = result.get();
-    } 
-    assertNotNull("No response received", result);
+    assertTrue(result.isPresent());
+    Restaurant actual = result.get();
 
-    List<String> cuisineList = new ArrayList<>();
-    cuisineList.add("Steakhouse");
-    cuisineList.add("American");
+    List<String> cuisineList = Arrays.asList("Steakhouse", "American");
     Restaurant expected = new Restaurant(restaurantKey, "Wildfire", new GeoPt((float) 42.17844, (float) -87.92843),
             "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.",
             cuisineList, "(847)279-7900", "https://www.wildfirerestaurant.com", "STRUGGLING");
@@ -128,16 +116,13 @@ public final class RestaurantClientTest {
 
     // Create expected list
     // TODO: make expected list be of RestaurantHeaders.
-    List<String> cuisineList1 = new ArrayList<>();
-    cuisineList1.add("Steakhouse");
-    cuisineList1.add("American");
+
+    List<String> cuisineList1 = Arrays.asList("Steakhouse", "American");
     Restaurant rest1 = new Restaurant(restaurantKey1, "Wildfire", new GeoPt((float) 42.17844, (float) -87.92843),
             "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.",
             cuisineList1, "(847)279-7900", "https://www.wildfirerestaurant.com", "STRUGGLING");
 
-    List<String> cuisineList2 = new ArrayList<>();
-    cuisineList2.add("Fast food");
-    cuisineList2.add("American");
+    List<String> cuisineList2 = Arrays.asList("Fast food", "American");
     Restaurant rest2 = new Restaurant(restaurantKey2, "Burger King", new GeoPt((float) 42.17844, (float) -87.92843),
             "Fast food burger chain.", cuisineList2, "(847)279-7911", "https://www.burgerking.com", "OKAY");
 
@@ -164,9 +149,7 @@ public final class RestaurantClientTest {
     // Set random params for a restaurant
     String name = "Wildfire";
     GeoPt location = new GeoPt((float) 42.17844, (float) -87.92843);
-    List<String> cuisineList1 = new ArrayList<>();
-    cuisineList1.add("Steakhouse");
-    cuisineList1.add("American");
+    List<String> cuisineList1 = Arrays.asList("Steakhouse", "American");
     String story = "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.";
     String phone = "(847)279-7900";
     String website = "https://www.wildfirerestaurant.com";

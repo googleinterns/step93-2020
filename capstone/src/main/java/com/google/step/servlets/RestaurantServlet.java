@@ -133,5 +133,8 @@ public class RestaurantServlet extends HttpServlet {
       ret.addProperty("restaurant", json);
       response.getWriter().println(ret);
     }
+    else {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
+    }
   }
 }

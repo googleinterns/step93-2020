@@ -37,7 +37,7 @@ public final class Restaurant {
     this.name = name;
     this.location = location;
     this.story = story;
-    this.cuisine = cuisine;
+    this.cuisine = Collections.unmodifiableList(cuisine);
     this.phone = phone;
     this.website = website;
     this.status = status;
@@ -75,7 +75,7 @@ public final class Restaurant {
    * @return List<String> cuisine, list of cuisines for the restaurant
    */
   public List<String> getCuisine() {
-    return Collections.unmodifiableList(cuisine);
+    return cuisine;
   }
 
   /**
