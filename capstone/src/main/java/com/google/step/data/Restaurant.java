@@ -160,7 +160,6 @@ public final class Restaurant {
     result = prime * result + ((location == null) ? 0 : location.hashCode());
     result = prime * result + ((name == null) ? 0 : name.hashCode());
     result = prime * result + ((phone == null) ? 0 : phone.hashCode());
-    result = prime * result + (int) (restaurantKey ^ (restaurantKey >>> 32));
     result = prime * result + ((status == null) ? 0 : status.hashCode());
     result = prime * result + ((story == null) ? 0 : story.hashCode());
     result = prime * result + ((website == null) ? 0 : website.hashCode());
