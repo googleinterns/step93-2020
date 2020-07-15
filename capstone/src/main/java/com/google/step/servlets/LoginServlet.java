@@ -7,13 +7,10 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
 import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,21 +22,20 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-
-    /**
-     * Method that get's login information from the front end.
-     * @param request sent from the frontend without any parameters, or headers.
-     * @param response depends on if the user is logged in.
-     *                 Sent to the frontend with login information in json format:
-     *                 {
-     *                 "LoggedIn": <boolean>,
-     *                 "Email": <string, only specified if loggedIn is true>,
-     *                 "logOutURL": <string, only specified if loggedIn is true>,
-     *                 "loginURL": <string, only specified if loggedIn is false>
-     *                 }
-     *
-     * @throws IOException
-     */
+  /**
+   * Method that get's login information from the front end.
+   * @param request sent from the frontend without any parameters, or headers.
+   * @param response depends on if the user is logged in.
+   *                 Sent to the frontend with login information in json format:
+   *                 {
+   *                 "LoggedIn": boolean,
+   *                 "Email": string, only specified if loggedIn is true>,
+   *                 "logOutURL": string, only specified if loggedIn is true>,
+   *                 "loginURL": string, only specified if loggedIn is false>
+   *                 }
+   *
+   * @throws IOException
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
