@@ -13,37 +13,47 @@ import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.step.data.RestaurantHeader;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class ElasticsearchClient {
-  private static final String elasticsearchHostname = "localhost";
-  private static final short port = 9200;
-  private final String elasticsearchUriString = "http://localhost:" + port;
-  private HttpTransport transport;
-  private HttpRequestFactory requestFactory;
-  private final String RESTAURANTS = "restaurants";
-  String uri = "http://10.128.0.2:9200";
+  private static final String elasticsearchHostname = "10.128.0.2";
+  private static final short elasticsearchPort = 9200;
+  private static final String elasticsearchUriString =  elasticsearchHostname + elasticsearchPort;
+
+  private static final String RESTAURANTS = "restaurants";
+
+  private final HttpRequestFactory requestFactory;
 
   Gson gson = new Gson();
 
   ElasticsearchClient(HttpTransport transport) {
-    this.transport = transport;
-    requestFactory = this.transport.createRequestFactory();
+    requestFactory = transport.createRequestFactory();
   }
 
   public ElasticsearchClient() {
     this(new NetHttpTransport());
   }
 
-  public HttpResponse updateRestaurantHeader(RestaurantHeader restaurantHeader) throws IOException {
+  public int updateRestaurantHeader(RestaurantHeader restaurantHeader) throws IOException {
     GenericUrl requestUrl = new GenericUrl(elasticsearchUriString);
-    requestUrl.setPathParts(Arrays.asList("", RESTAURANTS, "_doc", String.valueOf(restaurantHeader.getRestaurantKey())));
+    requestUrl.setPathParts(
+        Arrays.asList("", RESTAURANTS, "_doc", String.valueOf(restaurantHeader.getRestaurantKey())));
     HttpContent putRequestContent = new ByteArrayContent(Json.MEDIA_TYPE,
         gson.toJson(restaurantHeader).getBytes(StandardCharsets.UTF_8));
+
     HttpRequest request = requestFactory.buildPutRequest(requestUrl, putRequestContent);
 
-    return request.execute();
+    int statusCode;
+    try {
+      HttpResponse response = request.execute();
+      statusCode = response.getStatusCode();
+    } catch (IOException e) {
+      statusCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
+    }
+
+    return statusCode;
   }
 
   public static String getElasticsearchHostname() {
@@ -51,6 +61,6 @@ public class ElasticsearchClient {
   }
 
   public static short getElasticsearchPort() {
-    return port;
+    return elasticsearchPort;
   }
 }

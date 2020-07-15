@@ -51,8 +51,8 @@ public class ElasticsearchClientTest {
     };
 
     ElasticsearchClient testClient = new ElasticsearchClient(transport);
-    HttpResponse response = testClient.updateRestaurantHeader(HEADER_1);
-    assertEquals(200, response.getStatusCode());
+    int statusCode = testClient.updateRestaurantHeader(HEADER_1);
+    assertEquals(200, statusCode);
   }
 
 }
