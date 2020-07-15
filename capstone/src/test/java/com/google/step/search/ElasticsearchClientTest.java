@@ -43,7 +43,7 @@ public class ElasticsearchClientTest {
 
 
   @Test
-  public void testAddRestaurantDocumentToSearchIndex() throws IOException {
+  public void testAddRestaurantDocumentToSearchIndex() {
     HttpTransport transport = new MockHttpTransport() {
       @Override
       public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
