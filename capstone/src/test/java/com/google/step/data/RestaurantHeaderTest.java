@@ -45,6 +45,7 @@ public final class RestaurantHeaderTest {
     RestaurantHeader restaurantHeader1 = RestaurantHeader.createHeaderFromRestaurant(RESTAURANT_1);
     RestaurantHeader restaurantHeader2 = RestaurantHeader.createHeaderFromRestaurant(RESTAURANT_1);
 
+
     assertEquals(restaurantHeader1, restaurantHeader2);
   }
 
