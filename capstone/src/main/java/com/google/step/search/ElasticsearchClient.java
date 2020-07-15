@@ -11,6 +11,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.Json;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.step.data.RestaurantHeader;
+import org.apache.http.client.utils.URIBuilder;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -18,9 +19,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class ElasticsearchClient {
+
   private static final String elasticsearchHostname = "10.128.0.2";
   private static final short elasticsearchPort = 9200;
-  private static final String elasticsearchUriString =  elasticsearchHostname + elasticsearchPort;
+  private final String elasticsearchUriString;
 
   private static final String RESTAURANTS = "restaurants";
 
@@ -30,6 +32,12 @@ public class ElasticsearchClient {
 
   ElasticsearchClient(HttpTransport transport) {
     requestFactory = transport.createRequestFactory();
+
+    URIBuilder uriBuilder = new URIBuilder()
+        .setScheme("http")
+        .setHost(elasticsearchHostname)
+        .setPort(elasticsearchPort);
+    elasticsearchUriString = uriBuilder.toString();
   }
 
   public ElasticsearchClient() {
