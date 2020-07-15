@@ -36,18 +36,21 @@ public class ElasticsearchClient {
     this(new NetHttpTransport());
   }
 
-  public int updateRestaurantHeader(RestaurantHeader restaurantHeader) throws IOException {
-    GenericUrl requestUrl = new GenericUrl(elasticsearchUriString);
-    requestUrl.setPathParts(
-        Arrays.asList("", RESTAURANTS, "_doc", String.valueOf(restaurantHeader.getRestaurantKey())));
-    HttpContent putRequestContent = new ByteArrayContent(Json.MEDIA_TYPE,
-        gson.toJson(restaurantHeader).getBytes(StandardCharsets.UTF_8));
+  public int updateRestaurantHeader(RestaurantHeader restaurantHeader) {
+    String restaurantKey = String.valueOf(restaurantHeader.getRestaurantKey());
 
-    HttpRequest request = requestFactory.buildPutRequest(requestUrl, putRequestContent);
+    GenericUrl requestUrl = new GenericUrl(elasticsearchUriString);
+    requestUrl.setPathParts(Arrays.asList("", RESTAURANTS, "_doc", restaurantKey));
+
+    String requestBody = gson.toJson(restaurantHeader);
+    HttpContent putRequestContent = new ByteArrayContent(Json.MEDIA_TYPE,
+        requestBody.getBytes(StandardCharsets.UTF_8));
 
     int statusCode;
     try {
+      HttpRequest request = requestFactory.buildPutRequest(requestUrl, putRequestContent);
       HttpResponse response = request.execute();
+
       statusCode = response.getStatusCode();
     } catch (IOException e) {
       statusCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
