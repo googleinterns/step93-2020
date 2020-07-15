@@ -32,6 +32,10 @@ import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+/**
+ * The {@code ElasticsearchClient} is a class that sends requests to add {@code RestaurantHeaders}
+ * to the "restaurants" index of Elasticsearch.
+ */
 public class ElasticsearchClient {
 
   private static final String elasticsearchHostname = "10.128.0.2";
@@ -58,6 +62,13 @@ public class ElasticsearchClient {
     this(new NetHttpTransport());
   }
 
+  /**
+   * Given a {@code RestaurantHeader}, sends HTTP request to Elasticsearch server to add a document
+   * to the "restaurants" index representing a {@code restaurantHeader}. If the request fails for
+   * reason, an HTTP status code of 500 will be returned.
+   * @param restaurantHeader a {@code RestaurantHeader}
+   * @return integer representing the HTTP status code of the request
+   */
   public int updateRestaurantHeader(RestaurantHeader restaurantHeader) {
     String restaurantKey = String.valueOf(restaurantHeader.getRestaurantKey());
 
