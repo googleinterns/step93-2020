@@ -32,7 +32,7 @@ public final class RestaurantHeader {
   private final GeoPt location;
   private final List<String> cuisine;
 
-  private RestaurantHeader(long restaurantKey,
+  public RestaurantHeader(long restaurantKey,
                            String name,
                            GeoPt location,
                            List<String> cuisine) {
@@ -49,7 +49,7 @@ public final class RestaurantHeader {
    */
   public static RestaurantHeader createRestaurantHeader(Restaurant restaurant) {
     return new RestaurantHeader(
-        restaurant.getRestaurantKey(),
+        restaurant.getRestaurantKey().orElse(0L),
         restaurant.getName(),
         restaurant.getLocation(),
         restaurant.getCuisine());
