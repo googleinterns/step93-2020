@@ -14,25 +14,18 @@
 
 package com.google.step.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.GeoPt;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.step.clients.RestaurantClient;
+import com.google.step.data.Restaurant;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import com.google.step.data.Restaurant;
-
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,9 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for sending/getting a restaurant to/from Datastore. */
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
-
-
-  private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private RestaurantClient restaurantClient = new RestaurantClient();
 
   /**
    * Will put the information gathered from the signup page and add the
@@ -70,7 +61,6 @@ public class RestaurantServlet extends HttpServlet {
       return;
     }
 
-    String id = userService.getCurrentUser().getUserId();
     String email = userService.getCurrentUser().getEmail();
 
     String name = request.getParameter("name");
@@ -91,21 +81,13 @@ public class RestaurantServlet extends HttpServlet {
     // Hard coded while we don't have Maps API functionality
     GeoPt geoPoint = new GeoPt((float) 42.23422, (float) -87.234987);
 
-    Entity restaurantInfo = new Entity("RestaurantInfo", id);
-    restaurantInfo.setProperty("restaurantKey", id);
-    restaurantInfo.setProperty("name", name);
-    restaurantInfo.setProperty("email", email);
-    restaurantInfo.setProperty("location", geoPoint);
-    restaurantInfo.setProperty("story", story);
-    restaurantInfo.setProperty("cuisine", cuisineList);
-    restaurantInfo.setProperty("phone", phone);
-    restaurantInfo.setProperty("website", website);
+    // The following value is hardcoded while we implement the properties.
+    String status = "OKAY";
 
-    // Both of the following values are hardcoded while we implement the properties.
-    restaurantInfo.setProperty("score", 2.5);
-    restaurantInfo.setProperty("status", "OKAY");
+    Restaurant restaurant =
+        new Restaurant(null, name, geoPoint, story, cuisineList, phone, website, status);
 
-    datastore.put(restaurantInfo);
+    restaurantClient.putRestaurant(restaurant, email);
 
     response.sendRedirect("/index.html");
   }
@@ -119,45 +101,40 @@ public class RestaurantServlet extends HttpServlet {
    * @param response All details for the requested restaurant, in the following json format:
     {
       "restaurant" : {
-        "restaurantKey": <long>,
-        "name": <String>,
-        "location": <GeoPt>,
-        "story": <String>,
-        "cuisine": <List<String>>,
-        "phone": <String>,
-        "website": <String>,
-        "status": <String>
+        "restaurantKey": long,
+        "name": String,
+        "location": GeoPt,
+        "story": String,
+        "cuisine": List<String>,
+        "phone": String,
+        "website": String,
+        "status": String
       }
     }
    * @param request Specifies restaurant key, in the following format:
-     /restaurant?restaurantKey=<int>
-   * @throws SC_NOT_FOUND if no restaurant with the requested key is found in Datastore.
+     /restaurant?restaurantKey=int
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Long restaurantKeyParam = Long.parseLong(request.getParameter("restaurantKey"));
-    Query query = new Query("RestaurantInfo")
-                      .setFilter(new Query.FilterPredicate(
-                          "restaurantKey", Query.FilterOperator.EQUAL, restaurantKeyParam));
-    PreparedQuery results = datastore.prepare(query);
-    Entity resultEntity = results.asSingleEntity();
-    if (resultEntity == null) {
-      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-      return;
-    }
+    long restaurantKeyParam = Long.parseLong(request.getParameter("restaurantKey"));
 
     // Restaurant object to hold all info
-    Restaurant restaurant = Restaurant.fromEntity(resultEntity);
+    Optional<Restaurant> restaurant = restaurantClient.getSingleRestaurant(restaurantKeyParam);
 
-    // Format restaurant List to JSON for return
-    Gson gson = new Gson();
-    String json = gson.toJson(restaurant);
+    if (restaurant.isPresent()) {
+      // Format restaurant List to JSON for return
+      Gson gson = new Gson();
+      String json = gson.toJson(restaurant);
 
-    // Send the JSON as the response
-    response.setContentType("application/json;");
+      // Send the JSON as the response
+      response.setContentType("application/json;");
 
-    JsonObject ret = new JsonObject();
-    ret.addProperty("restaurant", json);
-    response.getWriter().println(ret);
+      JsonObject ret = new JsonObject();
+      ret.addProperty("restaurant", json);
+      response.getWriter().println(ret);
+    }
+    else {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
+    }
   }
 }
