@@ -47,7 +47,7 @@ public final class RestaurantHeader {
    * @param restaurant The {@code Restaurant} from which the header information would come
    * @return A newly created RestaurantHeader object
    */
-  public static RestaurantHeader createRestaurantHeader(Restaurant restaurant) {
+  public static RestaurantHeader createHeaderFromRestaurant(Restaurant restaurant) {
     return new RestaurantHeader(
         restaurant.getRestaurantKey().orElse(0L),
         restaurant.getName(),
