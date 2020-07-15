@@ -183,4 +183,5 @@ public class RestaurantServletTest {
         // This getResponse should throw an exception because the user is not logged in.
         sc.getResponse(request);
     }
+
 }
