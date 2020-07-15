@@ -88,8 +88,6 @@ public class RestaurantServlet extends HttpServlet {
         new Restaurant(null, name, geoPoint, story, cuisineList, phone, website, status);
 
     restaurantClient.putRestaurant(restaurant, email);
-
-    response.sendRedirect("/index.html");
   }
 
   private String changeNonNumericCharacters(String num) {
