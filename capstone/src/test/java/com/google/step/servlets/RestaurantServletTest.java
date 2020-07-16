@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import com.google.appengine.api.datastore.*;
 
+import com.google.step.clients.RestaurantClient;
 import com.meterware.httpunit.*;
 import com.meterware.servletunit.ServletRunner;
 
@@ -19,7 +20,12 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONObject;
+
+import static org.mockito.Mockito.*;
 
 public class RestaurantServletTest {
     private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -46,27 +52,26 @@ public class RestaurantServletTest {
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
 
         // Create dummy RestaurantInfo entity and add it to the mock Datastore
+        long restaurantKey = 4;
+        String name =  "Wildfire";
+        String story = "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.";
+        List<String> cuisineList = Arrays.asList("Steakhouse", "American");
+        String phone = "8472797900";
+        String website = "https://www.wildfirerestaurant.com";
+        long score = (long)1.1;
+        String status = "STRUGGLING";
+        GeoPt location = new GeoPt((float) 42.17844, (float) -87.92843);
         Entity restaurantInfo1 = new Entity("RestaurantInfo");
-        restaurantInfo1.setProperty("restaurantKey", 4);
-        restaurantInfo1.setProperty("name", "Wildfire");
-        restaurantInfo1.setProperty("location", new GeoPt((float) 42.17844, (float) -87.92843));
-        restaurantInfo1.setProperty(
-                "story", "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.");
-        List<String> cuisineList1 = Arrays.asList("Steakhouse", "American");
-        restaurantInfo1.setProperty("cuisine", cuisineList1);
-        restaurantInfo1.setProperty("phone", "(847)279-7900");
-        restaurantInfo1.setProperty("website",
-                "https://www.wildfirerestaurant.com");
-        restaurantInfo1.setProperty("score", 1.1);
-        restaurantInfo1.setProperty("status", "STRUGGLING");
+        restaurantInfo1.setProperty("restaurantKey", restaurantKey);
+        restaurantInfo1.setProperty("name", name);
+        restaurantInfo1.setProperty("location", location);
+        restaurantInfo1.setProperty("story", story);
+        restaurantInfo1.setProperty("cuisine", cuisineList);
+        restaurantInfo1.setProperty("phone", phone);
+        restaurantInfo1.setProperty("website", website);
+        restaurantInfo1.setProperty("score", score);
+        restaurantInfo1.setProperty("status", status);
         datastoreService.put(restaurantInfo1);
-
-        // Set expected JSON response based on props
-        String expected = "{\"restaurant\":\"{\\\"value\\\":{\\\"restaurantKey\\\":4,\\\"name\\\":\\\"Wildfire\\\"," +
-                "\\\"location\\\":{\\\"latitude\\\":42.17844,\\\"longitude\\\":-87.92843},\\\"story\\\":\\\"" +
-                "Swanky American chain serving steak, chops \\\\u0026 seafood, plus burgers, sides \\\\u0026 cocktails.\\\"," +
-                "\\\"cuisine\\\":[\\\"Steakhouse\\\",\\\"American\\\"],\\\"phone\\\":\\\"(847)279-7900\\\",\\\"website\\\":\\\"" +
-                "https://www.wildfirerestaurant.com\\\",\\\"status\\\":\\\"STRUGGLING\\\"}}\"}\n";
 
         // Create a client to run the servlet
         ServletRunner sr = new ServletRunner();
@@ -78,9 +83,21 @@ public class RestaurantServletTest {
         WebResponse response = sc.getResponse(request);
         assertNotNull("No response received", response);
         assertEquals("content type", "application/json", response.getContentType());
-        String actual = response.getText();
+        String responseText = response.getText();
 
-        assertEquals(expected, actual);
+        JSONObject restaurantObject = new JSONObject(responseText).getJSONObject("value");
+
+        assertEquals(restaurantKey, ((Integer)restaurantObject.get("restaurantKey")).longValue());
+        assertEquals(name, restaurantObject.get("name"));
+        assertEquals(location.getLatitude(), ((Double)restaurantObject.getJSONObject("location").get("latitude")).floatValue(), 0);
+        assertEquals(location.getLongitude(), ((Double)restaurantObject.getJSONObject("location").get("longitude")).floatValue(), 0);
+        assertEquals(story, restaurantObject.get("story"));
+        for (int i = 0; i < cuisineList.size(); i++) {
+            assertEquals(cuisineList.get(i), restaurantObject.getJSONArray("cuisine").get(i));
+        }
+        assertEquals(phone, restaurantObject.get("phone"));
+        assertEquals(website, restaurantObject.get("website"));
+        assertEquals(status, restaurantObject.get("status"));
     }
 
     /**
@@ -180,7 +197,7 @@ public class RestaurantServletTest {
         request.setParameter("phone", phone);
         request.setParameter("website", website);
 
-        // This getResponse should throw an exception because the user is not logged in.
+        // This getResponse should cause a failing status because the user is not logged in.
         sc.getResponse(request);
     }
 

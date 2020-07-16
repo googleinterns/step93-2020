@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +36,13 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for sending/getting a restaurant to/from Datastore. */
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
+  public void init(ServletConfig servletconfig) throws ServletException {
+    super.init(servletconfig);
+    if (servletconfig.getInitParameter("client") != null) {
+      System.out.println("boop");
+      System.out.println(servletconfig.getInitParameter("client").getClass());
+    }
+  }
   private RestaurantClient restaurantClient = new RestaurantClient();
 
   /**
@@ -127,9 +136,9 @@ public class RestaurantServlet extends HttpServlet {
       // Send the JSON as the response
       response.setContentType("application/json;");
 
-      JsonObject ret = new JsonObject();
-      ret.addProperty("restaurant", json);
-      response.getWriter().println(ret);
+      //JsonObject ret = new JsonObject();
+      //ret.addProperty("restaurant", json);
+      response.getWriter().println(json);
     }
     else {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);

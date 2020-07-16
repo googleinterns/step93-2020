@@ -49,7 +49,7 @@ public final class RestaurantHeader {
    */
   public static RestaurantHeader createRestaurantHeader(Restaurant restaurant) {
     return new RestaurantHeader(
-        restaurant.getRestaurantKey(),
+        restaurant.getRestaurantKey().get(),
         restaurant.getName(),
         restaurant.getLocation(),
         restaurant.getCuisine());
