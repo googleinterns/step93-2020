@@ -88,12 +88,6 @@
       <artifactId>mockito-core</artifactId>
       <version>3.4.0</version>
     </dependency>
-
-    <dependency>
-      <groupId>com.google.http-client</groupId>
-      <artifactId>google-http-client-gson</artifactId>
-      <version>1.36.0</version>
-    </dependency>
   </dependencies>
 
   <build>
