@@ -128,9 +128,6 @@ public class RestaurantServlet extends HttpServlet {
 
       // Send the JSON as the response
       response.setContentType("application/json;");
-
-      //JsonObject ret = new JsonObject();
-      //ret.addProperty("restaurant", json);
       response.getWriter().println(json);
     }
     else {
