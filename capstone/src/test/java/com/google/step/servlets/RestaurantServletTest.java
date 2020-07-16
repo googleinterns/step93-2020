@@ -25,8 +25,6 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import static org.mockito.Mockito.*;
-
 public class RestaurantServletTest {
     private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 

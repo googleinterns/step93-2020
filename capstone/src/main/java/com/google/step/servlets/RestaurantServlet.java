@@ -36,13 +36,6 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for sending/getting a restaurant to/from Datastore. */
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
-  public void init(ServletConfig servletconfig) throws ServletException {
-    super.init(servletconfig);
-    if (servletconfig.getInitParameter("client") != null) {
-      System.out.println("boop");
-      System.out.println(servletconfig.getInitParameter("client").getClass());
-    }
-  }
   private RestaurantClient restaurantClient = new RestaurantClient();
 
   /**
