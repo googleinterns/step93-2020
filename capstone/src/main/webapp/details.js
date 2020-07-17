@@ -118,10 +118,11 @@ function appendCuisineTag(cuisineName) {
  * @return {Promise<void>}
  */
 async function updatePageViews(restaurantKey, restaurantName) {
-  const params = 'restaurantKey=' + restaurantKey + '&restaurantName=' + restaurantName;
+  const params =
+      'restaurantKey=' + restaurantKey + '&restaurantName=' + restaurantName;
   await fetch('/page-view', {
     method: 'post',
     body: params,
-    headers: {'content-type': 'application/x-www-form-urlencoded'}
+    headers: {'content-type': 'application/x-www-form-urlencoded'},
   });
 }

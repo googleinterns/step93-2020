@@ -16,9 +16,9 @@
  * Gets the page view data using the PageViewServlet.
  */
 async function getPageViewData() {
-    // Fetch data from servlet
-    const responsePath = '/page-view';
-    const response = await fetch(responsePath);
-    const resp = await response.json();
-    return resp.value;
+  // Fetch data from servlet
+  const responsePath = '/page-view';
+  const response = await fetch(responsePath);
+  const resp = await response.json();
+  return resp.value;
 }
