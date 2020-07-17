@@ -37,14 +37,11 @@ import java.util.Arrays;
  * to the "restaurants" index of Elasticsearch.
  */
 public class ElasticsearchClient {
-
-  private final String elasticsearchUriString;
-
   private static final String RESTAURANTS = "restaurants";
 
+  private final String elasticsearchUriString;
   private final HttpRequestFactory requestFactory;
-
-  Gson gson = new Gson();
+  private final Gson gson = new Gson();
 
   ElasticsearchClient(HttpTransport transport, String hostname, short port) {
     requestFactory = transport.createRequestFactory();
