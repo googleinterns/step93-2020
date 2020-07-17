@@ -256,7 +256,7 @@ public class MetricsClientTests {
         // Later year and week.
         // Result:
         //          {
-        //              "year": 2009
+        //              "year": 2009,
         //              "week": 15
         //          }
         metricsClient.checkEarlierDate(map, 16, 2010);
@@ -266,7 +266,7 @@ public class MetricsClientTests {
         // Later year but earlier week.
         // Result:
         //          {
-        //              "year": 2009
+        //              "year": 2009,
         //              "week": 15
         //          }
         metricsClient.checkEarlierDate(map, 9, 2011);
@@ -276,7 +276,7 @@ public class MetricsClientTests {
         // Earlier week but later year.
         // Result:
         //          {
-        //              "year": 2008
+        //              "year": 2008,
         //              "week": 42
         //          }
         metricsClient.checkEarlierDate(map, 42, 2008);
@@ -290,21 +290,21 @@ public class MetricsClientTests {
         /* Result:
          *          [
          *              {
-         *                  "restaurantName": McDonalds
-         *                  "week": 15
-         *                  "year": 2019
-         *                  "numClicks": 100<int>
-         *              },
-         *              {
-         *                  "restaurantName": Marlows
-         *                  "week": 15
-         *                  "year": 2019
+         *                  "restaurantName": "McDonalds",
+         *                  "week": 15,
+         *                  "year": 2019,
          *                  "numClicks": 100
          *              },
          *              {
-         *                  "restaurantName": Marlows
-         *                  "week": 20
-         *                  "year": 2019
+         *                  "restaurantName": "Marlows",
+         *                  "week": 15,
+         *                  "year": 2019,
+         *                  "numClicks": 100
+         *              },
+         *              {
+         *                  "restaurantName": "Marlows",
+         *                  "week": 20,
+         *                  "year": 2019,
          *                  "numClicks": 100
          *              },
          *          ]
