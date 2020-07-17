@@ -14,15 +14,9 @@
 
 package com.google.step.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.GeoPt;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.step.clients.RestaurantClient;
 import com.google.step.data.Restaurant;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for getting restaurants from Datastore. */
 @WebServlet("/restaurants")
 public class RestaurantsServlet extends HttpServlet {
-  private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private RestaurantClient restaurantClient = new RestaurantClient();
+
   /**
    * Returns a list of RestaurantHeaders, with a snapshot of restaurant details.
    * @param response A list of restaurant details, in the following json format:
@@ -55,15 +50,7 @@ public class RestaurantsServlet extends HttpServlet {
   // TODO: Change this to be connected to search functionality.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query("RestaurantInfo");
-    PreparedQuery results = datastore.prepare(query);
-
-    List<Restaurant> restaurants = new ArrayList<>();
-    for (Entity entity : results.asIterable()) {
-      // Restaurant object to hold all info
-      Restaurant restaurant = Restaurant.fromEntity(entity);
-      restaurants.add(restaurant);
-    }
+    List<Restaurant> restaurants = restaurantClient.getRestaurantsNoFilter();
 
     // Format restaurant List to JSON for return
     Gson gson = new Gson();
