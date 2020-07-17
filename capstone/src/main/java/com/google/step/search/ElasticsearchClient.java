@@ -102,6 +102,27 @@ public class ElasticsearchClient {
 
     return requestFactory.buildRequest(requestMethod, requestUrl, requestContent);
   }
+
+  public List<RestaurantHeader> queryRestaurantHeaders(String query) throws IOException {
+    List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
+
+    String requestBody = new JSONObject()
+        .put("query", new JSONObject()
+            .put("multi_match", new JSONObject()
+                .put("query", query)
+                .put("fields", new JSONArray(Arrays.asList("name", "cuisine")))))
+        .toString();
+
+    HttpRequest request = buildElasticsearchHttpRequest("POST", requestPath, requestBody);
+    HttpResponse response = request.execute();
+
+    if (!response.isSuccessStatusCode()) {
+      throw new IOException("IO error!");
+    }
+
+    return convertElasticsearchResponseBodyToHeaders(response);
+  }
+
   public static String getElasticsearchHostname() {
     return elasticsearchHostname;
   }
