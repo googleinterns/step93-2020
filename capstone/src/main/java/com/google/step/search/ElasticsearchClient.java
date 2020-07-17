@@ -123,8 +123,22 @@ public class ElasticsearchClient {
     return convertElasticsearchResponseBodyToHeaders(response);
   }
 
-  public static String getElasticsearchHostname() {
-    return elasticsearchHostname;
+  public List<RestaurantHeader> getRandomRestaurants() throws IOException {
+    List<String> requestPath = Arrays.asList("", "_search");
+
+    String requestBody = new JSONObject()
+        .put("query", new JSONObject()
+            .put("match_all", new JSONObject()))
+        .toString();
+
+    HttpRequest request = buildElasticsearchHttpRequest("POST", requestPath, requestBody);
+    HttpResponse response = request.execute();
+
+    if (!response.isSuccessStatusCode()) {
+      throw new IOException("IO Error!");
+    }
+
+    return convertElasticsearchResponseBodyToHeaders(response);
   }
 
   private List<RestaurantHeader> convertElasticsearchResponseBodyToHeaders(HttpResponse response) throws IOException {
@@ -145,11 +159,10 @@ public class ElasticsearchClient {
     return headers;
   }
 
-
-
   public static String getElasticsearchHostname() {
     return elasticsearchHostname;
   }
+
   public static short getElasticsearchPort() {
     return elasticsearchPort;
   }
