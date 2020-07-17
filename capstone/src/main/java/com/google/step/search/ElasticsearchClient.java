@@ -24,6 +24,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.Json;
 import com.google.appengine.repackaged.com.google.gson.Gson;
+import com.google.common.base.Charsets;
 import com.google.step.data.RestaurantHeader;
 import org.apache.http.client.utils.URIBuilder;
 
@@ -31,6 +32,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * The {@code ElasticsearchClient} is a class that sends requests to add {@code RestaurantHeaders}
@@ -45,8 +47,7 @@ public class ElasticsearchClient {
   private static final String RESTAURANTS = "restaurants";
 
   private final HttpRequestFactory requestFactory;
-
-  Gson gson = new Gson();
+  private final Gson gson = new Gson();
 
   ElasticsearchClient(HttpTransport transport) {
     requestFactory = transport.createRequestFactory();
@@ -71,17 +72,13 @@ public class ElasticsearchClient {
    */
   public int updateRestaurantHeader(RestaurantHeader restaurantHeader) {
     String restaurantKey = String.valueOf(restaurantHeader.getRestaurantKey());
-
-    GenericUrl requestUrl = new GenericUrl(elasticsearchUriString);
-    requestUrl.setPathParts(Arrays.asList("", RESTAURANTS, "_doc", restaurantKey));
+    List<String> requestPath = Arrays.asList("", RESTAURANTS, "_doc", restaurantKey);
 
     String requestBody = gson.toJson(restaurantHeader);
-    HttpContent putRequestContent = new ByteArrayContent(Json.MEDIA_TYPE,
-        requestBody.getBytes(StandardCharsets.UTF_8));
 
     int statusCode;
     try {
-      HttpRequest request = requestFactory.buildPutRequest(requestUrl, putRequestContent);
+      HttpRequest request = buildElasticsearchHttpRequest("PUT", requestPath, requestBody);
       HttpResponse response = request.execute();
 
       statusCode = response.getStatusCode();
@@ -92,6 +89,15 @@ public class ElasticsearchClient {
     return statusCode;
   }
 
+  private HttpRequest buildElasticsearchHttpRequest(String requestMethod, List<String> urlPath, String requestBody) throws IOException {
+    GenericUrl requestUrl = new GenericUrl(elasticsearchUriString);
+    requestUrl.setPathParts(urlPath);
+
+    HttpContent requestContent = new ByteArrayContent(Json.MEDIA_TYPE,
+        requestBody.getBytes(Charsets.UTF_8));
+
+    return requestFactory.buildRequest(requestMethod, requestUrl, requestContent);
+  }
   public static String getElasticsearchHostname() {
     return elasticsearchHostname;
   }
