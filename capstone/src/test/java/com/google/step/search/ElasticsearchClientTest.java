@@ -22,11 +22,15 @@ import com.google.api.client.testing.http.MockLowLevelHttpRequest;
 import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.step.data.RestaurantHeader;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -66,6 +70,52 @@ public class ElasticsearchClientTest {
     ElasticsearchClient testClient = new ElasticsearchClient(transport);
     int statusCode = testClient.updateRestaurantHeader(HEADER_1);
     assertEquals(200, statusCode);
+  }
+
+  @Test
+  public void testQueryRestaurants() throws IOException {
+    HttpTransport transport = new MockHttpTransport() {
+      @Override
+      public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
+        assertTrue(method.equalsIgnoreCase("POST"));
+
+        URL urlFromString = new URL(url);
+        assertEquals(urlFromString.getHost(), ElasticsearchClient.getElasticsearchHostname());
+        assertEquals(urlFromString.getPort(), ElasticsearchClient.getElasticsearchPort());
+        assertEquals("/restaurants/_search", urlFromString.getPath());
+
+        return new MockLowLevelHttpRequest() {
+          @Override
+          public LowLevelHttpResponse execute() throws IOException {
+
+            String expectedQueryBody = new JSONObject()
+                .put("query", new JSONObject()
+                    .put("multi_match", new JSONObject()
+                        .put("query", "goog")
+                        .put("fields", new JSONArray(Arrays.asList("name", "cuisine")))))
+                .toString();
+
+            String queryRequestBody = getContentAsString();
+
+            assertEquals(expectedQueryBody, queryRequestBody);
+
+            String stringContent = new JSONObject()
+                .put("hits", new JSONObject()
+                    .put("hits", new JSONArray()
+                        .put(new JSONObject()
+                            .put("_source", new JSONObject(HEADER_1)))))
+                .toString();
+            MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
+            response.setContent(stringContent);
+            return response;
+          }
+        };
+      }
+    };
+
+    ElasticsearchClient esClient = new ElasticsearchClient(transport);
+    List<RestaurantHeader> queryResult = esClient.queryRestaurantHeaders("goog");
+    assertEquals(Collections.singletonList(HEADER_1), queryResult);
   }
 
 }
