@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>STEP Capstone</title>
+    <script src="signUp.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  </head>
+  <body>
+    <h1>Sign Up as a Restaurant!</h1>
+    <div id="restaurant-sign-up">
+      <label for="new-restaurant-name">Name: </label>
+      <input type="text" id="new-restaurant-name" />
+      <br />
+
+      <label for="new-restaurant-cuisine">Cuisine: </label>
+      <textarea id="new-restaurant-cuisine"></textarea>
+      <br />
+
+      <label for="new-restaurant-story">Story: </label>
+      <textarea id="new-restaurant-story"></textarea>
+      <br />
+
+      <label for="new-restaurant-phone">Phone: </label>
+      <input type="text" id="new-restaurant-phone" />
+      <br />
+
+      <label for="new-restaurant-website">Website: </label>
+      <input type="text" id="new-restaurant-website" />
+      <br />
+      <div id="missing-information-error"></div>
+      <button type="submit" onclick="sendSignUpInfo()">Submit</button>
+    </div>
+  </body>
+</html>
