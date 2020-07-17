@@ -53,16 +53,16 @@ public class LoginServlet extends HttpServlet {
       String urlToRedirectToAfterUserLogsOut = "/";
       String logoutURL = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
 
-      login.put("LoggedIn", true);
-      login.put("Email", userEmail);
-      login.put("LogOutURL", logoutURL);
+      login.put("loggedIn", true);
+      login.put("email", userEmail);
+      login.put("logOutURL", logoutURL);
     } else {
       String urlToRedirectToAfterUserLogIn = "/";
 
       String loginURL = userService.createLoginURL(urlToRedirectToAfterUserLogIn);
 
-      login.put("LoggedIn", false);
-      login.put("LoginURL", loginURL);
+      login.put("loggedIn", false);
+      login.put("loginURL", loginURL);
     }
 
     String json = convertToJsonUsingGson(login);
