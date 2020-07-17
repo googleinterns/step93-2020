@@ -20,7 +20,7 @@ import com.google.appengine.api.datastore.Query.CompositeFilter;
 import java.util.*;
 
 /**
- * This client is in charge of interacting with the servlet and the metrics entities.
+ * This client is in charge of interacting with metricsServlet and the metrics entities.
  */
 public class MetricsClient {
 
@@ -29,10 +29,10 @@ public class MetricsClient {
      */
     public MetricsClient() {}
 
-    DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
+    private static DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
 
     /**
-     * Gets the current week's page views by specifying a restaurantKey.
+     * Gets the current week's page views for one restaurant by specifying a restaurantKey.
      * @param restaurantKey restaurant key of the restaurant we want to get views.
      * @param restaurantName restaurant name in case no entity exists for this week's page views.
      * @return returns a Map<String, Object> of the form:
@@ -161,8 +161,9 @@ public class MetricsClient {
         Map<String, Object> resultMap = new HashMap<>();
 
         Map<String, Integer> firstPageView = new HashMap<>();
-        firstPageView.put("year", 0);
-        firstPageView.put("week", 0);
+        // Initialized with max value so any date will change the map at the beginning.
+        firstPageView.put("year", Integer.MAX_VALUE);
+        firstPageView.put("week", Integer.MAX_VALUE);
 
         List<Map<String, Object>> clickData = populateClickData(results, firstPageView);
 
@@ -225,11 +226,7 @@ public class MetricsClient {
      *          }
      */
     protected Map<String, Integer> checkEarlierDate(Map<String, Integer> currentDates, Integer week, Integer year) {
-        if (currentDates.get("year") == 0 && currentDates.get("week") == 0) {
-            // If the year and week are 0.
-            currentDates.put("year", year);
-            currentDates.put("week", week);
-        } else if (currentDates.get("year") > year) {
+        if (currentDates.get("year") > year) {
             // If the year in the map is bigger than the one in the entity.
             currentDates.put("year", year);
             currentDates.put("week", week);

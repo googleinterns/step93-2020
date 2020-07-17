@@ -224,25 +224,13 @@ public class MetricsClientTests {
 
     @Test
     public void testCheckBeginningDate() {
-        // Checks the map is being updates correctly when the year and week have only been initialized.
+        // Checks the map is being updated correctly when the year and week have only been initialized.
         // Result: {"year": 1, "week": 1}
         Map<String, Integer> map = new HashMap<>();
-        map.put("year", 0);
-        map.put("week", 0);
+        map.put("year", Integer.MAX_VALUE);
+        map.put("week", Integer.MAX_VALUE);
         metricsClient.checkEarlierDate(map, 1, 1);
         Assert.assertEquals("Year", "1", map.get("year").toString());
-        Assert.assertEquals("Week", "1", map.get("week").toString());
-    }
-
-    @Test
-    public void testCheckSameYearDifferentWeek() {
-        // Checks if it updates correctly having the same year (as in the map)
-        // but a different week for comparison.
-        Map<String, Integer> map = new HashMap<>();
-        map.put("year", 0);
-        map.put("week", 0);
-        metricsClient.checkEarlierDate(map, 1, 0);
-        Assert.assertEquals("Year", "0", map.get("year").toString());
         Assert.assertEquals("Week", "1", map.get("week").toString());
     }
 
@@ -273,7 +261,7 @@ public class MetricsClientTests {
         Assert.assertEquals("Year", "2009", map.get("year").toString());
         Assert.assertEquals("Week", "15", map.get("week").toString());
 
-        // Earlier week but later year.
+        // Earlier year but later week.
         // Result:
         //          {
         //              "year": 2008,
