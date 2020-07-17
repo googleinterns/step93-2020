@@ -25,12 +25,16 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.Json;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
 import com.google.step.data.RestaurantHeader;
 import org.apache.http.client.utils.URIBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -102,6 +106,29 @@ public class ElasticsearchClient {
     return elasticsearchHostname;
   }
 
+  private List<RestaurantHeader> convertElasticsearchResponseBodyToHeaders(HttpResponse response) throws IOException {
+    String responseString = CharStreams.toString(new InputStreamReader(response.getContent()));
+
+    JSONObject responseJson = new JSONObject(responseString);
+
+    List<RestaurantHeader> headers = new ArrayList<>();
+    JSONArray elasticsearchMatches = responseJson.getJSONObject("hits").getJSONArray("hits");
+
+    for (int i = 0; i < elasticsearchMatches.length(); i ++) {
+      JSONObject matchJson = elasticsearchMatches.getJSONObject(i);
+      JSONObject source = matchJson.getJSONObject("_source");
+      RestaurantHeader header = gson.fromJson(source.toString(), RestaurantHeader.class);
+      headers.add(header);
+    }
+
+    return headers;
+  }
+
+
+
+  public static String getElasticsearchHostname() {
+    return elasticsearchHostname;
+  }
   public static short getElasticsearchPort() {
     return elasticsearchPort;
   }
