@@ -23,15 +23,15 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
   /**
-   * Method that get's login information from the front end.
+   * Method that gets login information from the front end.
    * @param request sent from the frontend without any parameters, or headers.
    * @param response depends on if the user is logged in.
    *                 Sent to the frontend with login information in json format:
    *                 {
-   *                 "LoggedIn": boolean,
-   *                 "Email": string, only specified if loggedIn is true>,
-   *                 "logOutURL": string, only specified if loggedIn is true>,
-   *                 "loginURL": string, only specified if loggedIn is false>
+   *                 "LoggedIn": <boolean>,
+   *                 "Email": <string, only specified if loggedIn is true>,
+   *                 "logOutURL": <string, only specified if loggedIn is true>,
+   *                 "loginURL": <string, only specified if loggedIn is false>
    *                 }
    *
    * @throws IOException
