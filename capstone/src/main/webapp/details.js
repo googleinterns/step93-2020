@@ -50,10 +50,10 @@ async function setRestaurantDetails() {
         appendCuisineTag(currRestaurant.cuisine[i]);
       }
     }
+  }
 
     // Update page views for this restaurant
     await updatePageViews(restaurantKey);
-  }
 }
 
 /**
@@ -125,3 +125,4 @@ async function updatePageViews(restaurantKey) {
     headers: {'content-type': 'application/x-www-form-urlencoded'},
   });
 }
+
