@@ -17,9 +17,7 @@ package com.google.step.search;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
-import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.Json;
@@ -28,7 +26,6 @@ import com.google.step.data.RestaurantHeader;
 import org.apache.http.client.utils.URIBuilder;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -59,12 +56,11 @@ public class ElasticsearchClient {
 
   /**
    * Given a {@code RestaurantHeader}, sends HTTP request to Elasticsearch server to add a document
-   * to the "restaurants" index representing a {@code restaurantHeader}. If the request fails for
-   * reason, an HTTP status code of 500 will be returned.
+   * to the "restaurants" index representing a {@code restaurantHeader}.
    * @param restaurantHeader a {@code RestaurantHeader}
-   * @return integer representing the HTTP status code of the request
+   * @throws IOException when buildPutRequest() or execute() fails
    */
-  public int updateRestaurantHeader(RestaurantHeader restaurantHeader) {
+  public void updateRestaurantHeader(RestaurantHeader restaurantHeader) throws IOException {
     String restaurantKey = String.valueOf(restaurantHeader.getRestaurantKey());
 
     GenericUrl requestUrl = new GenericUrl(elasticsearchUriString);
@@ -74,16 +70,7 @@ public class ElasticsearchClient {
     HttpContent putRequestContent = new ByteArrayContent(Json.MEDIA_TYPE,
         requestBody.getBytes(StandardCharsets.UTF_8));
 
-    int statusCode;
-    try {
-      HttpRequest request = requestFactory.buildPutRequest(requestUrl, putRequestContent);
-      HttpResponse response = request.execute();
+    requestFactory.buildPutRequest(requestUrl, putRequestContent).execute();
 
-      statusCode = response.getStatusCode();
-    } catch (IOException e) {
-      statusCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
-    }
-
-    return statusCode;
   }
 }

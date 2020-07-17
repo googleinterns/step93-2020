@@ -32,7 +32,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ElasticsearchClientTest {
-  private final String elasticsearchHostname = "localhost";
+  private final String elasticsearchHostname = "10.128.0.2";
   private final short elasticsearchPort = 9200;
 
   private final RestaurantHeader HEADER_1 = new RestaurantHeader(
@@ -43,7 +43,7 @@ public class ElasticsearchClientTest {
 
 
   @Test
-  public void testAddRestaurantDocumentToSearchIndex() {
+  public void testAddRestaurantDocumentToSearchIndex() throws IOException {
     HttpTransport transport = new MockHttpTransport() {
       @Override
       public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
@@ -68,9 +68,7 @@ public class ElasticsearchClientTest {
 
     ElasticsearchClient testClient =
         new ElasticsearchClient(transport, elasticsearchHostname, elasticsearchPort);
-
-    int statusCode = testClient.updateRestaurantHeader(HEADER_1);
-    assertEquals(200, statusCode);
+    testClient.updateRestaurantHeader(HEADER_1);
   }
 
 }
