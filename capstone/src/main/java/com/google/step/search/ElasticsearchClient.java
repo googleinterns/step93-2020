@@ -38,8 +38,6 @@ import java.util.Arrays;
  */
 public class ElasticsearchClient {
 
-  private static final String elasticsearchHostname = "10.128.0.2";
-  private static final short elasticsearchPort = 9200;
   private final String elasticsearchUriString;
 
   private static final String RESTAURANTS = "restaurants";
@@ -48,18 +46,18 @@ public class ElasticsearchClient {
 
   Gson gson = new Gson();
 
-  ElasticsearchClient(HttpTransport transport) {
+  ElasticsearchClient(HttpTransport transport, String hostname, short port) {
     requestFactory = transport.createRequestFactory();
 
     URIBuilder uriBuilder = new URIBuilder()
         .setScheme("http")
-        .setHost(elasticsearchHostname)
-        .setPort(elasticsearchPort);
+        .setHost(hostname)
+        .setPort(port);
     elasticsearchUriString = uriBuilder.toString();
   }
 
-  public ElasticsearchClient() {
-    this(new NetHttpTransport());
+  public ElasticsearchClient(String hostname, short port) {
+    this(new NetHttpTransport(), hostname, port);
   }
 
   /**
@@ -90,13 +88,5 @@ public class ElasticsearchClient {
     }
 
     return statusCode;
-  }
-
-  public static String getElasticsearchHostname() {
-    return elasticsearchHostname;
-  }
-
-  public static short getElasticsearchPort() {
-    return elasticsearchPort;
   }
 }
