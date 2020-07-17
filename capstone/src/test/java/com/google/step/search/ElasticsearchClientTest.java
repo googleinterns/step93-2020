@@ -32,6 +32,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ElasticsearchClientTest {
+  private final String elasticsearchHostname = "localhost";
+  private final short elasticsearchPort = 9200;
+
   private final RestaurantHeader HEADER_1 = new RestaurantHeader(
       12345L,
       "The Goog Noodle",
@@ -47,8 +50,8 @@ public class ElasticsearchClientTest {
         assertTrue(method.equalsIgnoreCase("PUT"));
 
         URL urlFromString = new URL(url);
-        assertEquals(urlFromString.getHost(), ElasticsearchClient.getElasticsearchHostname());
-        assertEquals(urlFromString.getPort(), ElasticsearchClient.getElasticsearchPort());
+        assertEquals(elasticsearchHostname, urlFromString.getHost());
+        assertEquals(elasticsearchPort, urlFromString.getPort());
         assertEquals("/restaurants/_doc/12345", urlFromString.getPath());
 
         return new MockLowLevelHttpRequest() {
@@ -63,7 +66,9 @@ public class ElasticsearchClientTest {
       }
     };
 
-    ElasticsearchClient testClient = new ElasticsearchClient(transport);
+    ElasticsearchClient testClient =
+        new ElasticsearchClient(transport, elasticsearchHostname, elasticsearchPort);
+
     int statusCode = testClient.updateRestaurantHeader(HEADER_1);
     assertEquals(200, statusCode);
   }
