@@ -17,16 +17,26 @@ package com.google.step.search;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
+import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.Json;
 import com.google.appengine.repackaged.com.google.gson.Gson;
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
 import com.google.step.data.RestaurantHeader;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import org.apache.http.client.utils.URIBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The {@code ElasticsearchClient} is a class that sends requests to add {@code RestaurantHeaders}
@@ -42,7 +52,10 @@ public class ElasticsearchClient {
   ElasticsearchClient(HttpTransport transport, String hostname, short port) {
     requestFactory = transport.createRequestFactory();
 
-    URIBuilder uriBuilder = new URIBuilder().setScheme("http").setHost(hostname).setPort(port);
+    URIBuilder uriBuilder = new URIBuilder()
+        .setScheme("http")
+        .setHost(hostname)
+        .setPort(port);
     elasticsearchUriString = uriBuilder.toString();
   }
 
@@ -58,14 +71,69 @@ public class ElasticsearchClient {
    */
   public void updateRestaurantHeader(RestaurantHeader restaurantHeader) throws IOException {
     String restaurantKey = String.valueOf(restaurantHeader.getRestaurantKey());
-
-    GenericUrl requestUrl = new GenericUrl(elasticsearchUriString);
-    requestUrl.setPathParts(Arrays.asList("", RESTAURANTS, "_doc", restaurantKey));
+    List<String> requestPath = Arrays.asList("", RESTAURANTS, "_doc", restaurantKey);
 
     String requestBody = gson.toJson(restaurantHeader);
-    HttpContent putRequestContent =
-        new ByteArrayContent(Json.MEDIA_TYPE, requestBody.getBytes(StandardCharsets.UTF_8));
 
-    requestFactory.buildPutRequest(requestUrl, putRequestContent).execute();
+    HttpRequest request = buildElasticsearchHttpRequest("PUT", requestPath, requestBody);
+    request.execute();
+  }
+
+  private HttpRequest buildElasticsearchHttpRequest(String requestMethod, List<String> urlPath, String requestBody) throws IOException {
+    GenericUrl requestUrl = new GenericUrl(elasticsearchUriString);
+    requestUrl.setPathParts(urlPath);
+
+    HttpContent requestContent = new ByteArrayContent(Json.MEDIA_TYPE,
+        requestBody.getBytes(Charsets.UTF_8));
+
+    return requestFactory.buildRequest(requestMethod, requestUrl, requestContent);
+  }
+
+  public List<RestaurantHeader> queryRestaurantHeaders(String query) throws IOException {
+    List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
+
+    String requestBody = new JSONObject()
+        .put("query", new JSONObject()
+            .put("multi_match", new JSONObject()
+                .put("query", query)
+                .put("fields", new JSONArray(Arrays.asList("name", "cuisine")))))
+        .toString();
+
+    HttpRequest request = buildElasticsearchHttpRequest("POST", requestPath, requestBody);
+    HttpResponse response = request.execute();
+
+    return convertElasticsearchResponseBodyToHeaders(response);
+  }
+
+  public List<RestaurantHeader> getRandomRestaurants() throws IOException {
+    List<String> requestPath = Arrays.asList("", "_search");
+
+    String requestBody = new JSONObject()
+        .put("query", new JSONObject()
+            .put("match_all", new JSONObject()))
+        .toString();
+
+    HttpRequest request = buildElasticsearchHttpRequest("POST", requestPath, requestBody);
+    HttpResponse response = request.execute();
+
+    return convertElasticsearchResponseBodyToHeaders(response);
+  }
+
+  private List<RestaurantHeader> convertElasticsearchResponseBodyToHeaders(HttpResponse response) throws IOException {
+    String responseString = CharStreams.toString(new InputStreamReader(response.getContent()));
+
+    JSONObject responseJson = new JSONObject(responseString);
+
+    List<RestaurantHeader> headers = new ArrayList<>();
+    JSONArray elasticsearchMatches = responseJson.getJSONObject("hits").getJSONArray("hits");
+
+    for (int i = 0; i < elasticsearchMatches.length(); i ++) {
+      JSONObject matchJson = elasticsearchMatches.getJSONObject(i);
+      JSONObject source = matchJson.getJSONObject("_source");
+      RestaurantHeader header = gson.fromJson(source.toString(), RestaurantHeader.class);
+      headers.add(header);
+    }
+
+    return headers;
   }
 }
