@@ -42,23 +42,23 @@ public final class RestaurantHeaderTest {
 
   @Test
   public void testLikeRestaurantHeadersEqual() {
-    RestaurantHeader restaurantHeader1 = RestaurantHeader.createRestaurantHeader(RESTAURANT_1);
-    RestaurantHeader restaurantHeader2 = RestaurantHeader.createRestaurantHeader(RESTAURANT_1);
+    RestaurantHeader restaurantHeader1 = RestaurantHeader.createHeaderFromRestaurant(RESTAURANT_1);
+    RestaurantHeader restaurantHeader2 = RestaurantHeader.createHeaderFromRestaurant(RESTAURANT_1);
 
     assertEquals(restaurantHeader1, restaurantHeader2);
   }
 
   @Test
   public void testDifferentRestaurantHeadersNotEqual() {
-    RestaurantHeader restaurantHeader1 = RestaurantHeader.createRestaurantHeader(RESTAURANT_1);
-    RestaurantHeader restaurantHeader2 = RestaurantHeader.createRestaurantHeader(RESTAURANT_2);
+    RestaurantHeader restaurantHeader1 = RestaurantHeader.createHeaderFromRestaurant(RESTAURANT_1);
+    RestaurantHeader restaurantHeader2 = RestaurantHeader.createHeaderFromRestaurant(RESTAURANT_2);
 
     assertNotEquals(restaurantHeader1, restaurantHeader2);
   }
 
   @Test
   public void testFieldsSetCorrectly() {
-    RestaurantHeader restaurantHeader = RestaurantHeader.createRestaurantHeader(RESTAURANT_1);
+    RestaurantHeader restaurantHeader = RestaurantHeader.createHeaderFromRestaurant(RESTAURANT_1);
 
     assertEquals(KEY_1, restaurantHeader.getRestaurantKey());
     assertEquals(NAME_1, restaurantHeader.getName());
