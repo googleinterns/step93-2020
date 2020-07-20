@@ -13,7 +13,6 @@
 // limitations under the License.
 
 
-
 function getRestaurants() {
   fetch('/get-restaurants').then(function(response) {
     let restaurantsList = document.getElementById('restaurants-list');
@@ -46,10 +45,20 @@ function addRestaurant(restaurant, containerElement) {
 }
 
 function createRestaurantNameDiv(restaurant) {
+  const params = new URLSearchParams();
+  params.append('restaurantKey', restaurant.restaurantKey);
+
+  let linkElement = document.createElement('a');
+  linkElement.classList.add('restaurant-name-link');
+  linkElement.innerText = restaurant.name;
+  linkElement.href = '/restaurantDetails?' + params;
+
+  let restaurantNameHeader = document.createElement('h3');
+  restaurantNameHeader.appendChild(linkElement);
+
   let restaurantNameDiv = document.createElement('div');
   restaurantNameDiv.classList.add('restaurant-name-container', 'mdc-typography--headline6');
-
-  restaurantNameDiv.innerHTML = '<h3>' + restaurant.name + '</h3>';
+  restaurantNameDiv.appendChild(restaurantNameHeader);
 
   return restaurantNameDiv;
 }
