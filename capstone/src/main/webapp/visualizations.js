@@ -54,10 +54,13 @@ async function parseData() {
 /**
  * Gets the earliest date with data based on the pageViews array.
  * @param pageViews
- * @return an array containing minWeek and minYear
+ * @return an array containing minWeek and minYear, or an empty array if no data was supplied
  */
 function getFirstDate(pageViews) {
   // Start the variables at the first data point values
+  if (pageViews == null || pageViews.length <= 0) {
+    return [];
+  }
   let minWeek = pageViews[0].week;
   let minYear = pageViews[0].year;
 
@@ -83,6 +86,9 @@ function getFirstDate(pageViews) {
  * @return {Date}
  */
 function getDateFromWeekYear(week, year) {
+  if (week < 0 || year < 0) {
+    return null;
+  }
   // January 1st plus 7 days for each week
   // Weeks of year start at 1 instead of 0, hence the -1
   const day = 1 + (week - 1) * 7;
@@ -174,7 +180,16 @@ function setUpVisualizationData(pageViews, datesArr) {
  * @return {number}
  */
 function getNumWeeksBetween(date1, date2) {
+  if (date2 < date1) {
+    // Make sure date2 is the larger of the two
+    const temp = date2;
+    date2 = date1;
+    date1 = temp;
+  }
   const MILLISECONDS_ONE_WEEK = 7 * 24 * 60 * 60 * 1000;
   return Math.round((date2 - date1) / MILLISECONDS_ONE_WEEK);
 }
+
+// Export the functions for the Jest testing
+module.exports = {getFirstDate, getDateFromWeekYear, getFullDateArray, getNumWeeksBetween, setUpVisualizationData};
 
