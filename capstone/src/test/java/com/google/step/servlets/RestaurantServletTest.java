@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import javax.servlet.http.HttpServletResponse;
+
 public class RestaurantServletTest {
     private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
@@ -171,7 +173,7 @@ public class RestaurantServletTest {
      * @throws IOException
      * @throws SAXException if the ServletRunner parser cannot handle the request
      */
-    @Test(expected = HttpException.class)
+    @Test
     public void testDoPostLoginFailure() throws IOException, SAXException {
         String name =  "Wildfire";
         String story = "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.";
@@ -196,7 +198,11 @@ public class RestaurantServletTest {
         request.setParameter("website", website);
 
         // This getResponse should cause a failing status because the user is not logged in.
-        sc.getResponse(request);
+        try {
+            sc.getResponse(request);
+        } catch (HttpException e) {
+            assertEquals(HttpServletResponse.SC_FORBIDDEN, e.getResponseCode());
+        }
     }
 
 }
