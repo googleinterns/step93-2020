@@ -32,7 +32,7 @@ public final class RestaurantHeader {
   private final GeoPt location;
   private final List<String> cuisine;
 
-  private RestaurantHeader(long restaurantKey,
+  public RestaurantHeader(long restaurantKey,
                            String name,
                            GeoPt location,
                            List<String> cuisine) {
@@ -43,13 +43,15 @@ public final class RestaurantHeader {
   }
 
   /**
-   * Given a {@code Restaurant} object, creates a {@code RestaurantHeader} object using the fields of the {@code Restaurant}.
+   * Given a {@code Restaurant} object, creates a {@code RestaurantHeader} object using the fields
+   * of the {@code Restaurant}.
    * @param restaurant The {@code Restaurant} from which the header information would come
    * @return A newly created RestaurantHeader object
    */
-  public static RestaurantHeader createRestaurantHeader(Restaurant restaurant) {
+
+  public static RestaurantHeader createHeaderFromRestaurant(Restaurant restaurant) {
     return new RestaurantHeader(
-        restaurant.getRestaurantKey().orElse(0L),
+        restaurant.getRestaurantKey().orElseThrow(IllegalArgumentException::new),
         restaurant.getName(),
         restaurant.getLocation(),
         restaurant.getCuisine());
