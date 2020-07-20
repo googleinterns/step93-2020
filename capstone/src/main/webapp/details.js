@@ -25,9 +25,9 @@ async function setRestaurantDetails() {
   const response = await fetch(responsePath);
   const resp = await response.json();
 
-  if (resp.restaurant !== null) {
+  if (resp !== null) {
     // Retrieve and parse restaurant JSON from get restaurant response
-    const currRestaurant = JSON.parse(resp.restaurant);
+    const currRestaurant = resp.value;
     // Set UI elements
     if (document.getElementById('restaurant-detail-area') !== null) {
       document.getElementById('current-restaurant-title').innerText =
