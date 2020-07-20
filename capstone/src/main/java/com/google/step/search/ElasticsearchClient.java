@@ -71,6 +71,5 @@ public class ElasticsearchClient {
         requestBody.getBytes(StandardCharsets.UTF_8));
 
     requestFactory.buildPutRequest(requestUrl, putRequestContent).execute();
-
   }
 }
