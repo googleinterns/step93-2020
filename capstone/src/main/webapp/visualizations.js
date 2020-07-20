@@ -177,3 +177,4 @@ function getNumWeeksBetween(date1, date2) {
   const MILLISECONDS_ONE_WEEK = 7 * 24 * 60 * 60 * 1000;
   return Math.round((date2 - date1) / MILLISECONDS_ONE_WEEK);
 }
+
