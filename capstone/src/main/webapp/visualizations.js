@@ -54,7 +54,8 @@ async function parseData() {
 /**
  * Gets the earliest date with data based on the pageViews array.
  * @param pageViews
- * @return an array containing minWeek and minYear, or an empty array if no data was supplied
+ * @return an array containing minWeek and minYear, or an empty array if no data
+ *     was supplied
  */
 function getFirstDate(pageViews) {
   // Start the variables at the first data point values
@@ -191,5 +192,10 @@ function getNumWeeksBetween(date1, date2) {
 }
 
 // Export the functions for the Jest testing
-module.exports = {getFirstDate, getDateFromWeekYear, getFullDateArray, getNumWeeksBetween, setUpVisualizationData};
-
+module.exports = {
+  getFirstDate,
+  getDateFromWeekYear,
+  getFullDateArray,
+  getNumWeeksBetween,
+  setUpVisualizationData,
+};
