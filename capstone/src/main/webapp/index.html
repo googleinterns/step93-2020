@@ -9,11 +9,60 @@
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
+    <script type="module" src="style.js"></script>
   </head>
   <body onload="getRestaurants()" class="mdc-typography">
-    <div>
-      <h1>EpiCURE</h1>
-      <div id="restaurants-list"></div>
+    <aside class="mdc-drawer mdc-drawer--modal">
+      <div class="mdc-drawer__header">
+        <h3 class="mdc-drawer__title">EipCURE</h3>
+      </div>
+      <div class="mdc-drawer__content">
+        <div class="mdc-list">
+          <a class="mdc-list-item mdc-list-item--activated" href="#" aria-current="page" tabindex="0">
+            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">inbox</i>
+            <span class="mdc-list-item__text">Inbox</span>
+          </a>
+          <a class="mdc-list-item" href="#">
+            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
+            <span class="mdc-list-item__text">Outgoing</span>
+          </a>
+          <a class="mdc-list-item" href="#">
+            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
+            <span class="mdc-list-item__text">Drafts</span>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <div class="mdc-drawer-scrim"></div>
+    <div class="mdc-drawer-app-content">
+      <header class="mdc-top-app-bar mdc-top-app-bar--fixed" id="app-bar">
+        <div class="mdc-top-app-bar__row">
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button" aria-label="Open navigation menu">menu</button>
+            <span class="mdc-top-app-bar__title top-app-bar-title">EpiCURE</span>
+          </section>
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+            <label class="search-label top-app-bar-text">Search</label>
+            <form action="/" method="get" id="search-box">
+              <label class="mdc-text-field mdc-text-field--filled mdc-text-field--fullwidth main-search">
+                <span class="mdc-text-field__ripple"></span>
+                <input class="mdc-text-field__input search-text-box top-app-bar-text"
+                       type="text"
+                       aria-label="Full-Width Text Field"
+                       id="search-input-field">
+                <span class="mdc-line-ripple"></span>
+              </label>
+            </form>
+            <button type="submit" form="search-box" class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button toggle-search-bar" aria-label="Search">search</button>
+          </section>
+        </div>
+      </header>
     </div>
+
+    <main class="main-content" id="main-content">
+      <div class="mdc-top-app-bar--fixed-adjust"></div>
+      <div id="restaurants-list"></div>
+    </main>
   </body>
 </html>

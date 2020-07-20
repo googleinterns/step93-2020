@@ -1,3 +1,18 @@
+#main-content {
+    max-width: 85vw;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.top-app-bar-title {
+    font-size: 1.3em;
+}
+
+.top-app-bar-text {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
 .map {
   border: solid black;
   border-radius: 25px;
@@ -19,4 +34,50 @@
 .restaurant-cuisine-container {
     display: flex;
     flex-wrap: wrap;
+}
+
+.fixed-search-bar {
+    height: 4em;
+    width: 85vw;
+}
+
+.search-strip {
+    width: 100%;
+    position: fixed;
+    z-index: 1;
+    height: 4em;
+}
+
+.search-container {
+    display: flex;
+    flex-wrap: nowrap;
+    background-color: white;
+    width: 100%;
+}
+
+.search-button {
+    height: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#search-input-field {
+    color: white;
+}
+
+.search-box {
+    width: 80vw;
+}
+
+.main-search {
+    background-color: white;
+    position: relative;
+}
+
+.search-label {
+    padding-right: 1em;
+}
+
+#search-input-field {
+    caret-color: white;
 }
