@@ -14,17 +14,16 @@
 
 
 function getRestaurants() {
-  fetch('/get-restaurants').then(function(response) {
+  fetch('/restaurants').then(function(response) {
     let restaurantsList = document.getElementById('restaurants-list');
 
     if (response.ok) {
-      response.json().then((restaurants) => {
+      response.json().then(responseJson => {
         restaurantsList.innerHTML = '';
-
-        restaurants.forEach((restaurant) => {
+        responseJson.restaurants.forEach(restaurant => {
           addRestaurant(restaurant, restaurantsList);
         });
-      })
+      });
     }
   });
 }
