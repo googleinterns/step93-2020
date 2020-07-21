@@ -16,70 +16,95 @@ beforeEach(() => {
   // Set up all example data values
   pageViewExample1 = [
     {
-      'restaurantName': 'Wildfire',
-      'week': 10,
-      'year': 2020,
-      'numClicks': 2,
+      'name': 'Wildfire',
+      'pageViews': [
+        {
+          'week': 10,
+          'year': 2020,
+          'count': 2,
+        },
+        {
+          'week': 11,
+          'year': 2020,
+          'count': 10,
+        },
+      ],
     },
     {
-      'restaurantName': 'Wildfire',
-      'week': 11,
-      'year': 2020,
-      'numClicks': 10,
-    },
-    {
-      'restaurantName': 'Poke Doke',
-      'week': 11,
-      'year': 2020,
-      'numClicks': 8,
+      'name': 'Poke Doke',
+      'pageViews': [
+        {
+          'week': 11,
+          'year': 2020,
+          'count': 8,
+        },
+      ],
     },
   ];
 
   pageViewExample2 = [
     {
-      'restaurantName': 'The Goog Noodle',
-      'week': 11,
-      'year': 2020,
-      'numClicks': 2,
+      'name': 'The Goog Noodle',
+      'pageViews': [
+        {
+          'week': 11,
+          'year': 2020,
+          'count': 2,
+        },
+      ],
     },
     {
-      'restaurantName': 'Wildfire',
-      'week': 11,
-      'year': 2020,
-      'numClicks': 10,
+      'name': 'Wildfire',
+      'pageViews': [
+        {
+          'week': 11,
+          'year': 2020,
+          'count': 10,
+        },
+      ],
     },
     {
-      'restaurantName': 'Clucker\'s',
-      'week': 11,
-      'year': 2020,
-      'numClicks': 8,
-    },
-    {
-      'restaurantName': 'Clucker\'s',
-      'week': 13,
-      'year': 2020,
-      'numClicks': 18,
+      'name': 'Clucker\'s',
+      'pageViews': [
+        {
+          'week': 11,
+          'year': 2020,
+          'count': 8,
+        },
+        {
+          'week': 13,
+          'year': 2020,
+          'count': 18,
+        },
+      ],
     },
   ];
 
   pageViewExample3 = [
     {
-      'restaurantName': 'Wildfire',
-      'week': 10,
-      'year': 2020,
-      'numClicks': 2,
+      'name': 'Wildfire',
+      'pageViews': [
+        {
+          'week': 10,
+          'year': 2020,
+          'count': 2,
+        },
+        {
+          'week': 11,
+          'year': 2020,
+          'count': 10,
+        },
+      ],
     },
     {
-      'restaurantName': 'Wildfire',
-      'week': 11,
-      'year': 2020,
-      'numClicks': 10,
-    },
-    {
-      'restaurantName': 'Poke Doke',
-      'week': 25,
-      'year': 2019,
-      'numClicks': 8,
+      'name': 'Poke DOke',
+      'pageViews': [
+        {
+          'week': 25,
+          'year': 2019,
+          'count': 8,
+        },
+      ],
     },
   ];
 

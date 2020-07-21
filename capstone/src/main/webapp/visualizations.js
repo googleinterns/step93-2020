@@ -158,9 +158,9 @@ function setUpVisualizationData(restaurantPageViews, datesArr) {
     }
 
     for (let j = 0; j < currPageViewArray.length; j++) {
-      const week = currPageViewArray[i].week;
-      const year = currPageViewArray[i].year;
-      const numClicks = currPageViewArray[i].count;
+      const week = currPageViewArray[j].week;
+      const year = currPageViewArray[j].year;
+      const numClicks = currPageViewArray[j].count;
 
       // Calculate weeks between first available date and current page view data
       // date
