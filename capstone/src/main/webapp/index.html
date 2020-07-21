@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet" />
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css"/>
     <script src="script.js"></script>
     <script type="module" src="style.js"></script>
   </head>
@@ -39,7 +39,7 @@
       <header class="mdc-top-app-bar mdc-top-app-bar--fixed" id="app-bar">
         <div class="mdc-top-app-bar__row">
           <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button" aria-label="Open navigation menu">menu</button>
+            <button type="button" class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button" aria-label="Open navigation menu">menu</button>
             <span class="mdc-top-app-bar__title top-app-bar-title">EpiCURE</span>
           </section>
           <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
@@ -50,11 +50,11 @@
                 <input class="mdc-text-field__input search-text-box top-app-bar-text"
                        type="text"
                        aria-label="Full-Width Text Field"
-                       id="search-input-field">
+                       id="search-input-field"/>
                 <span class="mdc-line-ripple"></span>
+                <button type="submit" class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button" aria-label="Search">search</button>
               </label>
             </form>
-            <button type="submit" form="search-box" class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button toggle-search-bar" aria-label="Search">search</button>
           </section>
         </div>
       </header>
