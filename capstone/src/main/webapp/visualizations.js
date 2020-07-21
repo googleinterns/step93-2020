@@ -39,41 +39,39 @@ async function getPageViewData() {
  * }
  */
 async function parseData() {
-  const jsonResponse = await getPageViewData();
-  let pageViews = jsonResponse.pageViews;
-  pageViews = JSON.parse(pageViews);
+  const restaurantPageViews = await getPageViewData();
 
-  const firstDate = getFirstDate(pageViews);
+  const firstDate = getFirstDate(restaurantPageViews);
   const firstDateObj = getDateFromWeekYear(firstDate[0], firstDate[1]);
   const currDate = new Date();
   const dateArray = getFullDateArray(firstDateObj, currDate);
 
-  return setUpVisualizationData(pageViews, dateArray);
+  return setUpVisualizationData(restaurantPageViews, dateArray);
 }
 
 /**
  * Gets the earliest date with data based on the pageViews array.
- * @param pageViews
+ * @param restaurantPageViews
  * @return an array containing minWeek and minYear, or an empty array if no data
  *     was supplied
  */
-function getFirstDate(pageViews) {
+function getFirstDate(restaurantPageViews) {
   // Start the variables at the first data point values
-  if (pageViews == null || pageViews.length <= 0) {
+  if (restaurantPageViews == null || restaurantPageViews.length <= 0) {
     return [];
   }
-  let minWeek = pageViews[0].week;
-  let minYear = pageViews[0].year;
+  let minWeek = restaurantPageViews[0].pageViews[0].week;
+  let minYear = restaurantPageViews[0].pageViews[0].year;
 
-  // Check through rest of the data points to see if any of the
-  // dates are earlier
-  for (let i = 1; i < pageViews.length; i++) {
-    const currPageView = pageViews[i];
-    if (currPageView.year < minYear) {
-      minYear = currPageView.year;
-      minWeek = currPageView.week;
-    } else if (currPageView.week < minWeek && currPageView.year === minYear) {
-      minWeek = currPageView.week;
+  // Check through rest of the first data points in other restaurants'
+  // pageViews arrays to see if any of the dates are earlier
+  for (let i = 1; i < restaurantPageViews.length; i++) {
+    const currRestaurantMinPageView = restaurantPageViews[i].pageViews[0];
+    if (currRestaurantMinPageView.year < minYear) {
+      minYear = currRestaurantMinPageView.year;
+      minWeek = currRestaurantMinPageView.week;
+    } else if (currRestaurantMinPageView.week < minWeek && currRestaurantMinPageView.year === minYear) {
+      minWeek = currRestaurantMinPageView.week;
     }
   }
 
@@ -115,9 +113,9 @@ function getFullDateArray(firstDate, currDate) {
 }
 
 /**
- * Set up the final visualization data array based on all pageViews data and
+ * Set up the final visualization data array based on all restaurantPageViews data and
  * formatted datesArr
- * @param pageViews
+ * @param restaurantPageViews
  * @param datesArr
  * @return dates object of the form:
  * {
@@ -132,7 +130,7 @@ function getFullDateArray(firstDate, currDate) {
  *     dates: [Date, Date(one week later), ..., Date(this week)],
  * }
  */
-function setUpVisualizationData(pageViews, datesArr) {
+function setUpVisualizationData(restaurantPageViews, datesArr) {
   const data = {
     restaurantData: [],
     dates: datesArr,
@@ -140,12 +138,9 @@ function setUpVisualizationData(pageViews, datesArr) {
 
   const firstDate = datesArr[0];
 
-  for (let i = 0; i < pageViews.length; i++) {
-    const currPageView = pageViews[i];
-    const restaurantName = currPageView.restaurantName;
-    const week = currPageView.week;
-    const year = currPageView.year;
-    const numClicks = currPageView.numClicks;
+  for (let i = 0; i < restaurantPageViews.length; i++) {
+    const currPageViewArray = restaurantPageViews[i].pageViews;
+    const restaurantName = restaurantPageViews[i].name;
 
     // Attempt to find the current restaurant's object in the restaurantData
     // array
@@ -161,14 +156,21 @@ function setUpVisualizationData(pageViews, datesArr) {
       data.restaurantData.push(restaurantObject);
       index = data.restaurantData.length - 1;
     }
-    // Calculate weeks between first available date and current page view data
-    // date
-    const currPageViewDate = getDateFromWeekYear(week, year);
-    const weeksBetween = getNumWeeksBetween(firstDate, currPageViewDate);
-    // Update the current restaurant's clickData array at the proper index with
-    // the number of clicks
-    const currRestaurantObj = data.restaurantData[index];
-    currRestaurantObj.clickData[weeksBetween] = numClicks;
+
+    for (let j = 0; j < currPageViewArray.length; j++) {
+      const week = currPageViewArray[i].week;
+      const year = currPageViewArray[i].year;
+      const numClicks = currPageViewArray[i].count;
+
+      // Calculate weeks between first available date and current page view data
+      // date
+      const currPageViewDate = getDateFromWeekYear(week, year);
+      const weeksBetween = getNumWeeksBetween(firstDate, currPageViewDate);
+      // Update the current restaurant's clickData array at the proper index with
+      // the number of clicks
+      const currRestaurantObj = data.restaurantData[index];
+      currRestaurantObj.clickData[weeksBetween] = numClicks;
+    }
   }
 
   return data;
