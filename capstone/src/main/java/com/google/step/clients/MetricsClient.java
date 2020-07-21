@@ -14,14 +14,25 @@
 
 package com.google.step.clients;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
-import com.google.step.data.Restaurant;
+import com.google.appengine.api.datastore.Transaction;
+
 import com.google.step.data.RestaurantPageViews;
 import com.google.step.data.WeeklyPageView;
 
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Arrays;
 
 /**
  * This client is in charge of interacting with metricsServlet and the metrics entities.
@@ -43,8 +54,6 @@ public class MetricsClient {
      *         it returns an instance of WeeklyPageView with all variables set to 0
      */
     public WeeklyPageView getCurrentPageViews(String restaurantName, String restaurantKey) {
-        WeeklyPageView weeklyPageView;
-
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int week = calendar.get(Calendar.WEEK_OF_YEAR);
@@ -65,7 +74,10 @@ public class MetricsClient {
             return new WeeklyPageView(0, 0, 0);
         }
 
-        weeklyPageView = new WeeklyPageView(week, year, Integer.parseInt(results.getProperty("count").toString()));
+        WeeklyPageView weeklyPageView = new WeeklyPageView(
+                week,
+                year,
+                Integer.parseInt(results.getProperty("count").toString()));
 
         return weeklyPageView;
     }

@@ -14,18 +14,25 @@
 
 package com.google.step.clients;
 
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
-
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
-import java.util.*;
-import static org.junit.Assert.*;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.google.step.data.RestaurantPageViews;
 import com.google.step.data.WeeklyPageView;
-import org.junit.*;
 
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.Assert;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -46,23 +53,6 @@ public class MetricsClientTests {
     @After
     public void tearDown() {
         helper.tearDown();
-    }
-
-    public void checkIfDataStoreWorks() {
-        assertEquals(0, datastoreService.prepare(new Query("User")).countEntities(withLimit(10)));
-        datastoreService.put(new Entity("User"));
-        datastoreService.put(new Entity("User"));
-        assertEquals(2, datastoreService.prepare(new Query("User")).countEntities(withLimit(10)));
-    }
-
-    @Test
-    public void testCheckWorks1() {
-        checkIfDataStoreWorks();
-    }
-
-    @Test
-    public void testCheckWorks2() {
-        checkIfDataStoreWorks();
     }
 
     @Test
