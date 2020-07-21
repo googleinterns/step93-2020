@@ -1,57 +1,57 @@
 .map {
-    border: solid black;
-    border-radius: 25px;
-    height: 600px;
-    width: 600px;
+  border: solid black;
+  border-radius: 25px;
+  height: 600px;
+  width: 600px;
 }
 
 #main-content {
-    max-width: 85vw;
-    margin-left: auto;
-    margin-right: auto;
+  max-width: 85vw;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .top-app-bar-title {
-    font-size: 1.3em;
+  font-size: 1.3em;
 }
 
 .top-app-bar-text {
-    font-size: 1.2em;
-    font-weight: bold;
+  font-size: 1.2em;
+  font-weight: bold;
 }
 
 #restaurants-list {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .restaurant-container {
-    margin: 15px;
-    padding: 1em;
-    width: 20em;
+  margin: 15px;
+  padding: 1em;
+  width: 20em;
 }
 
 .restaurant-cuisine-container {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 #search-input-field {
-    color: white;
+  color: white;
 }
 
 .search-box {
-    width: 80vw;
+  width: 80vw;
 }
 
 .search-label {
-    padding-right: 1em;
+  padding-right: 1em;
 }
 
 #search-input-field {
-    caret-color: white;
+  caret-color: white;
 }
 
 .restaurant-name-link {
-    color: black;
+  color: black;
 }

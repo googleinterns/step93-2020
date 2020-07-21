@@ -19,9 +19,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.step.clients.RestaurantClient;
 import com.google.step.data.Restaurant;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +27,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /** Servlet responsible for getting restaurants from Datastore. */
 @WebServlet("/restaurants")

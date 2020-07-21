@@ -56,8 +56,8 @@ function createRestaurantNameDiv(restaurant) {
   restaurantNameHeader.appendChild(linkElement);
 
   const restaurantNameDiv = document.createElement('div');
-  restaurantNameDiv.classList
-      .add('restaurant-name-container', 'mdc-typography--headline6');
+  restaurantNameDiv.classList.add(
+      'restaurant-name-container', 'mdc-typography--headline6');
   restaurantNameDiv.appendChild(restaurantNameHeader);
 
   return restaurantNameDiv;
