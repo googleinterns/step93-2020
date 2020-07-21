@@ -216,8 +216,8 @@ test('Test getNumWeeksBetween with different inputs', () => {
   expect(functions.getNumWeeksBetween(
       new Date(2020, 6, 28), new Date(2020, 6, 21)))
       .toBe(1);
-  expect(
-      functions.getNumWeeksBetween(new Date(2020, 7, 4), new Date(2020, 6, 21)))
+  expect(functions.getNumWeeksBetween(
+      new Date(2020, 7, 4), new Date(2020, 6, 21)))
       .toBe(2);
 });
 
