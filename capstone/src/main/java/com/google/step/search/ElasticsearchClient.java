@@ -39,7 +39,8 @@ import java.util.List;
 
 /**
  * The {@code ElasticsearchClient} is a class that sends requests to add {@code RestaurantHeaders}
- * to the "restaurants" index of Elasticsearch.
+ * to the "restaurants" index of Elasticsearch and queries the "restaurants" index for relevant
+ * restaurant headers.
  */
 public class ElasticsearchClient {
   private static final String RESTAURANTS = "restaurants";
@@ -63,9 +64,9 @@ public class ElasticsearchClient {
   }
 
   /**
-   * Given a {@code RestaurantHeader}, sends HTTP request to Elasticsearch server to add a document
-   * to the "restaurants" index representing a {@code restaurantHeader}.
-   * @param restaurantHeader a {@code RestaurantHeader}
+   * Given a {@link RestaurantHeader}, sends HTTP request to the search server to add a document
+   * that represents a {@link RestaurantHeader} to the "restaurants" index.
+   * @param restaurantHeader a {@link RestaurantHeader} that will be updated in the search index
    * @throws IOException when buildPutRequest() or execute() fails
    */
   public void updateRestaurantHeader(RestaurantHeader restaurantHeader) throws IOException {
@@ -78,16 +79,13 @@ public class ElasticsearchClient {
     request.execute();
   }
 
-  private HttpRequest buildElasticsearchHttpRequest(String requestMethod, List<String> urlPath, String requestBody) throws IOException {
-    GenericUrl requestUrl = new GenericUrl(elasticsearchUriString);
-    requestUrl.setPathParts(urlPath);
-
-    HttpContent requestContent = new ByteArrayContent(Json.MEDIA_TYPE,
-        requestBody.getBytes(Charsets.UTF_8));
-
-    return requestFactory.buildRequest(requestMethod, requestUrl, requestContent);
-  }
-
+  /**
+   * Queries search server for {@link RestaurantHeader} fields that match {@code query} by either
+   * "name" or "cuisine" field.
+   * @param query valid query string
+   * @return list of {@link RestaurantHeader} objects sorted by descending relevance score
+   * @throws IOException if request cannot be made or executed properly
+   */
   public List<RestaurantHeader> queryRestaurantHeaders(String query) throws IOException {
     List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
 
@@ -104,6 +102,11 @@ public class ElasticsearchClient {
     return convertElasticsearchResponseBodyToHeaders(response);
   }
 
+  /**
+   * Queries search server, matching everything possible.
+   * @return list of {@link RestaurantHeader} objects sorted arbitrarily
+   * @throws IOException if request cannot be made or executed properly
+   */
   public List<RestaurantHeader> getRandomRestaurants() throws IOException {
     List<String> requestPath = Arrays.asList("", "_search");
 
@@ -116,6 +119,16 @@ public class ElasticsearchClient {
     HttpResponse response = request.execute();
 
     return convertElasticsearchResponseBodyToHeaders(response);
+  }
+
+  private HttpRequest buildElasticsearchHttpRequest(String requestMethod, List<String> urlPath, String requestBody) throws IOException {
+    GenericUrl requestUrl = new GenericUrl(elasticsearchUriString);
+    requestUrl.setPathParts(urlPath);
+
+    HttpContent requestContent = new ByteArrayContent(Json.MEDIA_TYPE,
+        requestBody.getBytes(Charsets.UTF_8));
+
+    return requestFactory.buildRequest(requestMethod, requestUrl, requestContent);
   }
 
   private List<RestaurantHeader> convertElasticsearchResponseBodyToHeaders(HttpResponse response) throws IOException {
