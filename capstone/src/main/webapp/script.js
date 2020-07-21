@@ -15,12 +15,12 @@
 
 function getRestaurants() {
   fetch('/restaurants').then(function(response) {
-    let restaurantsList = document.getElementById('restaurants-list');
+    const restaurantsList = document.getElementById('restaurants-list');
 
     if (response.ok) {
-      response.json().then(responseJson => {
+      response.json().then((responseJson) => {
         restaurantsList.innerHTML = '';
-        responseJson.restaurants.forEach(restaurant => {
+        responseJson.restaurants.forEach((restaurant) => {
           addRestaurant(restaurant, restaurantsList);
         });
       });
@@ -29,12 +29,12 @@ function getRestaurants() {
 }
 
 function addRestaurant(restaurant, containerElement) {
-  let restaurantDiv = document.createElement('div');
+  const restaurantDiv = document.createElement('div');
   restaurantDiv.classList.add('mdc-card', 'restaurant-container');
 
-  let restaurantNameDiv = createRestaurantNameDiv(restaurant);
-  let restaurantCuisineDiv = createRestaurantCuisineDiv(restaurant);
-  let restaurantStrugglingDiv = createRestaurantIsStrugglingDiv(restaurant);
+  const restaurantNameDiv = createRestaurantNameDiv(restaurant);
+  const restaurantCuisineDiv = createRestaurantCuisineDiv(restaurant);
+  const restaurantStrugglingDiv = createRestaurantIsStrugglingDiv(restaurant);
 
   restaurantDiv.appendChild(restaurantNameDiv);
   restaurantDiv.appendChild(restaurantCuisineDiv);
@@ -47,26 +47,27 @@ function createRestaurantNameDiv(restaurant) {
   const params = new URLSearchParams();
   params.append('restaurantKey', restaurant.restaurantKey);
 
-  let linkElement = document.createElement('a');
+  const linkElement = document.createElement('a');
   linkElement.classList.add('restaurant-name-link');
   linkElement.innerText = restaurant.name;
   linkElement.href = '/restaurantDetails?' + params;
 
-  let restaurantNameHeader = document.createElement('h3');
+  const restaurantNameHeader = document.createElement('h3');
   restaurantNameHeader.appendChild(linkElement);
 
-  let restaurantNameDiv = document.createElement('div');
-  restaurantNameDiv.classList.add('restaurant-name-container', 'mdc-typography--headline6');
+  const restaurantNameDiv = document.createElement('div');
+  restaurantNameDiv.classList
+      .add('restaurant-name-container', 'mdc-typography--headline6');
   restaurantNameDiv.appendChild(restaurantNameHeader);
 
   return restaurantNameDiv;
 }
 
 function createRestaurantCuisineDiv(restaurant) {
-  let restaurantCuisineDiv = document.createElement('div');
+  const restaurantCuisineDiv = document.createElement('div');
   restaurantCuisineDiv.classList.add('restaurant-cuisine-container');
   restaurant.cuisine.forEach((item) => {
-    let cuisineItemButton = document.createElement('button');
+    const cuisineItemButton = document.createElement('button');
     cuisineItemButton.innerHTML = item;
     cuisineItemButton.classList.add('mdc-button', 'mdc-ripple-surface');
     restaurantCuisineDiv.appendChild(cuisineItemButton);
@@ -76,12 +77,12 @@ function createRestaurantCuisineDiv(restaurant) {
 }
 
 function createRestaurantIsStrugglingDiv(restaurant) {
-  let restaurantStrugglingDiv = document.createElement('div');
+  const restaurantStrugglingDiv = document.createElement('div');
   restaurantStrugglingDiv.classList.add('restaurant-struggling-container');
   if (restaurant.isStruggling) {
-    restaurantStrugglingDiv.innerHTML = '<p>This restaurant needs help!</p>'
+    restaurantStrugglingDiv.innerHTML = '<p>This restaurant needs help!</p>';
   } else {
-    restaurantStrugglingDiv.innerHTML = '<p>Keep this restaurant growing!</p>'
+    restaurantStrugglingDiv.innerHTML = '<p>Keep this restaurant growing!</p>';
   }
 
   return restaurantStrugglingDiv;
