@@ -42,6 +42,10 @@ async function parseData() {
   const restaurantPageViews = await getPageViewData();
 
   const firstDate = getFirstDate(restaurantPageViews);
+  if (firstDate.length === 0) {
+    // restaurantPageViews was empty: no data for d3 chart
+    return [];
+  }
   const firstDateObj = getDateFromWeekYear(firstDate[0], firstDate[1]);
   const currDate = new Date();
   const dateArray = getFullDateArray(firstDateObj, currDate);
@@ -56,15 +60,21 @@ async function parseData() {
  *     was supplied
  */
 function getFirstDate(restaurantPageViews) {
-  // Start the variables at the first data point values
+  // Check for if there is no data stored yet
   if (restaurantPageViews == null || restaurantPageViews.length <= 0) {
     return [];
   }
+
+  // Start the variables at the first data point values
+  // Assumes any populated restaurantPageViews member will have at least one element
+  // in its pageView array, which is guaranteed by the backend
   let minWeek = restaurantPageViews[0].pageViews[0].week;
   let minYear = restaurantPageViews[0].pageViews[0].year;
 
   // Check through rest of the first data points in other restaurants'
   // pageViews arrays to see if any of the dates are earlier
+  // Assumes each RestaurantPageView pageViews member is sorted in ascending order,
+  // which is guaranteed by the backend
   for (let i = 1; i < restaurantPageViews.length; i++) {
     const currRestaurantMinPageView = restaurantPageViews[i].pageViews[0];
     if (currRestaurantMinPageView.year < minYear) {
