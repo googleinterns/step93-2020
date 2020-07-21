@@ -17,6 +17,10 @@ package com.google.step.clients;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.step.data.Restaurant;
+import com.google.step.data.RestaurantPageViews;
+import com.google.step.data.WeeklyPageView;
+
 import java.util.*;
 
 /**
@@ -35,15 +39,11 @@ public class MetricsClient {
      * Gets the current week's page views for one restaurant by specifying a restaurantKey.
      * @param restaurantKey restaurant key of the restaurant we want to get views.
      * @param restaurantName restaurant name in case no entity exists for this week's page views.
-     * @return returns a Map<String, Object> of the form:
-     *          {
-     *              "year": <String, the year number>,
-     *              "week": <String, this week's number in relation to the year.>,
-     *              "count": <String, amount of page views the restaurant had.>
-     *          }
+     * @return returns an instance of a WeeklyPageView. If the entity doesn't exist yet,
+     *         it returns an instance of WeeklyPageView with all variables set to 0
      */
-    public Map<String, Object> getCurrentPageViews(String restaurantName, String restaurantKey) {
-        Map<String, Object> resultMap = new HashMap<>();
+    public WeeklyPageView getCurrentPageViews(String restaurantName, String restaurantKey) {
+        WeeklyPageView weeklyPageView;
 
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -60,52 +60,23 @@ public class MetricsClient {
         PreparedQuery preparedQuery = dataStore.prepare(query);
         Entity results = preparedQuery.asSingleEntity();
 
-        // If there are no entities of that restaurant, add one with a count of 0.
+        // If there are no entities of that restaurant, return a page view with zeroes in all fields
         if (results == null) {
-            Transaction transaction = dataStore.beginTransaction();
-            try {
-                Entity entity = new Entity("PageViews");
-                entity.setProperty("restaurantKey", restaurantKey);
-                entity.setProperty("restaurantName", restaurantName);
-                entity.setProperty("year", year);
-                entity.setProperty("week", week);
-                entity.setProperty("count", 0);
-                dataStore.put(transaction, entity);
-
-                // Set the count for the return map as 0, since the entity doesn't exist.
-                resultMap.put("count", 0);
-                transaction.commit();
-            } finally {
-                if (transaction.isActive()) {
-                    transaction.rollback();
-                }
-            }
-        } else {
-            // If the results didn't come back null, give the count.
-            resultMap.put("count", results.getProperty("count"));
+            return new WeeklyPageView(0, 0, 0);
         }
 
-        resultMap.put("year", year);
-        resultMap.put("week", week);
+        weeklyPageView = new WeeklyPageView(week, year, Integer.parseInt(results.getProperty("count").toString()));
 
-        return resultMap;
+        return weeklyPageView;
     }
 
     /**
      * Gets the weekly pageViews for the entire year of a specific restaurant.
      * @param year we are looking for
      * @param restaurantKey of restaurant we want the data.
-     * @return list of maps in the following way: List<Map<String, Object>>
-     *          [
-     *                 {
-     *                      "year": <String, the year number>,
-     *                      "week": <String, this week's number in relation to the year.>,
-     *                      "count": <String, amount of page views the restaurant had.>
-     *                  },
-     *                  ...,
-     *          ]
+     * @return List<WeeklyPageViews> sorted by week
      */
-    public List<Map<String, Object>> getYearRestaurantPageViews(int year, String restaurantKey) {
+    public List<WeeklyPageView> getYearRestaurantPageViews(int year, String restaurantKey) {
 
         CompositeFilter compositeFilter = new CompositeFilter(Query.CompositeFilterOperator.AND,
                 Arrays.asList(
@@ -116,125 +87,57 @@ public class MetricsClient {
         PreparedQuery preparedQuery = dataStore.prepare(query);
         List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withDefaults());
 
-        List<Map<String, Object>> resultList = new ArrayList<>();
+        List<WeeklyPageView> pageViewsList = new ArrayList<>();
 
-        Map<String, Object> map;
+        WeeklyPageView pageView;
         for (Entity entity : results) {
-            map = new HashMap<>();
-            map.put("week", entity.getProperty("week").toString());
-            map.put("count", Integer.parseInt(entity.getProperty("count").toString()));
-            resultList.add(map);
+            pageView = new WeeklyPageView(Integer.parseInt(entity.getProperty("week").toString()),
+                    year,
+                    Integer.parseInt(entity.getProperty("count").toString()));
+            pageViewsList.add(pageView);
         }
 
-        return resultList;
+        return pageViewsList;
     }
 
     /**
      * Gets all pageViews for the entire system.
-     * @return returns a Map<String, Object> in the following format:
-     *          {
-     *              "firstDate":
-     *                  {
-     *                      "week": <int>
-     *                      "year": <int>
-     *                  },
-     *              "clickData":
-     *                  [
-     *                      {
-     *                          "restaurantName": <String>
-     *                          "week": <int>
-     *                          "year": <int>
-     *                          "numClicks": <int>
-     *                      },
-     *                      ...
-     *                  ]
-     *          }
-     *
-     *          "clickData" represents all the click data that we have.
-     *          "firstDate" represent the first time data was collected in our system.
+     * @return returns List<RestaurantPageViews> with the PageView list inside each instance
+     *         of RestaurantPageViews sorted by week and year in ascending order.
      */
-    public Map<String, Object> getAllPageViews() {
-        Query query = new Query("PageViews");
+    public List<RestaurantPageViews> getAllPageViews() {
+        // Query with double sort so the first element of every restaurant should be
+        // the earliest week and year.
+        Query query = new Query("PageViews")
+                .addSort("week", Query.SortDirection.ASCENDING)
+                .addSort("year", Query.SortDirection.ASCENDING);
         PreparedQuery preparedQuery = dataStore.prepare(query);
         List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withDefaults());
 
-        Map<String, Object> resultMap = new HashMap<>();
+        // Map to maintain a reference to each restaurant and make searching for them easy.
+        // The map and the list share the reference to each restaurantPageViews.
+        Map<String, RestaurantPageViews> restaurantNameMap = new HashMap<>();
+        List<RestaurantPageViews> restaurantPageViewsList = new ArrayList<>();
+        RestaurantPageViews currRestaurant;
 
-        Map<String, Integer> firstPageView = new HashMap<>();
-        // Initialized with max value so any date will change the map at the beginning.
-        firstPageView.put("year", Integer.MAX_VALUE);
-        firstPageView.put("week", Integer.MAX_VALUE);
-
-        List<Map<String, Object>> clickData = populateClickData(results, firstPageView);
-
-        resultMap.put("firstDate", firstPageView);
-        resultMap.put("clickData", clickData);
-
-        return resultMap;
-    }
-
-    /**
-     * Parses the array of entities and populates a list of maps that contain the required information.
-     * @param entityList list of entities that we need to be turned into a map: List<Entity>
-     * @param firstPageView map of the earliest date in one of the entities: Map<String, Integer>
-     * @return returns a list of maps representative of the click data:
-     *              "clickData":
-     *                  [
-     *                      {
-     *                          "restaurantName": <String>
-     *                          "week": <int>
-     *                          "year": <int>
-     *                          "numClicks": <int>
-     *                      },
-     *                      ...
-     *                  ]
-     */
-    protected List<Map<String, Object>> populateClickData(List<Entity> entityList, Map<String, Integer> firstPageView) {
-        Integer entityYear;
-        Integer entityWeek;
-        Map<String, Object> tempClickData;
-        List<Map<String, Object>> clickData = new ArrayList<>();
-
-        for (Entity entity : entityList) {
-            entityYear = Integer.parseInt(entity.getProperty("year").toString());
-            entityWeek = Integer.parseInt(entity.getProperty("week").toString());
-
-            // Check for an update on the earliest date.
-            firstPageView = checkEarlierDate(firstPageView, entityWeek, entityYear);
-
-            tempClickData = new HashMap<>();
-            tempClickData.put("restaurantName", entity.getProperty("restaurantName").toString());
-            tempClickData.put("week", entityWeek);
-            tempClickData.put("year", entityYear);
-            tempClickData.put("numClicks", entity.getProperty("count"));
-
-            clickData.add(tempClickData);
+        for (Entity entity : results) {
+            String name = entity.getProperty("restaurantName").toString();
+            int year = Integer.parseInt(entity.getProperty("year").toString());
+            int week = Integer.parseInt(entity.getProperty("week").toString());
+            int count = Integer.parseInt(entity.getProperty("count").toString());
+            if (restaurantNameMap.containsKey(name)) {
+                currRestaurant = restaurantNameMap.get(name);
+                currRestaurant.getPageViews().add(new WeeklyPageView(week, year, count));
+            } else {
+                currRestaurant = new RestaurantPageViews(name,
+                        new ArrayList<>());
+                currRestaurant.getPageViews().add(new WeeklyPageView(week, year, count));
+                restaurantNameMap.put(name, currRestaurant);
+                restaurantPageViewsList.add(currRestaurant);
+            }
         }
-        return clickData;
-    }
 
-    /**
-     * Method to obtain the earliest instance of a click in all our entities. This method compares
-     * the current earliest date with the current entity being compared.
-     * @param currentDates current earliest date of a click: Map<String, Integer>
-     * @param week  to compare with the earliest week from the current entity being compared.
-     * @param year to compare with the earliest year from the current entity being compared.
-     * @return returns the same map as current dates but updated after the comparison.
-     *          {
-     *              "week": <int>,
-     *              "year": <int>
-     *          }
-     */
-    protected Map<String, Integer> checkEarlierDate(Map<String, Integer> currentDates, Integer week, Integer year) {
-        if (currentDates.get("year") > year) {
-            // If the year in the map is bigger than the one in the entity.
-            currentDates.put("year", year);
-            currentDates.put("week", week);
-        } else if (currentDates.get("year") == year && currentDates.get("week") > week) {
-            // If the year is the same but the week of the map is bigger than the week of the entity.
-            currentDates.put("week", week);
-        }
-        return currentDates;
+        return restaurantPageViewsList;
     }
 
     /**

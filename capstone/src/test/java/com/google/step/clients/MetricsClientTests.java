@@ -21,6 +21,9 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
 import java.util.*;
 import static org.junit.Assert.*;
+
+import com.google.step.data.RestaurantPageViews;
+import com.google.step.data.WeeklyPageView;
 import org.junit.*;
 
 
@@ -110,16 +113,19 @@ public class MetricsClientTests {
     public void testGetYearRestaurantPageViews() {
         // Tests if method is correctly grabbing the correct data for a specified year and restaurant.
         // Result: [
-        //              {
-        //                  "week": 2,
-        //                  "count": 100
-        //              },
-        //              {
-        //                  "week": 3,
-        //                  "count": 200
-        //              }
+        //              WeeklyPageView with the following data:.
+        //                  (
+        //                      "week": 2,
+        //                      "year": 2015,
+        //                      "count": 100
+        //                  ),
+        //              WeeklyPageView with the following data.
+        //                  (
+        //                      "week": 2,
+        //                      "year": 2015,
+        //                      "count": 100
+        //                  )
         //          ]
-        // Same restaurant same year
         Entity entity1 = new Entity("PageViews");
         entity1.setProperty("restaurantKey", "1");
         entity1.setProperty("week", 2);
@@ -133,7 +139,7 @@ public class MetricsClientTests {
         entity2.setProperty("year", 2015);
         entity2.setProperty("count", 200);
 
-        // Same year different restaurant
+        // Different restaurant same year
         Entity entity3 = new Entity("PageViews");
         entity3.setProperty("restaurantKey", "2");
         entity3.setProperty("week", 2);
@@ -152,23 +158,21 @@ public class MetricsClientTests {
         datastoreService.put(entity3);
         datastoreService.put(entity4);
 
-        List<Map<String, Object>> yearPageViews = metricsClient.getYearRestaurantPageViews(2015, "1");
-        Assert.assertEquals("Week #", "2", yearPageViews.get(0).get("week").toString());
-        Assert.assertEquals("Week 2 count", "100", yearPageViews.get(0).get("count").toString());
+        List<WeeklyPageView> yearPageViews = metricsClient.getYearRestaurantPageViews(2015, "1");
+        Assert.assertEquals("Week #", 2, yearPageViews.get(0).getWeek());
+        Assert.assertEquals("Week 2 count", 100, yearPageViews.get(0).getCount());
 
-        Assert.assertEquals("Week #", "3", yearPageViews.get(1).get("week").toString());
-        Assert.assertEquals("Week 3 count", "200", yearPageViews.get(1).get("count").toString());
+        Assert.assertEquals("Week #", 3, yearPageViews.get(1).getWeek());
+        Assert.assertEquals("Week 3 count", 200, yearPageViews.get(1).getCount());
     }
 
     @Test
     public void testGetCurrentPageViews() {
         // Gets the pageViews for a specific restaurant this week
-        // Result:
-        //      {
-        //          "year": current year (2020),
-        //          "week": current week number,
-        //          "count": 100
-        //      }
+        // Result: WeeklyPageView with the variables set to:
+        //      year: current year,
+        //      week: current week relative to the year (e.g. week 47)
+        //      count: 100
 
         // Using calendar for this test is necessary since the method in the
         // metricsClient uses the calendar as well to get the current date.
@@ -193,159 +197,167 @@ public class MetricsClientTests {
         datastoreService.put(entity1);
         datastoreService.put(entity2);
 
-        Map<String, Object> resultMap = metricsClient.getCurrentPageViews("Marlows", "1");
-        Assert.assertEquals("Year", year, resultMap.get("year"));
-        Assert.assertEquals("Week", week, resultMap.get("week"));
-        Assert.assertEquals("Count", "100", resultMap.get("count").toString());
+        WeeklyPageView resultPageView = metricsClient.getCurrentPageViews("Marlows", "1");
+        Assert.assertEquals("Year", year, resultPageView.getYear());
+        Assert.assertEquals("Week", week, resultPageView.getWeek());
+        Assert.assertEquals("Count", 100, resultPageView.getCount());
     }
+
     @Test
     public void testGetCurrentPageViewsWithoutExistingEntity() {
         // Tests if the method correctly created an entity and puts into dataStore
         // if no entity exists for this week currently.
-        // Result:
-        //      {
-        //          "year": current year (2020),
-        //          "week": current week number,
-        //          "count": 0
-        //      }
+        // Result: WeeklyPageView with all variables set to 0.
 
         // Using calendar for this test is necessary since the method in the
         // metricsClient uses the calendar as well to get the current date.
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int week = calendar.get(Calendar.WEEK_OF_YEAR);
-
-        Map<String, Object> resultMap = metricsClient.getCurrentPageViews("Marlows", "1");
-        Assert.assertEquals("Year", year, resultMap.get("year"));
-        Assert.assertEquals("Week", week, resultMap.get("week"));
-        Assert.assertEquals("Count", "0", resultMap.get("count").toString());
-        Assert.assertEquals(1, datastoreService.prepare(new Query("PageViews")).countEntities(withLimit(10)));
+        WeeklyPageView resultPageView = metricsClient.getCurrentPageViews("Marlows", "1");
+        Assert.assertEquals("Week", 0, resultPageView.getWeek());
+        Assert.assertEquals("Year", 0, resultPageView.getYear());
+        Assert.assertEquals("Count", 0, resultPageView.getCount());
     }
 
     @Test
-    public void testCheckBeginningDate() {
-        // Checks the map is being updated correctly when the year and week have only been initialized.
-        // Result: {"year": 1, "week": 1}
-        Map<String, Integer> map = new HashMap<>();
-        map.put("year", Integer.MAX_VALUE);
-        map.put("week", Integer.MAX_VALUE);
-        metricsClient.checkEarlierDate(map, 1, 1);
-        Assert.assertEquals("Year", "1", map.get("year").toString());
-        Assert.assertEquals("Week", "1", map.get("week").toString());
-    }
-
-    @Test
-    public void testCheckSeveralDates() {
-        // Tests for several updates on the method.
-        Map<String, Integer> map = new HashMap<>();
-        map.put("year", 2009);
-        map.put("week", 15);
-
-        // Later year and week.
-        // Result:
-        //          {
-        //              "year": 2009,
-        //              "week": 15
-        //          }
-        metricsClient.checkEarlierDate(map, 16, 2010);
-        Assert.assertEquals("Year", "2009", map.get("year").toString());
-        Assert.assertEquals("Week", "15", map.get("week").toString());
-
-        // Later year but earlier week.
-        // Result:
-        //          {
-        //              "year": 2009,
-        //              "week": 15
-        //          }
-        metricsClient.checkEarlierDate(map, 9, 2011);
-        Assert.assertEquals("Year", "2009", map.get("year").toString());
-        Assert.assertEquals("Week", "15", map.get("week").toString());
-
-        // Earlier year but later week.
-        // Result:
-        //          {
-        //              "year": 2008,
-        //              "week": 42
-        //          }
-        metricsClient.checkEarlierDate(map, 42, 2008);
-        Assert.assertEquals("Year", "2008", map.get("year").toString());
-        Assert.assertEquals("Week", "42", map.get("week").toString());
-    }
-
-    @Test
-    public void testPopulateClickData() {
-        // Tests for the correctly populated array by the method.
-        /* Result:
-         *          [
-         *              {
-         *                  "restaurantName": "McDonalds",
-         *                  "week": 15,
-         *                  "year": 2019,
-         *                  "numClicks": 100
-         *              },
-         *              {
-         *                  "restaurantName": "Marlows",
-         *                  "week": 15,
-         *                  "year": 2019,
-         *                  "numClicks": 100
-         *              },
-         *              {
-         *                  "restaurantName": "Marlows",
-         *                  "week": 20,
-         *                  "year": 2019,
-         *                  "numClicks": 100
-         *              },
-         *          ]
-         */
-        List<Entity> entityList = new ArrayList<>();
-        Map<String, Integer> firstPageView = new HashMap<>();
-        firstPageView.put("year", 0);
-        firstPageView.put("week", 0);
+    public void testGetAllPageViews() {
+        // Tests the getAllPageViews method by adding several restaurant page view entities.
+        // Result: [
+        //              RestaurantPageView(
+        //                  name: "Subway"
+        //                  pageViews: [
+        //                      WeeklyPageView(
+        //                          week: 11
+        //                          year: 2015
+        //                          count: 1000
+        //                      )
+        //                 ]
+        //              ),
+        //              RestaurantPageView(
+        //                  name: "Marlows"
+        //                  pageViews: [
+        //                      WeeklyPageView(
+        //                          week: 13
+        //                          year: 2014
+        //                          count: 200
+        //                      ),
+        //                      WeeklyPageView(
+        //                          week: 13
+        //                          year: 2015
+        //                          count: 100
+        //                      ),
+        //                      WeeklyPageView(
+        //                          week: 15
+        //                          year: 2015
+        //                          count: 50
+        //                      ),
+        //                      WeeklyPageView(
+        //                          week: 20
+        //                          year: 2016
+        //                          count: 300
+        //                      )
+        //                 ]
+        //              ),
+        //         ]
+        // In the result, subway goes first in the return list because it has the earlier week from the entire dataStore.
+        // But the other within each RestaurantPageView is by most recent date.
 
         Entity entity1 = new Entity("PageViews");
         entity1.setProperty("restaurantKey", "1");
-        entity1.setProperty("restaurantName", "McDonalds");
-        entity1.setProperty("week", 15);
-        entity1.setProperty("year", 2019);
+        entity1.setProperty("restaurantName", "Marlows");
+        entity1.setProperty("year", 2015);
+        entity1.setProperty("week", 13);
         entity1.setProperty("count", 100);
+        WeeklyPageView pageView1 = new WeeklyPageView(
+                Integer.parseInt(entity1.getProperty("week").toString()),
+                Integer.parseInt(entity1.getProperty("year").toString()),
+                Integer.parseInt(entity1.getProperty("count").toString())
+        );
+
 
         Entity entity2 = new Entity("PageViews");
-        entity2.setProperty("restaurantKey", "2");
+        entity2.setProperty("restaurantKey", "1");
         entity2.setProperty("restaurantName", "Marlows");
-        entity2.setProperty("week", 20);
-        entity2.setProperty("year", 2019);
-        entity2.setProperty("count", 100);
+        entity2.setProperty("year", 2015);
+        entity2.setProperty("week", 15);
+        entity2.setProperty("count", 50);
+        WeeklyPageView pageView2 = new WeeklyPageView(
+                Integer.parseInt(entity2.getProperty("week").toString()),
+                Integer.parseInt(entity2.getProperty("year").toString()),
+                Integer.parseInt(entity2.getProperty("count").toString())
+        );
 
         Entity entity3 = new Entity("PageViews");
-        entity3.setProperty("restaurantKey", "2");
+        entity3.setProperty("restaurantKey", "1");
         entity3.setProperty("restaurantName", "Marlows");
-        entity3.setProperty("week", 15);
-        entity3.setProperty("year", 2018);
+        entity3.setProperty("year", 2014);
+        entity3.setProperty("week", 13);
         entity3.setProperty("count", 200);
-        entityList.add(entity1);
-        entityList.add(entity2);
-        entityList.add(entity3);
+        WeeklyPageView pageView3 = new WeeklyPageView(
+                Integer.parseInt(entity3.getProperty("week").toString()),
+                Integer.parseInt(entity3.getProperty("year").toString()),
+                Integer.parseInt(entity3.getProperty("count").toString())
+        );
 
-        List<Map<String, Object>> actual = metricsClient.populateClickData(entityList, firstPageView);
-        List<Map<String, Object>> expected = new ArrayList<>();
+        Entity entity4 = new Entity("PageViews");
+        entity4.setProperty("restaurantKey", "1");
+        entity4.setProperty("restaurantName", "Marlows");
+        entity4.setProperty("year", 2016);
+        entity4.setProperty("week", 20);
+        entity4.setProperty("count", 300);
+        WeeklyPageView pageView4 = new WeeklyPageView(
+                Integer.parseInt(entity4.getProperty("week").toString()),
+                Integer.parseInt(entity4.getProperty("year").toString()),
+                Integer.parseInt(entity4.getProperty("count").toString())
+        );
 
-        // Populate the expected list.
-        Map<String, Object> clickData;
-        for (Entity entity : entityList) {
-            clickData = new HashMap<>();
-            clickData.put("restaurantName", entity.getProperty("restaurantName").toString());
-            clickData.put("week", entity.getProperty("week"));
-            clickData.put("year", entity.getProperty("year"));
-            clickData.put("numClicks", entity.getProperty("count"));
-            expected.add(clickData);
-        }
+        List<WeeklyPageView> pageViewList1 = new ArrayList<>();
 
-        // Check each element in the actual list.
-        for (int i = 0; i < expected.size(); i ++) {
-            Assert.assertEquals("Restaurant Name", expected.get(i).get("restaurantName"), actual.get(i).get("restaurantName"));
-            Assert.assertEquals("Week", expected.get(i).get("week"), actual.get(i).get("week"));
-            Assert.assertEquals("Year", expected.get(i).get("year"), actual.get(i).get("year"));
-            Assert.assertEquals("Number of Clicks", expected.get(i).get("numClicks"), actual.get(i).get("numClicks"));
+        //This is the order in which they should be due to their dates.
+        pageViewList1.add(pageView3);
+        pageViewList1.add(pageView1);
+        pageViewList1.add(pageView2);
+        pageViewList1.add(pageView4);
+        RestaurantPageViews restaurantPageView1 = new RestaurantPageViews(
+                entity1.getProperty("restaurantName").toString(),
+                pageViewList1
+        );
+
+        Entity entity5 = new Entity("PageViews");
+        entity5.setProperty("restaurantKey", "2");
+        entity5.setProperty("restaurantName", "Subway");
+        entity5.setProperty("year", 2015);
+        entity5.setProperty("week", 11);
+        entity5.setProperty("count", 1000);
+        WeeklyPageView pageView5 = new WeeklyPageView(
+                Integer.parseInt(entity5.getProperty("week").toString()),
+                Integer.parseInt(entity5.getProperty("year").toString()),
+                Integer.parseInt(entity5.getProperty("count").toString())
+        );
+        List<WeeklyPageView> pageViewList5 = new ArrayList<>();
+        pageViewList5.add(pageView5);
+        RestaurantPageViews restaurantPageView2 = new RestaurantPageViews(
+                entity5.getProperty("restaurantName").toString(),
+                pageViewList5
+        );
+
+        List<RestaurantPageViews> expected = new ArrayList<>();
+        expected.add(restaurantPageView2);
+        expected.add(restaurantPageView1);
+
+        datastoreService.put(entity1);
+        datastoreService.put(entity2);
+        datastoreService.put(entity3);
+        datastoreService.put(entity4);
+        datastoreService.put(entity5);
+
+        List<RestaurantPageViews> actual = metricsClient.getAllPageViews();
+
+        for (int i = 0; i < actual.size(); i++) {
+            Assert.assertEquals("name", expected.get(i).getName(), actual.get(i).getName());
+            for (int x = 0; x < actual.get(i).getPageViews().size(); x++) {
+                Assert.assertEquals("year", expected.get(i).getPageViews().get(x).getYear(), actual.get(i).getPageViews().get(x).getYear());
+                Assert.assertEquals("week", expected.get(i).getPageViews().get(x).getWeek(), actual.get(i).getPageViews().get(x).getWeek());
+                Assert.assertEquals("count", expected.get(i).getPageViews().get(x).getCount(), actual.get(i).getPageViews().get(x).getCount());
+            }
         }
     }
 }
