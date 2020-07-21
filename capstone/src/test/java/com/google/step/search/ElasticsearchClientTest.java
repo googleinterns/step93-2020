@@ -96,8 +96,8 @@ public class ElasticsearchClientTest {
         assertTrue(method.equalsIgnoreCase("POST"));
 
         URL urlFromString = new URL(url);
-        assertEquals(urlFromString.getHost(), ElasticsearchClient.getElasticsearchHostname());
-        assertEquals(urlFromString.getPort(), ElasticsearchClient.getElasticsearchPort());
+        assertEquals(elasticsearchHostname, urlFromString.getHost());
+        assertEquals(elasticsearchPort, urlFromString.getPort());
         assertEquals("/restaurants/_search", urlFromString.getPath());
 
         return new MockLowLevelHttpRequest() {
@@ -129,7 +129,8 @@ public class ElasticsearchClientTest {
       }
     };
 
-    ElasticsearchClient esClient = new ElasticsearchClient(transport);
+    ElasticsearchClient esClient =
+        new ElasticsearchClient(transport, elasticsearchHostname, elasticsearchPort);
     List<RestaurantHeader> queryResult = esClient.queryRestaurantHeaders("goog");
     assertEquals(Collections.singletonList(HEADER_1), queryResult);
   }
@@ -142,9 +143,9 @@ public class ElasticsearchClientTest {
         assertTrue(method.equalsIgnoreCase("POST"));
 
         URL urlFromString = new URL(url);
-        assertEquals(urlFromString.getHost(), ElasticsearchClient.getElasticsearchHostname());
-        assertEquals(urlFromString.getPort(), ElasticsearchClient.getElasticsearchPort());
-        assertEquals("/restaurants/_search", urlFromString.getPath());
+        assertEquals(elasticsearchHostname, urlFromString.getHost());
+        assertEquals(elasticsearchPort, urlFromString.getPort());
+        assertEquals("/_search", urlFromString.getPath());
 
         return new MockLowLevelHttpRequest() {
           @Override
@@ -175,7 +176,8 @@ public class ElasticsearchClientTest {
       }
     };
 
-    ElasticsearchClient esClient = new ElasticsearchClient(transport);
-    assertEquals(Arrays.asList(HEADER_1, HEADER_1), esClient.getRandomRestaurants());
+    ElasticsearchClient esClient =
+        new ElasticsearchClient(transport, elasticsearchHostname, elasticsearchPort);
+    assertEquals(Arrays.asList(HEADER_1, HEADER_2), esClient.getRandomRestaurants());
   }
 }
