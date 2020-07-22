@@ -81,7 +81,7 @@ function getFirstDate(restaurantPageViews) {
       minYear = currRestaurantMinPageView.year;
       minWeek = currRestaurantMinPageView.week;
     } else if (
-      currRestaurantMinPageView.week < minWeek &&
+        currRestaurantMinPageView.week < minWeek &&
         currRestaurantMinPageView.year === minYear) {
       minWeek = currRestaurantMinPageView.week;
     }
@@ -118,7 +118,7 @@ function getFullDateArray(firstDate, currDate) {
   const DAYS_IN_WEEK = 7;
   // Loop through, adding 7 each time for the next week
   for (let date = firstDate; date <= currDate;
-    date.setDate(date.getDate() + DAYS_IN_WEEK)) {
+       date.setDate(date.getDate() + DAYS_IN_WEEK)) {
     dates.push(new Date(date));
   }
   return dates;

@@ -1,8 +1,8 @@
-/** Tests for the various data parsing methods in visualizations.js */
+/** Tests for the various data parsing methods in visualizationdata.js */
 
 import {beforeEach} from '@jest/globals';
 
-const functions = require('./visualizations');
+const functions = require('./visualizationdata');
 
 let pageViewExample1;
 let pageViewExample2;
@@ -200,24 +200,24 @@ test('Test getFullDateArray with different inputs', () => {
  */
 test('Test getNumWeeksBetween with different inputs', () => {
   expect(functions.getNumWeeksBetween(
-      new Date(2020, 6, 21), new Date(2020, 6, 28)))
+             new Date(2020, 6, 21), new Date(2020, 6, 28)))
       .toBe(1);
   expect(
       functions.getNumWeeksBetween(new Date(2020, 6, 21), new Date(2020, 7, 4)))
       .toBe(2);
   expect(functions.getNumWeeksBetween(
-      new Date(2020, 6, 21), new Date(2020, 6, 21)))
+             new Date(2020, 6, 21), new Date(2020, 6, 21)))
       .toBe(0);
   expect(functions.getNumWeeksBetween(
-      new Date(2019, 11, 22), new Date(2020, 0, 19)))
+             new Date(2019, 11, 22), new Date(2020, 0, 19)))
       .toBe(4);
 
   // Should work in reverse param order also
   expect(functions.getNumWeeksBetween(
-      new Date(2020, 6, 28), new Date(2020, 6, 21)))
+             new Date(2020, 6, 28), new Date(2020, 6, 21)))
       .toBe(1);
-  expect(functions.getNumWeeksBetween(
-      new Date(2020, 7, 4), new Date(2020, 6, 21)))
+  expect(
+      functions.getNumWeeksBetween(new Date(2020, 7, 4), new Date(2020, 6, 21)))
       .toBe(2);
 });
 
