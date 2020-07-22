@@ -23,16 +23,17 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.Json;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.step.data.RestaurantHeader;
+import org.apache.http.client.utils.URIBuilder;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import org.apache.http.client.utils.URIBuilder;
+import java.util.List;
 
 /**
- * The {@code ElasticsearchClient} is a class that sends requests to add {@code RestaurantHeaders}
- * to the "restaurants" index of Elasticsearch.
+ * {@link RestaurantHeaderSearchClient} backed by Elasticsearch.
  */
-public class ElasticsearchClient {
+public class ElasticsearchClient implements RestaurantHeaderSearchClient {
   private static final String RESTAURANTS = "restaurants";
 
   private final String elasticsearchUriString;
@@ -42,7 +43,10 @@ public class ElasticsearchClient {
   ElasticsearchClient(HttpTransport transport, String hostname, short port) {
     requestFactory = transport.createRequestFactory();
 
-    URIBuilder uriBuilder = new URIBuilder().setScheme("http").setHost(hostname).setPort(port);
+    URIBuilder uriBuilder = new URIBuilder()
+        .setScheme("http")
+        .setHost(hostname)
+        .setPort(port);
     elasticsearchUriString = uriBuilder.toString();
   }
 
@@ -51,11 +55,9 @@ public class ElasticsearchClient {
   }
 
   /**
-   * Given a {@code RestaurantHeader}, sends HTTP request to Elasticsearch server to add a document
-   * to the "restaurants" index representing a {@code restaurantHeader}.
-   * @param restaurantHeader a {@code RestaurantHeader}
-   * @throws IOException when buildPutRequest() or execute() fails
+   * {@inheritDoc}
    */
+  @Override
   public void updateRestaurantHeader(RestaurantHeader restaurantHeader) throws IOException {
     String restaurantKey = String.valueOf(restaurantHeader.getRestaurantKey());
 
@@ -63,9 +65,25 @@ public class ElasticsearchClient {
     requestUrl.setPathParts(Arrays.asList("", RESTAURANTS, "_doc", restaurantKey));
 
     String requestBody = gson.toJson(restaurantHeader);
-    HttpContent putRequestContent =
-        new ByteArrayContent(Json.MEDIA_TYPE, requestBody.getBytes(StandardCharsets.UTF_8));
+    HttpContent putRequestContent = new ByteArrayContent(Json.MEDIA_TYPE,
+        requestBody.getBytes(StandardCharsets.UTF_8));
 
     requestFactory.buildPutRequest(requestUrl, putRequestContent).execute();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<RestaurantHeader> queryRestaurantHeaders(String query) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<RestaurantHeader> getRandomRestaurants() {
+    throw new UnsupportedOperationException();
   }
 }

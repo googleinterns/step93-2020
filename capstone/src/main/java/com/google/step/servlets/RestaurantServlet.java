@@ -24,6 +24,7 @@ import com.google.step.clients.RestaurantClient;
 import com.google.step.data.Restaurant;
 import com.google.step.data.RestaurantHeader;
 import com.google.step.search.ElasticsearchClient;
+import com.google.step.search.RestaurantHeaderSearchClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +42,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
   private RestaurantClient restaurantClient = new RestaurantClient();
-  private ElasticsearchClient searchClient = new ElasticsearchClient("localhost", (short) 9200);
+  private RestaurantHeaderSearchClient searchClient =
+      new ElasticsearchClient("localhost", (short) 9200);
 
   /**
    * Will put the information gathered from the signup page and add the
