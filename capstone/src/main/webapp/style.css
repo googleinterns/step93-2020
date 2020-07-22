@@ -50,3 +50,9 @@
 .restaurant-name-link {
   color: black;
 }
+
+.multiLineChart {
+  height: 600px;
+  margin-left: 50px;
+  width: 800px;
+}
