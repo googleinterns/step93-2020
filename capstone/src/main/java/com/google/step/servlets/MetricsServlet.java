@@ -1,10 +1,13 @@
 package com.google.step.servlets;
 
+import com.google.gson.Gson;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 // import com.google.step.clients.MetricsClient;
 
@@ -30,5 +33,16 @@ public class MetricsServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Request parameters:
         //      String restaurantName, String restaurantKey -> putPageView()
+    }
+
+    /**
+     * Converts to Json using Gson.
+     * @param login Map to convert to Gson.
+     * @return String in JSON format.
+     */
+    private static String convertToJsonUsingGson(Map login) {
+        Gson gson = new Gson();
+        String json = gson.toJson(login);
+        return json;
     }
 }
