@@ -37,9 +37,17 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for sending/getting a restaurant to/from Datastore. */
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
-  private RestaurantClient restaurantClient = new RestaurantClient();
-  private RestaurantHeaderSearchClient searchClient =
-      new ElasticsearchClient("localhost", (short) 9200);
+  private final RestaurantClient restaurantClient;
+  private final RestaurantHeaderSearchClient searchClient;
+
+  public RestaurantServlet() {
+    this(new RestaurantClient(), new ElasticsearchClient("localhost", (short) 9200));
+  }
+
+  public RestaurantServlet(RestaurantClient restaurantClient, RestaurantHeaderSearchClient searchClient) {
+    this.restaurantClient = restaurantClient;
+    this.searchClient = searchClient;
+  }
 
   /**
    * Will put the information gathered from the signup page and add the
