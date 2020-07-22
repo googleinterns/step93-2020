@@ -4,3 +4,9 @@
   height: 600px;
   width: 600px;
 }
+
+.multiLineChart {
+  height: 600px;
+  margin-left: 50px;
+  width: 800px;
+}
