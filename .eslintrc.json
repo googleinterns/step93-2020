@@ -15,7 +15,8 @@
     "no-multi-spaces": "off",
     "require-jsdoc": "off",
     "valid-jsdoc": "off",
-    "no-unused-vars": "warn"
+    "no-unused-vars": "warn",
+    "indent": "off"
   }
 }
 
