@@ -27,6 +27,7 @@ import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import com.google.step.data.RestaurantHeader;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,11 +39,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The {@code ElasticsearchClient} is a class that sends requests to add {@code RestaurantHeaders}
- * to the "restaurants" index of Elasticsearch and queries the "restaurants" index for relevant
- * restaurant headers.
+ * {@link RestaurantHeaderSearchClient} backed by Elasticsearch.
  */
-public class ElasticsearchClient {
+public class ElasticsearchClient implements RestaurantHeaderSearchClient {
   private static final String RESTAURANTS = "restaurants";
 
   private final String elasticsearchUriString;
@@ -52,10 +51,7 @@ public class ElasticsearchClient {
   ElasticsearchClient(HttpTransport transport, String hostname, short port) {
     requestFactory = transport.createRequestFactory();
 
-    URIBuilder uriBuilder = new URIBuilder()
-        .setScheme("http")
-        .setHost(hostname)
-        .setPort(port);
+    URIBuilder uriBuilder = new URIBuilder().setScheme("http").setHost(hostname).setPort(port);
     elasticsearchUriString = uriBuilder.toString();
   }
 
@@ -64,11 +60,9 @@ public class ElasticsearchClient {
   }
 
   /**
-   * Given a {@link RestaurantHeader}, sends HTTP request to the search server to add a document
-   * that represents a {@link RestaurantHeader} to the "restaurants" index.
-   * @param restaurantHeader a {@link RestaurantHeader} that will be updated in the search index
-   * @throws IOException when buildPutRequest() or execute() fails
+   * {@inheritDoc}
    */
+  @Override
   public void updateRestaurantHeader(RestaurantHeader restaurantHeader) throws IOException {
     String restaurantKey = String.valueOf(restaurantHeader.getRestaurantKey());
     List<String> requestPath = Arrays.asList("", RESTAURANTS, "_doc", restaurantKey);
@@ -92,13 +86,10 @@ public class ElasticsearchClient {
   }
 
   /**
-   * Queries search server for {@link RestaurantHeader} fields that match {@code query} by either
-   * "name" or "cuisine" field.
-   * @param query valid query string
-   * @return list of {@link RestaurantHeader} objects sorted by descending relevance score
-   * @throws IOException if request cannot be made or executed properly
+   * {@inheritDoc}
    */
-  private List<RestaurantHeader> queryRestaurantHeaders(String query) throws IOException {
+  @Override
+  public List<RestaurantHeader> queryRestaurantHeaders(String query) throws IOException {
     List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
 
     String requestBody = new JSONObject()
@@ -115,11 +106,10 @@ public class ElasticsearchClient {
   }
 
   /**
-   * Queries search server, matching everything possible.
-   * @return list of {@link RestaurantHeader} objects sorted arbitrarily
-   * @throws IOException if request cannot be made or executed properly
+   * {@inheritDoc}
    */
-  private List<RestaurantHeader> getRandomRestaurants() throws IOException {
+  @Override
+  public List<RestaurantHeader> getRandomRestaurants() throws IOException {
     List<String> requestPath = Arrays.asList("", "_search");
 
     String requestBody = new JSONObject()
