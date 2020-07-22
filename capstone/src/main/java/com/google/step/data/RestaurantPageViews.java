@@ -1,6 +1,8 @@
 package com.google.step.data;
 
+import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Object that contains all the weekly page views of a specific restaurant.
@@ -12,7 +14,7 @@ public class RestaurantPageViews {
 
     public RestaurantPageViews(String name, List<WeeklyPageView> pageViews) {
         this.name = name;
-        this.pageViews = pageViews;
+        this.pageViews = Collections.unmodifiableList(pageViews);
     }
 
     /**
@@ -44,8 +46,22 @@ public class RestaurantPageViews {
             return false;
         }
         RestaurantPageViews restaurantPageViews = (RestaurantPageViews) other;
+        if (this.hashCode() != other.hashCode()) {
+            return false;
+        }
         return this.name.equals(restaurantPageViews.getName())
                 && this.pageViews.equals(restaurantPageViews.getPageViews());
     }
 
+    /**
+     * Hashcode method for comparisons
+     * @return integer representing the code
+     */
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(name)
+                .append(pageViews)
+                .toHashCode();
+    }
 }

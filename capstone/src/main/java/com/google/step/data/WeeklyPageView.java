@@ -1,5 +1,7 @@
 package com.google.step.data;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  * A simple class that contains the information for a weekly page view.
  */
@@ -30,9 +32,25 @@ public class WeeklyPageView {
             return false;
         }
         WeeklyPageView pageView = (WeeklyPageView) other;
+        if (this.hashCode() != other.hashCode()) {
+            return false;
+        }
         return pageView.getWeek() == this.week
                 && pageView.getYear() == this.year
-                && pageView.getCount() != this.count;
+                && pageView.getCount() == this.count;
+    }
+
+    /**
+     * Hashcode method for comparisons
+     * @return integer representing the code
+     */
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(week)
+                .append(year)
+                .append(count)
+                .toHashCode();
     }
 
     /**

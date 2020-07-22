@@ -103,10 +103,9 @@ public class MetricsClient {
 
         WeeklyPageView pageView;
         for (Entity entity : results) {
-            pageView = new WeeklyPageView(Integer.parseInt(entity.getProperty("week").toString()),
+            pageViewsList.add(new WeeklyPageView(Integer.parseInt(entity.getProperty("week").toString()),
                     year,
-                    Integer.parseInt(entity.getProperty("count").toString()));
-            pageViewsList.add(pageView);
+                    Integer.parseInt(entity.getProperty("count").toString())));
         }
 
         return pageViewsList;
@@ -126,11 +125,9 @@ public class MetricsClient {
         PreparedQuery preparedQuery = dataStore.prepare(query);
         List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withDefaults());
 
-        // Map to maintain a reference to each restaurant and make searching for them easy.
+        // Map to maintain a reference to each restaurantList and make searching for them easy.
         // The map and the list share the reference to each restaurantPageViews.
-        Map<String, RestaurantPageViews> restaurantNameMap = new HashMap<>();
-        List<RestaurantPageViews> restaurantPageViewsList = new ArrayList<>();
-        RestaurantPageViews currRestaurant;
+        Map<String, List<WeeklyPageView>> restaurantNameMap = new HashMap<>();
 
         for (Entity entity : results) {
             String name = entity.getProperty("restaurantName").toString();
@@ -138,15 +135,18 @@ public class MetricsClient {
             int week = Integer.parseInt(entity.getProperty("week").toString());
             int count = Integer.parseInt(entity.getProperty("count").toString());
             if (restaurantNameMap.containsKey(name)) {
-                currRestaurant = restaurantNameMap.get(name);
-                currRestaurant.getPageViews().add(new WeeklyPageView(week, year, count));
+                restaurantNameMap.get(name).add(new WeeklyPageView(week, year, count));
             } else {
-                currRestaurant = new RestaurantPageViews(name,
-                        new ArrayList<>());
-                currRestaurant.getPageViews().add(new WeeklyPageView(week, year, count));
-                restaurantNameMap.put(name, currRestaurant);
-                restaurantPageViewsList.add(currRestaurant);
+                List<WeeklyPageView> currRestaurantList = new ArrayList<>();
+                currRestaurantList.add(new WeeklyPageView(week, year, count));
+                restaurantNameMap.put(name, currRestaurantList);
             }
+        }
+
+        // Build the return list
+        List<RestaurantPageViews> restaurantPageViewsList = new ArrayList<>();
+        for (Map.Entry<String, List<WeeklyPageView>> entry : restaurantNameMap.entrySet()) {
+            restaurantPageViewsList.add(new RestaurantPageViews(entry.getKey(), entry.getValue()));
         }
 
         return restaurantPageViewsList;

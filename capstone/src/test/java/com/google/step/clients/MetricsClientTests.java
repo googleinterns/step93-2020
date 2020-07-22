@@ -330,8 +330,8 @@ public class MetricsClientTests {
         );
 
         List<RestaurantPageViews> expected = new ArrayList<>();
-        expected.add(restaurantPageView2);
         expected.add(restaurantPageView1);
+        expected.add(restaurantPageView2);
 
         datastoreService.put(entity1);
         datastoreService.put(entity2);
