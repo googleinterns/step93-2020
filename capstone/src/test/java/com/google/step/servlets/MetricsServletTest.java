@@ -10,7 +10,7 @@ public class MetricsServletTest {
 
     // Tests doPost:
     //      1. Just with those parameter.
-    //      2. If parameters are not enough or  send error message (error code)
+    //      2. If parameters are not enough or send error message (error code)
 
     // Miscellaneous
 

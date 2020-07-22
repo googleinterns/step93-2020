@@ -24,9 +24,6 @@ public class MetricsServlet extends HttpServlet {
         //      int year, String restaurantKey -> getYearRestaurantPageViews()
         //      emtpy -> getAllPageViews()
         response.setContentType("application/json;");
-
-
-
     }
 
     @Override
