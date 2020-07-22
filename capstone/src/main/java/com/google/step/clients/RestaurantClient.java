@@ -19,7 +19,7 @@ public class RestaurantClient {
    * @param restaurant, to be processed into an Entity and put into datastore
    * @param ownerEmail, separate from Restaurant class and passed from UserService in the servlet
    */
-  public void putRestaurant(Restaurant restaurant, String ownerEmail) {
+  public long putRestaurant(Restaurant restaurant, String ownerEmail) {
     // Retrieve restaurant properties
     String name = restaurant.getName();
     GeoPt location = restaurant.getLocation();
@@ -46,6 +46,8 @@ public class RestaurantClient {
     restaurantInfo.setProperty("score", 2.5);
 
     datastore.put(restaurantInfo);
+
+    return id;
   }
 
   /**
