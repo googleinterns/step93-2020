@@ -35,7 +35,7 @@ import java.util.Calendar;
 import java.util.Arrays;
 
 /**
- * This client is in charge of interacting with metricsServlet and the metrics entities.
+ * This client is in charge of interacting with the metrics entities in DataStore.
  */
 public class MetricsClient {
 
@@ -48,8 +48,8 @@ public class MetricsClient {
 
     /**
      * Gets the current week's page views for one restaurant by specifying a restaurantKey.
-     * @param restaurantKey restaurant key of the restaurant we want to get views.
      * @param restaurantName restaurant name in case no entity exists for this week's page views.
+     * @param restaurantKey restaurant key of the restaurant we want to get views.
      * @return returns an instance of a WeeklyPageView. If the entity doesn't exist yet,
      *         it returns an instance of WeeklyPageView with all variables set to 0
      */
@@ -86,7 +86,7 @@ public class MetricsClient {
      * Gets the weekly pageViews for the entire year of a specific restaurant.
      * @param year we are looking for
      * @param restaurantKey of restaurant we want the data.
-     * @return List<WeeklyPageViews> sorted by week
+     * @return List<WeeklyPageViews> sorted by week in ascending order.
      */
     public List<WeeklyPageView> getYearRestaurantPageViews(int year, String restaurantKey) {
 
@@ -95,7 +95,8 @@ public class MetricsClient {
                         new FilterPredicate("restaurantKey", Query.FilterOperator.EQUAL, restaurantKey),
                         new FilterPredicate("year", Query.FilterOperator.EQUAL, year)
                 ));
-        Query query = new Query("PageViews").setFilter(compositeFilter).addSort("week", Query.SortDirection.ASCENDING);
+        Query query = new Query("PageViews").setFilter(compositeFilter)
+                .addSort("week", Query.SortDirection.ASCENDING);
         PreparedQuery preparedQuery = dataStore.prepare(query);
         List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withDefaults());
 
@@ -120,8 +121,8 @@ public class MetricsClient {
         // Query with double sort so the first element of every restaurant should be
         // the earliest week and year.
         Query query = new Query("PageViews")
-                .addSort("week", Query.SortDirection.ASCENDING)
-                .addSort("year", Query.SortDirection.ASCENDING);
+                .addSort("year", Query.SortDirection.ASCENDING)
+                .addSort("week", Query.SortDirection.ASCENDING);
         PreparedQuery preparedQuery = dataStore.prepare(query);
         List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withDefaults());
 

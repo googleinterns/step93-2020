@@ -111,9 +111,9 @@ public class MetricsClientTests {
         //                  ),
         //              WeeklyPageView with the following data.
         //                  (
-        //                      "week": 2,
+        //                      "week": 3,
         //                      "year": 2015,
-        //                      "count": 100
+        //                      "count": 200
         //                  )
         //          ]
         Entity entity1 = new Entity("PageViews");
@@ -243,6 +243,11 @@ public class MetricsClientTests {
         //                          week: 20
         //                          year: 2016
         //                          count: 300
+        //                      ),
+        //                      WeeklyPageView(
+        //                          week: 8
+        //                          year: 2017
+        //                          count: 5
         //                      )
         //                 ]
         //              ),
@@ -299,6 +304,18 @@ public class MetricsClientTests {
                 Integer.parseInt(entity4.getProperty("count").toString())
         );
 
+        Entity entity6 = new Entity("PageViews");
+        entity6.setProperty("restaurantKey", "1");
+        entity6.setProperty("restaurantName", "Marlows");
+        entity6.setProperty("year", 2017);
+        entity6.setProperty("week", 8);
+        entity6.setProperty("count", 5);
+        WeeklyPageView pageView6 = new WeeklyPageView(
+                Integer.parseInt(entity6.getProperty("week").toString()),
+                Integer.parseInt(entity6.getProperty("year").toString()),
+                Integer.parseInt(entity6.getProperty("count").toString())
+        );
+
         List<WeeklyPageView> pageViewList1 = new ArrayList<>();
 
         //This is the order in which they should be due to their dates.
@@ -306,6 +323,7 @@ public class MetricsClientTests {
         pageViewList1.add(pageView1);
         pageViewList1.add(pageView2);
         pageViewList1.add(pageView4);
+        pageViewList1.add(pageView6);
         RestaurantPageViews restaurantPageView1 = new RestaurantPageViews(
                 entity1.getProperty("restaurantName").toString(),
                 pageViewList1
@@ -338,6 +356,7 @@ public class MetricsClientTests {
         datastoreService.put(entity3);
         datastoreService.put(entity4);
         datastoreService.put(entity5);
+        datastoreService.put(entity6);
 
         List<RestaurantPageViews> actual = metricsClient.getAllPageViews();
 
