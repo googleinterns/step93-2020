@@ -14,6 +14,7 @@
 
 package com.google.step.servlets;
 
+import com.google.api.client.json.Json;
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -21,6 +22,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.step.clients.RestaurantClient;
 import com.google.step.data.Restaurant;
+import com.google.step.data.RestaurantHeader;
+import com.google.step.search.ElasticsearchClient;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
   private RestaurantClient restaurantClient = new RestaurantClient();
+  private ElasticsearchClient searchClient = new ElasticsearchClient("localhost", (short) 9200);
 
   /**
    * Will put the information gathered from the signup page and add the
@@ -89,7 +94,14 @@ public class RestaurantServlet extends HttpServlet {
     Restaurant restaurant =
         new Restaurant(null, name, geoPoint, story, cuisineList, phone, website, status);
 
-    restaurantClient.putRestaurant(restaurant, email);
+    long restaurantId = restaurantClient.putRestaurant(restaurant, email);
+
+    restaurant =
+        new Restaurant(restaurantId, name, geoPoint, story, cuisineList, phone, website, status);
+    RestaurantHeader restaurantHeader = RestaurantHeader.createHeaderFromRestaurant(restaurant);
+    searchClient.updateRestaurantHeader(restaurantHeader);
+
+    response.setContentType(Json.MEDIA_TYPE);
   }
 
   private String changeNonNumericCharacters(String num) {
