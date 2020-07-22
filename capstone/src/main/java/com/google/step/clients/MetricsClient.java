@@ -48,12 +48,11 @@ public class MetricsClient {
 
     /**
      * Gets the current week's page views for one restaurant by specifying a restaurantKey.
-     * @param restaurantName restaurant name in case no entity exists for this week's page views.
      * @param restaurantKey restaurant key of the restaurant we want to get views.
      * @return returns an instance of a WeeklyPageView. If the entity doesn't exist yet,
      *         it returns an instance of WeeklyPageView with all variables set to 0
      */
-    public WeeklyPageView getCurrentPageViews(String restaurantName, String restaurantKey) {
+    public WeeklyPageView getCurrentPageViews(String restaurantKey) {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int week = calendar.get(Calendar.WEEK_OF_YEAR);

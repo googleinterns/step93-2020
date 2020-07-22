@@ -187,7 +187,7 @@ public class MetricsClientTests {
         datastoreService.put(entity1);
         datastoreService.put(entity2);
 
-        WeeklyPageView resultPageView = metricsClient.getCurrentPageViews("Marlows", "1");
+        WeeklyPageView resultPageView = metricsClient.getCurrentPageViews("1");
         Assert.assertEquals("Year", year, resultPageView.getYear());
         Assert.assertEquals("Week", week, resultPageView.getWeek());
         Assert.assertEquals("Count", 100, resultPageView.getCount());
@@ -201,7 +201,7 @@ public class MetricsClientTests {
 
         // Using calendar for this test is necessary since the method in the
         // metricsClient uses the calendar as well to get the current date.
-        WeeklyPageView resultPageView = metricsClient.getCurrentPageViews("Marlows", "1");
+        WeeklyPageView resultPageView = metricsClient.getCurrentPageViews("1");
         Assert.assertEquals("Week", 0, resultPageView.getWeek());
         Assert.assertEquals("Year", 0, resultPageView.getYear());
         Assert.assertEquals("Count", 0, resultPageView.getCount());
