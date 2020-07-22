@@ -6,9 +6,9 @@
 }
 
 #main-content {
-  max-width: 85vw;
   margin-left: auto;
   margin-right: auto;
+  max-width: 85vw;
 }
 
 .top-app-bar-title {
@@ -46,10 +46,6 @@
 
 .search-label {
   padding-right: 1em;
-}
-
-#search-input-field {
-  caret-color: white;
 }
 
 .restaurant-name-link {
