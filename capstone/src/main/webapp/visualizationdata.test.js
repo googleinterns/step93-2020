@@ -148,25 +148,30 @@ beforeEach(() => {
 /** Test for getFirstDate function to ensure it finds the correct minimum */
 test('Test getFirstDate with different inputs', () => {
   // Empty dataset provided
-  expect(functions.getFirstDate([])).toMatchObject([]);
+  expect(functions.getFirstDate([]))
+      .toMatchObject({'minWeek': null, 'minYear': null});
 
   // Tests with different month/year edge cases
-  expect(functions.getFirstDate(pageViewExample1)).toMatchObject([10, 2020]);
-  expect(functions.getFirstDate(pageViewExample2)).toMatchObject([11, 2020]);
-  expect(functions.getFirstDate(pageViewExample3)).toMatchObject([25, 2019]);
+  expect(functions.getFirstDate(pageViewExample1))
+      .toMatchObject({'minWeek': 10, 'minYear': 2020});
+  expect(functions.getFirstDate(pageViewExample2))
+      .toMatchObject({'minWeek': 11, 'minYear': 2020});
+  expect(functions.getFirstDate(pageViewExample3))
+      .toMatchObject({'minWeek': 25, 'minYear': 2019});
 });
 
 /**
  * Test for getDateFromWeekYear to ensure it finds the correct Date from
- * January 1 based on checking the calendar
+ * January 1 based on checking the calendar. All dates are Sundays of the
+ * week requested.
  */
 test('Test getDateFromWeekYear with different inputs', () => {
   expect(functions.getDateFromWeekYear(4, 2020))
-      .toMatchObject(new Date(2020, 0, 22));
+      .toMatchObject(new Date(2020, 0, 19));
   expect(functions.getDateFromWeekYear(1, 2020))
-      .toMatchObject(new Date(2020, 0, 1));
+      .toMatchObject(new Date(2019, 11, 29));
   expect(functions.getDateFromWeekYear(26, 2020))
-      .toMatchObject(new Date(2020, 5, 24));
+      .toMatchObject(new Date(2020, 5, 21));
 
   // Return null for negative year or week values
   expect(functions.getDateFromWeekYear(-1, 2020)).toBe(null);
