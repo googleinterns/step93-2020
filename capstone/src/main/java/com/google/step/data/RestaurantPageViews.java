@@ -46,9 +46,6 @@ public class RestaurantPageViews {
             return false;
         }
         RestaurantPageViews restaurantPageViews = (RestaurantPageViews) other;
-        if (this.hashCode() != other.hashCode()) {
-            return false;
-        }
         return this.name.equals(restaurantPageViews.getName())
                 && this.pageViews.equals(restaurantPageViews.getPageViews());
     }
