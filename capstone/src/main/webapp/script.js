@@ -60,7 +60,9 @@ function addRestaurant(restaurant, containerElement) {
  */
 function createRestaurantNameDiv(restaurant) {
   const params = new URLSearchParams();
-  params.append('restaurantKey', restaurant.restaurantKey.slice(9, restaurant.restaurantKey.length-1));
+  params.append(
+      'restaurantKey',
+      restaurant.restaurantKey.slice(9, restaurant.restaurantKey.length - 1));
 
   const linkElement = document.createElement('a');
   linkElement.classList.add('restaurant-name-link');
@@ -114,32 +116,41 @@ function createRestaurantIsStrugglingDiv(restaurant) {
   return restaurantStrugglingDiv;
 }
 
+/**
+ * Queries LoginServlet to see the current login status and updates available
+ * buttons accordingly. When the user is logged in, they can see the restaurant
+ * signup button.
+ */
 function getLoginState() {
   fetch('/login').then(function(response) {
     const loginButton = document.getElementById('login-button');
     const loginButtonIcon = document.getElementById('login-button-icon');
     const loginButtonText = document.getElementById('login-button-text');
-    const restaurantSignupButton = document.getElementById('create-restaurant-button');
+    const restaurantSignupButton =
+        document.getElementById('create-restaurant-button');
 
     if (response.ok) {
       response.json().then((responseJson) => {
         if (responseJson.loggedIn) {
           loginButtonIcon.innerText = 'logout';
-          loginButtonText.innerText = "Logout";
+          loginButtonText.innerText = 'Logout';
           loginButton.href = responseJson.logOutURL;
-          restaurantSignupButton.style.display = "block";
-        }
-        else {
+          restaurantSignupButton.style.display = 'block';
+        } else {
           loginButtonIcon.innerText = 'login';
-          loginButtonText.innerText = "Login";
+          loginButtonText.innerText = 'Login';
           loginButton.href = responseJson.loginURL;
-          restaurantSignupButton.style.display = "none";
+          restaurantSignupButton.style.display = 'none';
         }
       });
     }
   });
 }
 
+/**
+ * Setup the home page by getting the restaurants
+ * to display and getting the login state.
+ */
 function setHomePage() {
   getRestaurants();
   getLoginState();

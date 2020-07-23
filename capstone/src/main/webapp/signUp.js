@@ -37,15 +37,17 @@ function sendSignUpInfo() {
     params.append('phone', phone);
     params.append('website', website);
 
-    fetch('/restaurant', {method: 'POST', body: params}).then(function(response) {
-      if (response.ok) {
-        window.location.href = '/';
-      } else {
-        const errorElement = createP('Request failed. Please make sure you are logged in.');
-        const error = document.getElementById('missing-information-error');
-        error.appendChild(errorElement);
-      }
-    });
+    fetch('/restaurant', {method: 'POST', body: params})
+        .then(function(response) {
+          if (response.ok) {
+            window.location.href = '/';
+          } else {
+            const errorElement =
+                createP('Request failed. Please make sure you are logged in.');
+            const error = document.getElementById('missing-information-error');
+            error.appendChild(errorElement);
+          }
+        });
   }
 }
 
@@ -61,10 +63,9 @@ function createP(content) {
   return pTag;
 }
 
-/**
- * Return to home landing page.
- */
-function returnHome() {
-  window.location.href = '/';
-}
-
+// /**
+//  * Return to home landing page.
+//  */
+// function returnHome() {
+//   window.location.href = '/';
+// }

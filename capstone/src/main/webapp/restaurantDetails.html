@@ -12,27 +12,38 @@
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGsIKEhbCWc-Ej9169cT4xCivgixDZzKY"></script>
+    <script src="script.js"></script>
+    <script type="module" src="style.js"></script>
   </head>
   <body onload="setRestaurantDetails();">
-    <button
-      class="material-icons mdc-top-app-bar__action-item mdc-icon-button"
-      aria-label="Back"
-      onclick="returnHome();"
-      type="button"
-    >
-      arrow_back
-    </button>
-    <section id="restaurant-detail-area">
-      <h1 id="current-restaurant-title">Loading...</h1>
-      <b>Our story: </b>
-      <p id="current-restaurant-story"></p>
-      <b>Cuisine: </b>
-      <section class="mdc-chip-set" role="grid" id="current-restaurant-cuisines"></section>
-      <b>Website: </b>
-      <p id="current-restaurant-website"></p>
-      <b>Phone: </b>
-      <p id="current-restaurant-phone"></p>
-      <section id="current-restaurant-map" class="map"></section>
-    </section>
+    <div class="mdc-drawer-scrim"></div>
+    <div class="mdc-drawer-app-content">
+      <header class="mdc-top-app-bar mdc-top-app-bar--fixed" id="app-bar">
+        <div class="mdc-top-app-bar__row">
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <a class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button" href="/" aria-current="page">
+              <i class="material-icons mdc-list-item__graphic-fill-color($ffff)" aria-hidden="true">home</i>
+            </a>
+            <span class="mdc-top-app-bar__title top-app-bar-title">EpiCURE</span>
+          </section>
+        </div>
+      </header>
+    </div>
+
+    <main id="main-content">
+      <div class="mdc-top-app-bar--fixed-adjust"></div>
+      <section id="restaurant-detail-area" class="detail-box">
+        <h1 id="current-restaurant-title">Loading...</h1>
+        <b>Our story: </b>
+        <p id="current-restaurant-story"></p>
+        <b>Cuisine: </b>
+        <section class="cuisine-tag mdc-chip-set" role="grid" id="current-restaurant-cuisines"></section>
+        <b>Website: </b>
+        <p id="current-restaurant-website"></p>
+        <b>Phone: </b>
+        <p id="current-restaurant-phone"></p>
+        <section id="current-restaurant-map" class="map"></section>
+      </section>
+    </main>
   </body>
 </html>
