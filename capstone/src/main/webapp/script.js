@@ -97,7 +97,7 @@ function createRestaurantCuisineDiv(restaurant) {
 }
 
 /**
- * Creates a dive that displays a message based on whether a restaurant is
+ * Creates a div that displays a message based on whether a restaurant is
  * struggling or not
  * @param restaurant  the subject restaurant
  * @return {HTMLDivElement} a div holding a message about the restaurant status
