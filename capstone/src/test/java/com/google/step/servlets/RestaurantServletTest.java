@@ -1,26 +1,33 @@
 package com.google.step.servlets;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 
 import com.google.appengine.api.datastore.*;
 
-import com.google.step.clients.RestaurantClient;
+import com.google.step.data.RestaurantHeader;
+import com.google.step.search.RestaurantHeaderSearchClient;
 import com.meterware.httpunit.*;
 import com.meterware.servletunit.ServletRunner;
 
 import com.meterware.servletunit.ServletUnitClient;
+import org.json.JSONArray;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -130,7 +137,7 @@ public class RestaurantServletTest {
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
         String name =  "Wildfire";
         String story = "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.";
-        String cuisineList = "Steakhouse, American";
+        String cuisines = "Steakhouse, American";
         String phone = "8472797900";
         String website = "https://www.wildfirerestaurant.com";
 
@@ -139,29 +146,41 @@ public class RestaurantServletTest {
         helper.setEnvEmail("wildfire@gmail.com");
         helper.setEnvAuthDomain("google");
 
-        // Create a client to run the servlet
-        ServletRunner sr = new ServletRunner();
-        sr.registerServlet("restaurant", RestaurantServlet.class.getName());
-        ServletUnitClient sc = sr.newClient();
+        RestaurantHeaderSearchClient mockSearchClient = Mockito.mock(RestaurantHeaderSearchClient.class);
+        RestaurantServlet servlet = new RestaurantServlet(mockSearchClient);
 
         // Set params for the post request
-        WebRequest request = new PostMethodWebRequest("http://localhost:8080/restaurant");
-        request.setParameter("name", name);
-        request.setParameter("cuisine", cuisineList);
-        request.setParameter("story", story);
-        request.setParameter("phone", phone);
-        request.setParameter("website", website);
-        sc.getResponse(request);
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        mockRequest.addParameter("name", name);
+        mockRequest.addParameter("cuisine", cuisines);
+        mockRequest.addParameter("story", story);
+        mockRequest.addParameter("phone", phone);
+        mockRequest.addParameter("website", website);
+
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse();
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertEquals(200, mockResponse.getStatus());
 
         // Simple query of the mock Datastore to check if the restaurant was entered correctly
         Query query = new Query("RestaurantInfo")
-                .setFilter(new Query.FilterPredicate(
-                        "name", Query.FilterOperator.EQUAL, name));
+            .setFilter(new Query.FilterPredicate(
+                "name", Query.FilterOperator.EQUAL, name));
         PreparedQuery results = datastoreService.prepare(query);
         Entity resultEntity = results.asSingleEntity();
 
+        long restaurantKey = (long)resultEntity.getProperty("restaurantKey");
+        GeoPt expectedLocation = new GeoPt(42.23422f, -87.234987f);
+        List<String> expectedCuisineList = Arrays.asList("Steakhouse", "American");
+        RestaurantHeader header =
+            new RestaurantHeader(restaurantKey, name, expectedLocation, expectedCuisineList);
+
+        ArgumentCaptor<RestaurantHeader> captor = ArgumentCaptor.forClass(RestaurantHeader.class);
+        verify(mockSearchClient).updateRestaurantHeader(captor.capture());
+
+        assertEquals(header, captor.getValue());
         assertEquals(name, resultEntity.getProperty("name"));
-        assertEquals("[Steakhouse,  American]", resultEntity.getProperty("cuisine").toString());
+        assertEquals("[Steakhouse, American]", resultEntity.getProperty("cuisine").toString());
         assertEquals(story, resultEntity.getProperty("story"));
         assertEquals(phone, resultEntity.getProperty("phone"));
         assertEquals(website, resultEntity.getProperty("website"));

@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -79,7 +80,8 @@ public class RestaurantServlet extends HttpServlet {
 
     // Split the cuisine into a list
     String cuisineString = request.getParameter("cuisine");
-    List<String> cuisineList = Arrays.asList(cuisineString.split(","));
+    List<String> cuisineList =
+        Arrays.stream(cuisineString.split(",")).map(String::trim).collect(Collectors.toList());
 
     String story = request.getParameter("story");
 
