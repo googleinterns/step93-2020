@@ -15,16 +15,14 @@
 package com.google.step.data;
 
 import com.google.appengine.api.datastore.GeoPt;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.util.Collections;
 import java.util.List;
-
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * A {@code RestaurantHeader} is an object that hold as subset of information about a restaurant.
- * It holds a {@code Restaurant.restaurantKey}, a {@code Restaurant.name} a {@code Restaurant.location},
- * and a {@code Restaurant.cuisine}.
+ * It holds a {@code Restaurant.restaurantKey}, a {@code Restaurant.name} a {@code
+ * Restaurant.location}, and a {@code Restaurant.cuisine}.
  */
 public final class RestaurantHeader {
   private final long restaurantKey;
@@ -32,10 +30,7 @@ public final class RestaurantHeader {
   private final GeoPt location;
   private final List<String> cuisine;
 
-  public RestaurantHeader(long restaurantKey,
-                           String name,
-                           GeoPt location,
-                           List<String> cuisine) {
+  public RestaurantHeader(long restaurantKey, String name, GeoPt location, List<String> cuisine) {
     this.restaurantKey = restaurantKey;
     this.name = name;
     this.location = location;
@@ -52,9 +47,7 @@ public final class RestaurantHeader {
   public static RestaurantHeader createHeaderFromRestaurant(Restaurant restaurant) {
     return new RestaurantHeader(
         restaurant.getRestaurantKey().orElseThrow(IllegalArgumentException::new),
-        restaurant.getName(),
-        restaurant.getLocation(),
-        restaurant.getCuisine());
+        restaurant.getName(), restaurant.getLocation(), restaurant.getCuisine());
   }
 
   public long getRestaurantKey() {
