@@ -50,11 +50,6 @@ public class PageViewServletTest {
         helper.tearDown();
     }
 
-    // Tests doGet:
-    //      1. getCurrentPageViews() return
-    //      2. getYearRestaurantPageViews() return
-    //      3. getAllPageViews() return
-    //      4. If there is a mix of parameters (error code)
     @Test
     public void testGetCurrentPageViews() throws SAXException, IOException {
         // Get's this week's page views.
@@ -300,10 +295,6 @@ public class PageViewServletTest {
         }
     }
 
-    // Tests doPost:
-    //      1. Just with those parameter, with existing entity
-    //      2. Creating an entity
-    //      3. If parameters are not enough or send error message (error code)
     @Test
     public void testDoPostExistingEntity() throws SAXException, IOException {
         // Tests the doPost when the entity that we are making the request to already exists,
