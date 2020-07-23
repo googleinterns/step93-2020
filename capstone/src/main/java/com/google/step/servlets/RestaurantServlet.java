@@ -37,15 +37,14 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet responsible for sending/getting a restaurant to/from Datastore. */
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
-  private final RestaurantClient restaurantClient;
+  private final RestaurantClient restaurantClient = new RestaurantClient();
   private final RestaurantHeaderSearchClient searchClient;
 
   public RestaurantServlet() {
-    this(new RestaurantClient(), new ElasticsearchClient("localhost", (short) 9200));
+    this(new ElasticsearchClient("localhost", (short) 9200));
   }
 
-  public RestaurantServlet(RestaurantClient restaurantClient, RestaurantHeaderSearchClient searchClient) {
-    this.restaurantClient = restaurantClient;
+  RestaurantServlet(RestaurantHeaderSearchClient searchClient) {
     this.searchClient = searchClient;
   }
 
