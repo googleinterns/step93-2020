@@ -31,7 +31,7 @@ async function getPageViewData() {
  *         {
  *             restaurantName: String,
  *             clickData: [int(# page views that week), int, int, ...], lines up
- * with dates array
+ *                        with dates array
  *         },
  *         ...
  *     ],
@@ -42,11 +42,15 @@ async function parseData() {
   const restaurantPageViews = await getPageViewData();
 
   const firstDate = getFirstDate(restaurantPageViews);
-  if (firstDate.length === 0) {
+  if (firstDate.minWeek === null) {
     // restaurantPageViews was empty: no data for d3 chart
-    return [];
+    return {
+      'restaurantData': [],
+      'dates': [],
+    };
   }
-  const firstDateObj = getDateFromWeekYear(firstDate[0], firstDate[1]);
+  const firstDateObj =
+      getDateFromWeekYear(firstDate.minWeek, firstDate.minYear);
   const currDate = new Date();
   const dateArray = getFullDateArray(firstDateObj, currDate);
 
@@ -56,13 +60,13 @@ async function parseData() {
 /**
  * Gets the earliest date with data based on the pageViews array.
  * @param restaurantPageViews
- * @return an array containing minWeek and minYear, or an empty array if no data
- *     was supplied
+ * @return an object containing minWeek and minYear, or an object with null
+ *     values if no data was supplied
  */
 function getFirstDate(restaurantPageViews) {
   // Check for if there is no data stored yet
   if (restaurantPageViews == null || restaurantPageViews.length <= 0) {
-    return [];
+    return {'minWeek': null, 'minYear': null};
   }
 
   // Start the variables at the first data point values
@@ -87,11 +91,13 @@ function getFirstDate(restaurantPageViews) {
     }
   }
 
-  return [minWeek, minYear];
+  return {'minWeek': minWeek, 'minYear': minYear};
 }
 
 /**
- * Get a javascript Date object based on a week and year
+ * Get a javascript Date object based on a week and year. The date is
+ * calculated by adding 7 days for each week to January 1, then subtracting
+ * the day number to ensure the returned date is the Sunday of that week.
  * @param week
  * @param year
  * @return {Date}
@@ -103,7 +109,10 @@ function getDateFromWeekYear(week, year) {
   // January 1st plus 7 days for each week
   // Weeks of year start at 1 instead of 0, hence the -1
   const day = 1 + (week - 1) * 7;
-  return new Date(year, 0, day);
+  const date = new Date(year, 0, day);
+  // Subtract day to ensure returned date is a Sunday
+  date.setDate(date.getDate() - date.getDay());
+  return date;
 }
 
 /**
@@ -135,7 +144,7 @@ function getFullDateArray(firstDate, currDate) {
  *         {
  *             restaurantName: String,
  *             clickData: [int(# page views that week), int, int, ...], lines up
- * with dates array
+ *                        with dates array
  *         },
  *         ...
  *     ],
@@ -195,14 +204,8 @@ function setUpVisualizationData(restaurantPageViews, datesArr) {
  * @return {number}
  */
 function getNumWeeksBetween(date1, date2) {
-  if (date2 < date1) {
-    // Make sure date2 is the larger of the two
-    const temp = date2;
-    date2 = date1;
-    date1 = temp;
-  }
   const MILLISECONDS_ONE_WEEK = 7 * 24 * 60 * 60 * 1000;
-  return Math.round((date2 - date1) / MILLISECONDS_ONE_WEEK);
+  return Math.round(Math.abs(date2 - date1) / MILLISECONDS_ONE_WEEK);
 }
 
 // Export the functions for the Jest testing
