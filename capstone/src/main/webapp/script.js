@@ -60,12 +60,12 @@ function addRestaurant(restaurant, containerElement) {
  */
 function createRestaurantNameDiv(restaurant) {
   const params = new URLSearchParams();
-  params.append('restaurantKey', restaurant.restaurantKey);
+  params.append('restaurantKey', restaurant.restaurantKey.slice(9, restaurant.restaurantKey.length-1));
 
   const linkElement = document.createElement('a');
   linkElement.classList.add('restaurant-name-link');
   linkElement.innerText = restaurant.name;
-  linkElement.href = '/restaurantDetails?' + params;
+  linkElement.href = '/restaurantDetails.html?' + params;
 
   const restaurantNameHeader = document.createElement('h3');
   restaurantNameHeader.appendChild(linkElement);
@@ -112,4 +112,35 @@ function createRestaurantIsStrugglingDiv(restaurant) {
   }
 
   return restaurantStrugglingDiv;
+}
+
+function getLoginState() {
+  fetch('/login').then(function(response) {
+    const loginButton = document.getElementById('login-button');
+    const loginButtonIcon = document.getElementById('login-button-icon');
+    const loginButtonText = document.getElementById('login-button-text');
+    const restaurantSignupButton = document.getElementById('create-restaurant-button');
+
+    if (response.ok) {
+      response.json().then((responseJson) => {
+        if (responseJson.loggedIn) {
+          loginButtonIcon.innerText = 'logout';
+          loginButtonText.innerText = "Logout";
+          loginButton.href = responseJson.logOutURL;
+          restaurantSignupButton.style.display = "block";
+        }
+        else {
+          loginButtonIcon.innerText = 'login';
+          loginButtonText.innerText = "Login";
+          loginButton.href = responseJson.loginURL;
+          restaurantSignupButton.style.display = "none";
+        }
+      });
+    }
+  });
+}
+
+function setHomePage() {
+  getRestaurants();
+  getLoginState();
 }
