@@ -19,7 +19,6 @@ import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.step.clients.RestaurantClient;
 import com.google.step.data.Restaurant;
 import com.google.step.data.RestaurantHeader;
@@ -27,12 +26,10 @@ import com.google.step.search.ElasticsearchClient;
 import com.google.step.search.RestaurantHeaderSearchClient;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -83,7 +80,8 @@ public class RestaurantServlet extends HttpServlet {
 
     // Split the cuisine into a list
     String cuisineString = request.getParameter("cuisine");
-    List<String> cuisineList = Arrays.asList(cuisineString.split(","));
+    List<String> cuisineList =
+        Arrays.stream(cuisineString.split(",")).map(String::trim).collect(Collectors.toList());
 
     String story = request.getParameter("story");
 
@@ -119,21 +117,21 @@ public class RestaurantServlet extends HttpServlet {
 
   /**
    * Returns a single Restaurant based on restaurantKey.
-   * @param response All details for the requested restaurant, in the following json format:
-    {
-      "restaurant" : {
-        "restaurantKey": long,
-        "name": String,
-        "location": GeoPt,
-        "story": String,
-        "cuisine": List<String>,
-        "phone": String,
-        "website": String,
-        "status": String
-      }
-    }
+   * @param response  All details for the requested restaurant, in the following json format:
+   *                  {
+   *                    "restaurant" : {
+   *                    "restaurantKey": long,
+   *                    "name": String,
+   *                    "location": GeoPt,
+   *                    "story": String,
+   *                    "cuisine": List<String>,
+   *                    "phone": String,
+   *                    "website": String,
+   *                    "status": String
+   *                    }
+   *                  }
    * @param request Specifies restaurant key, in the following format:
-     /restaurant?restaurantKey=int
+   *                /restaurant?restaurantKey=int
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -150,7 +148,8 @@ public class RestaurantServlet extends HttpServlet {
       // Send the JSON as the response
       response.setContentType("application/json;");
       response.getWriter().println(json);
-    } else {
+    }
+    else {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }
   }
