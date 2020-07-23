@@ -121,6 +121,15 @@ public class ElasticsearchClient {
     return convertElasticsearchResponseBodyToHeaders(response);
   }
 
+  /**
+   * Given a request method, a URL path, and a request body, builds an HTTP request for the
+   * Elasticsearch server.
+   * @param requestMethod a string representing an HTTP request method
+   * @param urlPath relative path of HTTP request to search server
+   * @param requestBody string representing the HTTP request body
+   * @return  {@link HttpRequest} object that will connect to the Elasticsearch server
+   * @throws IOException thrown if HTTP request cannot be made properly
+   */
   private HttpRequest buildElasticsearchHttpRequest(String requestMethod, List<String> urlPath, String requestBody) throws IOException {
     GenericUrl requestUrl = new GenericUrl(elasticsearchUriString);
     requestUrl.setPathParts(urlPath);
@@ -131,6 +140,15 @@ public class ElasticsearchClient {
     return requestFactory.buildRequest(requestMethod, requestUrl, requestContent);
   }
 
+  /**
+   * Given an HTTP response from the Elasticsearch server, creates a list of RestaurantHeaders.
+   * <p>
+   * This is done by extracting JSON objects representing restaurant headers from the Elasticsearch
+   * response and converting them into actual {@code RestaurantHeader} objects
+   * @param response  an HTTP response coming from an Elasticsearch "search" query
+   * @return  a list of {@code RestaurantHeader} objects
+   * @throws IOException thrown when {@code response.getContent()} fails
+   */
   private List<RestaurantHeader> convertElasticsearchResponseBodyToHeaders(HttpResponse response) throws IOException {
     String responseString = CharStreams.toString(new InputStreamReader(response.getContent()));
 
