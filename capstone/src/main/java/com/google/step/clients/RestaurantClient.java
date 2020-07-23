@@ -32,8 +32,6 @@ public class RestaurantClient {
 
     // Parse into a RestaurantInfo Entity
     Entity restaurantInfo = new Entity("RestaurantInfo");
-    long id = restaurantInfo.getKey().getId();
-    restaurantInfo.setProperty("restaurantKey", id);
     restaurantInfo.setProperty("name", name);
     restaurantInfo.setProperty("email", ownerEmail);
     restaurantInfo.setProperty("location", location);
@@ -47,8 +45,7 @@ public class RestaurantClient {
     restaurantInfo.setProperty("score", 2.5);
 
     datastore.put(restaurantInfo);
-
-    return id;
+    return restaurantInfo.getKey().getId();
   }
 
   /**

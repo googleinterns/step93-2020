@@ -23,8 +23,8 @@ function sendSignUpInfo() {
   const website = document.getElementById('new-restaurant-website').value;
 
   // Check if any area doesn't contain any text.
-  if (name == '' || cuisine == '' || story == '' || phone == '' ||
-      website == '') {
+  if (name === '' || cuisine === '' || story === '' || phone === '' ||
+      website === '') {
     const pElement = createP('You must fill all text boxes!');
     const error = document.getElementById('missing-information-error');
     error.appendChild(pElement);
@@ -37,7 +37,15 @@ function sendSignUpInfo() {
     params.append('phone', phone);
     params.append('website', website);
 
-    fetch('/restaurant', {method: 'POST', body: params});
+    fetch('/restaurant', {method: 'POST', body: params}).then(function(response) {
+      if (response.ok) {
+        window.location.href = '/';
+      } else {
+        const errorElement = createP('Request failed. Please make sure you are logged in.');
+        const error = document.getElementById('missing-information-error');
+        error.appendChild(errorElement);
+      }
+    });
   }
 }
 
@@ -52,3 +60,11 @@ function createP(content) {
   pTag.appendChild(node);
   return pTag;
 }
+
+/**
+ * Return to home landing page.
+ */
+function returnHome() {
+  window.location.href = '/';
+}
+
