@@ -14,26 +14,36 @@
 
 package com.google.step.servlets;
 
-import com.google.appengine.api.datastore.GeoPt;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.step.clients.RestaurantClient;
 import com.google.step.data.Restaurant;
+import com.google.step.data.RestaurantHeader;
+import com.google.step.search.ElasticsearchClient;
+import com.google.step.search.RestaurantHeaderSearchClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /** Servlet responsible for getting restaurants from Datastore. */
 @WebServlet("/restaurants")
 public class RestaurantsServlet extends HttpServlet {
-  private RestaurantClient restaurantClient = new RestaurantClient();
+  private final RestaurantHeaderSearchClient searchClient;
+
+  public RestaurantsServlet() {
+    this(new ElasticsearchClient("localhost", (short)9200));
+  }
+
+  RestaurantsServlet(RestaurantHeaderSearchClient searchClient) {
+    this.searchClient = searchClient;
+  }
 
   /**
    * Returns a list of RestaurantHeaders, with a snapshot of restaurant details.
@@ -54,15 +64,16 @@ public class RestaurantsServlet extends HttpServlet {
   // TODO: Change this to be connected to search functionality.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<Restaurant> restaurants = restaurantClient.getRestaurantsNoFilter();
+
+    List<RestaurantHeader> restaurantHeaders = searchClient.getRandomRestaurants();
 
     // Format restaurant List to JSON for return
-    JSONArray restaurantsListJson = new JSONArray(restaurants);
+    JSONObject responseJson = new JSONObject()
+        .put("restaurants", new JSONArray(restaurantHeaders));
 
     // Send the JSON as the response
     response.setContentType("application/json;");
 
-    JSONObject ret = new JSONObject().put("restaurants", restaurantsListJson);
-    response.getWriter().println(ret.toString());
+    response.getWriter().println(responseJson);
   }
 }
