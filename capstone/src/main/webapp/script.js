@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +13,10 @@
 // limitations under the License.
 
 
+/**
+ * Populate `restaurants-list` HTML element with cards holding brief pieces of
+ * restaurant data
+ */
 function getRestaurants() {
   fetch('/restaurants').then(function(response) {
     const restaurantsList = document.getElementById('restaurants-list');
@@ -28,6 +32,12 @@ function getRestaurants() {
   });
 }
 
+/**
+ * Creates a Material card holding restaurant data and adds it to an outer HTML
+ * element
+ * @param restaurant  the subject restaurant
+ * @param containerElement  the HTML element that will hold the restaurant
+ */
 function addRestaurant(restaurant, containerElement) {
   const restaurantDiv = document.createElement('div');
   restaurantDiv.classList.add('mdc-card', 'restaurant-container');
@@ -43,6 +53,11 @@ function addRestaurant(restaurant, containerElement) {
   containerElement.appendChild(restaurantDiv);
 }
 
+/**
+ * Creates a div containing the name of a given restaurant
+ * @param restaurant  the subject restaurant
+ * @return {HTMLDivElement} div containing a link to a restaurant's details page
+ */
 function createRestaurantNameDiv(restaurant) {
   const params = new URLSearchParams();
   params.append('restaurantKey', restaurant.restaurantKey);
@@ -63,6 +78,11 @@ function createRestaurantNameDiv(restaurant) {
   return restaurantNameDiv;
 }
 
+/**
+ * Creates a div containing a list of buttons representing restaurant cuisines
+ * @param restaurant  the subject restaurant
+ * @return {HTMLDivElement} div holding all of the cuisine buttons
+ */
 function createRestaurantCuisineDiv(restaurant) {
   const restaurantCuisineDiv = document.createElement('div');
   restaurantCuisineDiv.classList.add('restaurant-cuisine-container');
@@ -76,6 +96,12 @@ function createRestaurantCuisineDiv(restaurant) {
   return restaurantCuisineDiv;
 }
 
+/**
+ * Creates a dive that displays a message based on whether a restaurant is
+ * struggling or not
+ * @param restaurant  the subject restaurant
+ * @return {HTMLDivElement} a div holding a message about the restaurant status
+ */
 function createRestaurantIsStrugglingDiv(restaurant) {
   const restaurantStrugglingDiv = document.createElement('div');
   restaurantStrugglingDiv.classList.add('restaurant-struggling-container');

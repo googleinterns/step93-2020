@@ -11,6 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+// Toggle navigation drawer
 const mdc = window.mdc;
 const drawer =
     mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
