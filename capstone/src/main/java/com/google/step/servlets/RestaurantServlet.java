@@ -103,9 +103,8 @@ public class RestaurantServlet extends HttpServlet {
 
     long restaurantId = restaurantClient.putRestaurant(restaurant, email);
 
-    restaurant =
-        new Restaurant(restaurantId, name, geoPoint, story, cuisineList, phone, website, status);
-    RestaurantHeader restaurantHeader = RestaurantHeader.createHeaderFromRestaurant(restaurant);
+    RestaurantHeader restaurantHeader =
+        new RestaurantHeader(restaurantId, name, geoPoint, cuisineList);
     searchClient.updateRestaurantHeader(restaurantHeader);
 
     response.setContentType(Json.MEDIA_TYPE);
