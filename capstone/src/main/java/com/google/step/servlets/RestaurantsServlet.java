@@ -15,11 +15,6 @@
 package com.google.step.servlets;
 
 import com.google.api.client.json.Json;
-import com.google.appengine.repackaged.com.google.common.html.types.Html;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.step.clients.RestaurantClient;
-import com.google.step.data.Restaurant;
 import com.google.step.data.RestaurantHeader;
 import com.google.step.search.ElasticsearchClient;
 import com.google.step.search.RestaurantHeaderSearchClient;

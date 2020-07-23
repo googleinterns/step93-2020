@@ -43,10 +43,7 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
   ElasticsearchClient(HttpTransport transport, String hostname, short port) {
     requestFactory = transport.createRequestFactory();
 
-    URIBuilder uriBuilder = new URIBuilder()
-        .setScheme("http")
-        .setHost(hostname)
-        .setPort(port);
+    URIBuilder uriBuilder = new URIBuilder().setScheme("http").setHost(hostname).setPort(port);
     elasticsearchUriString = uriBuilder.toString();
   }
 
@@ -65,8 +62,8 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
     requestUrl.setPathParts(Arrays.asList("", RESTAURANTS, "_doc", restaurantKey));
 
     String requestBody = gson.toJson(restaurantHeader);
-    HttpContent putRequestContent = new ByteArrayContent(Json.MEDIA_TYPE,
-        requestBody.getBytes(StandardCharsets.UTF_8));
+    HttpContent putRequestContent =
+        new ByteArrayContent(Json.MEDIA_TYPE, requestBody.getBytes(StandardCharsets.UTF_8));
 
     requestFactory.buildPutRequest(requestUrl, putRequestContent).execute();
   }
