@@ -3,46 +3,58 @@
   <head>
     <meta charset="UTF-8" />
     <title>STEP Capstone</title>
+    <link rel="stylesheet" href="style.css" />
     <script src="signUp.js"></script>
     <link
-            href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
-            rel="stylesheet"
+      href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+      rel="stylesheet"
     />
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <script src="script.js"></script>
+    <script type="module" src="style.js"></script>
   </head>
   <body>
-    <button
-          class="material-icons mdc-top-app-bar__action-item mdc-icon-button"
-          aria-label="Back"
-          onclick="returnHome();"
-          type="button"
-    >
-    arrow_back
-    </button>
-    <h1>Sign Up as a Restaurant!</h1>
-    <div id="restaurant-sign-up">
-      <label for="new-restaurant-name">Name: </label>
-      <input type="text" id="new-restaurant-name" />
-      <br />
-
-      <label for="new-restaurant-cuisine">Cuisine: </label>
-      <textarea id="new-restaurant-cuisine"></textarea>
-      <br />
-
-      <label for="new-restaurant-story">Story: </label>
-      <textarea id="new-restaurant-story"></textarea>
-      <br />
-
-      <label for="new-restaurant-phone">Phone: </label>
-      <input type="text" id="new-restaurant-phone" />
-      <br />
-
-      <label for="new-restaurant-website">Website: </label>
-      <input type="text" id="new-restaurant-website" />
-      <br />
-      <div id="missing-information-error"></div>
-      <button type="submit" onclick="sendSignUpInfo()">Submit</button>
+    <div class="mdc-drawer-scrim"></div>
+    <div class="mdc-drawer-app-content">
+      <header class="mdc-top-app-bar mdc-top-app-bar--fixed" id="app-bar">
+        <div class="mdc-top-app-bar__row">
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <a class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button" href="/" aria-current="page">
+              <i class="material-icons mdc-list-item__graphic-fill-color($ffff)" aria-hidden="true">home</i>
+            </a>
+            <span class="mdc-top-app-bar__title top-app-bar-title">EpiCURE</span>
+          </section>
+        </div>
+      </header>
     </div>
+
+    <main id="main-content">
+      <div class="mdc-top-app-bar--fixed-adjust"></div>
+      <section id="restaurant-sign-up" class="signup-box">
+        <h1>Sign Up as a Restaurant!</h1>
+        <label for="new-restaurant-name">Name: </label>
+        <input type="text" id="new-restaurant-name" class="signup-input-box" />
+        <br />
+
+        <label for="new-restaurant-cuisine">Cuisine: </label>
+        <textarea id="new-restaurant-cuisine" class="signup-input-box"></textarea>
+        <br />
+
+        <label for="new-restaurant-story">Story: </label>
+        <textarea id="new-restaurant-story" class="signup-input-box"></textarea>
+        <br />
+
+        <label for="new-restaurant-phone">Phone: </label>
+        <input type="text" id="new-restaurant-phone" class="signup-input-box" />
+        <br />
+
+        <label for="new-restaurant-website">Website: </label>
+        <input type="text" id="new-restaurant-website" class="signup-input-box" />
+        <br />
+        <div id="missing-information-error"></div>
+        <button type="submit" onclick="sendSignUpInfo()">Submit</button>
+      </section>
+    </main>
   </body>
 </html>
