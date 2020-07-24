@@ -14,6 +14,8 @@
 
 package com.google.step.servlets;
 
+import com.google.api.client.json.Json;
+import com.google.appengine.repackaged.com.google.common.html.types.Html;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.step.clients.RestaurantClient;
@@ -74,6 +76,18 @@ public class RestaurantsServlet extends HttpServlet {
     // Send the JSON as the response
     response.setContentType(Json.MEDIA_TYPE);
 
+    response.getWriter().println(responseJson);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String queryString = request.getParameter("query").trim();
+    List<RestaurantHeader> searchResults = searchClient.queryRestaurantHeaders(queryString);
+
+    JSONObject responseJson = new JSONObject()
+        .put("restaurants", new JSONArray(searchResults));
+
+    response.setContentType(Json.MEDIA_TYPE);
     response.getWriter().println(responseJson);
   }
 }
