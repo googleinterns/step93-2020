@@ -131,7 +131,7 @@ public class ElasticsearchClientTest {
 
     ElasticsearchClient esClient =
         new ElasticsearchClient(transport, elasticsearchHostname, elasticsearchPort);
-    List<RestaurantHeader> queryResult = esClient.queryRestaurantHeaders("goog");
+    List<RestaurantHeader> queryResult = esClient.searchRestaurants("goog");
     assertEquals(Collections.singletonList(HEADER_1), queryResult);
   }
 
@@ -178,6 +178,6 @@ public class ElasticsearchClientTest {
 
     ElasticsearchClient esClient =
         new ElasticsearchClient(transport, elasticsearchHostname, elasticsearchPort);
-    assertEquals(Arrays.asList(HEADER_1, HEADER_2), esClient.getRandomRestaurants());
+    assertEquals(Arrays.asList(HEADER_1, HEADER_2), esClient.searchRestaurants(""));
   }
 }

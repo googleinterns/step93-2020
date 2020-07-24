@@ -80,13 +80,25 @@ public class ElasticsearchClient {
   }
 
   /**
+   * Queries search server for {@link RestaurantHeader} objects that match {@code query} by either
+   * "name" or "cuisine" field, if the query is not empty. If the query is empty, returns a random
+   * assortment of restaurant headers.
+   * @param query valid query string, or empty string
+   * @return list of {@link RestaurantHeader} objects sorted by descending relevance score
+   * @throws IOException thrown if request cannot be made or executed properly
+   */
+  public List<RestaurantHeader> searchRestaurants(String query) throws IOException {
+    return query.isEmpty() ? getRandomRestaurants() : queryRestaurantHeaders(query);
+  }
+
+  /**
    * Queries search server for {@link RestaurantHeader} fields that match {@code query} by either
    * "name" or "cuisine" field.
    * @param query valid query string
    * @return list of {@link RestaurantHeader} objects sorted by descending relevance score
    * @throws IOException if request cannot be made or executed properly
    */
-  public List<RestaurantHeader> queryRestaurantHeaders(String query) throws IOException {
+  private List<RestaurantHeader> queryRestaurantHeaders(String query) throws IOException {
     List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
 
     String requestBody = new JSONObject()
@@ -107,7 +119,7 @@ public class ElasticsearchClient {
    * @return list of {@link RestaurantHeader} objects sorted arbitrarily
    * @throws IOException if request cannot be made or executed properly
    */
-  public List<RestaurantHeader> getRandomRestaurants() throws IOException {
+  private List<RestaurantHeader> getRandomRestaurants() throws IOException {
     List<String> requestPath = Arrays.asList("", "_search");
 
     String requestBody = new JSONObject()
