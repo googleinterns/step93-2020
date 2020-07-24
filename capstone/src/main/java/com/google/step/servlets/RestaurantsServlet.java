@@ -72,7 +72,7 @@ public class RestaurantsServlet extends HttpServlet {
         .put("restaurants", new JSONArray(restaurantHeaders));
 
     // Send the JSON as the response
-    response.setContentType("application/json;");
+    response.setContentType(Json.MEDIA_TYPE);
 
     response.getWriter().println(responseJson);
   }
