@@ -14,33 +14,29 @@
 
 package com.google.step.search;
 
-import com.google.api.client.http.HttpContent;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.LowLevelHttpRequest;
 import com.google.api.client.http.LowLevelHttpResponse;
-import com.google.api.client.json.Json;
 import com.google.api.client.testing.http.MockHttpTransport;
 import com.google.api.client.testing.http.MockLowLevelHttpRequest;
 import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 import com.google.appengine.api.datastore.GeoPt;
-import com.google.appengine.repackaged.com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.step.data.RestaurantHeader;
+import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 public class ElasticsearchClientTest {
   private final String elasticsearchHostname = "10.128.0.2";
@@ -90,7 +86,7 @@ public class ElasticsearchClientTest {
 
   @Test
   public void testQueryRestaurants() throws IOException {
-    HttpTransport transport = new MockHttpTransport() {
+    MockHttpTransport transport = new MockHttpTransport() {
       @Override
       public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
         assertTrue(method.equalsIgnoreCase("POST"));
@@ -129,15 +125,27 @@ public class ElasticsearchClientTest {
       }
     };
 
+    MockHttpTransport transportSpy = spy(transport);
     ElasticsearchClient esClient =
-        new ElasticsearchClient(transport, elasticsearchHostname, elasticsearchPort);
+        new ElasticsearchClient(transportSpy, elasticsearchHostname, elasticsearchPort);
+
+    String expectedUrl =
+        new URIBuilder()
+            .setScheme("http")
+            .setHost(elasticsearchHostname)
+            .setPort(elasticsearchPort)
+            .setPath("/restaurants/_search")
+            .toString();
+
     List<RestaurantHeader> queryResult = esClient.searchRestaurants("goog");
+
+    verify(transportSpy).buildRequest("POST", expectedUrl);
     assertEquals(Collections.singletonList(HEADER_1), queryResult);
   }
 
   @Test
   public void testQueryRestaurantsDiscover() throws IOException {
-    HttpTransport transport = new MockHttpTransport() {
+    MockHttpTransport transport = new MockHttpTransport() {
       @Override
       public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
         assertTrue(method.equalsIgnoreCase("POST"));
@@ -176,8 +184,21 @@ public class ElasticsearchClientTest {
       }
     };
 
+    MockHttpTransport transportSpy = spy(transport);
     ElasticsearchClient esClient =
-        new ElasticsearchClient(transport, elasticsearchHostname, elasticsearchPort);
-    assertEquals(Arrays.asList(HEADER_1, HEADER_2), esClient.searchRestaurants(""));
+        new ElasticsearchClient(transportSpy, elasticsearchHostname, elasticsearchPort);
+
+    String expectedUrl =
+        new URIBuilder()
+            .setScheme("http")
+            .setHost(elasticsearchHostname)
+            .setPort(elasticsearchPort)
+            .setPath("/_search")
+            .toString();
+
+    List<RestaurantHeader> searchResults = esClient.searchRestaurants("");
+
+    verify(transportSpy).buildRequest("POST", expectedUrl);
+    assertEquals(Arrays.asList(HEADER_1, HEADER_2), searchResults);
   }
 }
