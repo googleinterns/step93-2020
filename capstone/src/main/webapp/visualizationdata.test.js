@@ -145,53 +145,75 @@ beforeEach(() => {
   };
 });
 
-/** Test for getFirstDate function to ensure it finds the correct minimum */
-test('Test getFirstDate with different inputs', () => {
-  // Empty dataset provided
+/** Tests for getFirstDate function to ensure it finds the correct minimum */
+test('Test getFirstDate with empty restaurantPageViews data', () => {
   expect(functions.getFirstDate([]))
       .toMatchObject({'minWeek': null, 'minYear': null});
+});
 
-  // Tests with different month/year edge cases
+test('Test getFirstDate with simple restaurantPageViews with two date options', () => {
   expect(functions.getFirstDate(pageViewExample1))
       .toMatchObject({'minWeek': 10, 'minYear': 2020});
+});
+
+test('Test getFirstDate with restaurantPageViews data that skips weeks', () => {
   expect(functions.getFirstDate(pageViewExample2))
       .toMatchObject({'minWeek': 11, 'minYear': 2020});
+});
+
+test('Test getFirstDate with restaurantPageViews data in different years', () => {
   expect(functions.getFirstDate(pageViewExample3))
       .toMatchObject({'minWeek': 25, 'minYear': 2019});
 });
 
 /**
- * Test for getDateFromWeekYear to ensure it finds the correct Date from
+ * Tests for getDateFromWeekYear to ensure it finds the correct Date from
  * January 1 based on checking the calendar. All dates are Sundays of the
  * week requested.
  */
-test('Test getDateFromWeekYear with different inputs', () => {
+test('Test getDateFromWeekYear with a week in January 2020', () => {
   expect(functions.getDateFromWeekYear(4, 2020))
       .toMatchObject(new Date(2020, 0, 19));
+});
+
+test('Test getDateFromWeekYear with the first week of 2020', () => {
   expect(functions.getDateFromWeekYear(1, 2020))
       .toMatchObject(new Date(2019, 11, 29));
+});
+
+test('Test getDateFromWeekYear with a week in June 2020', () => {
   expect(functions.getDateFromWeekYear(26, 2020))
       .toMatchObject(new Date(2020, 5, 21));
+});
 
-  // Return null for negative year or week values
+test('Test getDateFromWeekYear with a negative week', () => {
   expect(functions.getDateFromWeekYear(-1, 2020)).toBe(null);
+});
+
+test('Test getDateFromWeekYear with a negative year', () => {
   expect(functions.getDateFromWeekYear(2, -50)).toBe(null);
 });
 
 /**
- * Test for getFullDateArray with different cases of crossing across
+ * Tests for getFullDateArray with different cases of crossing across
  * years/months, etc
  */
-test('Test getFullDateArray with different inputs', () => {
+test('Test getFullDateArray with two consecutive weeks', () => {
   const expected1 = [new Date(2020, 6, 15), new Date(2020, 6, 22)];
   expect(
       functions.getFullDateArray(new Date(2020, 6, 15), new Date(2020, 6, 22)))
       .toMatchObject(expected1);
+});
+
+test('Test getFullDateArray with three weeks', () => {
   const expected2 =
       [new Date(2020, 6, 1), new Date(2020, 6, 8), new Date(2020, 6, 15)];
   expect(
       functions.getFullDateArray(new Date(2020, 6, 1), new Date(2020, 6, 21)))
       .toMatchObject(expected2);
+});
+
+test('Test getFullDateArray with crossing into a new year', () => {
   const expected3 =
       [new Date(2019, 11, 25), new Date(2020, 0, 1), new Date(2020, 0, 8)];
   expect(
@@ -200,36 +222,52 @@ test('Test getFullDateArray with different inputs', () => {
 });
 
 /**
- * Test getNumWeeksBetween with different edge cases of same dates, crossing
+ * Tests getNumWeeksBetween with different edge cases of same dates, crossing
  * years/months, etc
  */
-test('Test getNumWeeksBetween with different inputs', () => {
+test('Test getNumWeeksBetween with exactly a week difference', () => {
   expect(functions.getNumWeeksBetween(
              new Date(2020, 6, 21), new Date(2020, 6, 28)))
       .toBe(1);
+});
+
+test('Test getNumWeeksBetween across a month boundary', () => {
   expect(
       functions.getNumWeeksBetween(new Date(2020, 6, 21), new Date(2020, 7, 4)))
       .toBe(2);
-  expect(functions.getNumWeeksBetween(
-             new Date(2020, 6, 21), new Date(2020, 6, 21)))
-      .toBe(0);
-  expect(functions.getNumWeeksBetween(
-             new Date(2019, 11, 22), new Date(2020, 0, 19)))
-      .toBe(4);
+});
 
-  // Should work in reverse param order also
+test('Test getNumWeeksBetween with the same date', () => {
   expect(functions.getNumWeeksBetween(
-             new Date(2020, 6, 28), new Date(2020, 6, 21)))
+      new Date(2020, 6, 21), new Date(2020, 6, 21)))
+      .toBe(0);
+});
+
+test('Test getNumWeeksBetween across a year boundary', () => {
+  expect(functions.getNumWeeksBetween(
+      new Date(2019, 11, 22), new Date(2020, 0, 19)))
+      .toBe(4);
+});
+
+test('Test getNumWeeksBetween with the later date as the first param', () => {
+  expect(functions.getNumWeeksBetween(
+      new Date(2020, 6, 28), new Date(2020, 6, 21)))
       .toBe(1);
+});
+
+test('Test getNumWeeksBetween with the later date as the first param across a month boundary', () => {
   expect(
       functions.getNumWeeksBetween(new Date(2020, 7, 4), new Date(2020, 6, 21)))
       .toBe(2);
 });
 
-/** Test setUpVisualizationData using all available preset data */
-test('Test setUpVisualizationData with different inputs', () => {
+/** Tests setUpVisualizationData using all available preset data */
+test('Test setUpVisualizationData with two restaurants and two weeks', () => {
   expect(functions.setUpVisualizationData(pageViewExample1, dateArr1))
       .toMatchObject(visualizationDataExample1);
+});
+
+test('Test setUpVisualizationData with three restaurants and three weeks', () => {
   expect(functions.setUpVisualizationData(pageViewExample2, dateArr2))
       .toMatchObject(visualizationDataExample2);
 });
