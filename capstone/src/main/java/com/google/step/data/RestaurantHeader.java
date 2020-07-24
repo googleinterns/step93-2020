@@ -15,16 +15,14 @@
 package com.google.step.data;
 
 import com.google.appengine.api.datastore.GeoPt;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.util.Collections;
 import java.util.List;
-
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * A {@code RestaurantHeader} is an object that hold as subset of information about a restaurant.
- * It holds a {@code Restaurant.restaurantKey}, a {@code Restaurant.name} a {@code Restaurant.location},
- * and a {@code Restaurant.cuisine}.
+ * It holds a {@code Restaurant.restaurantKey}, a {@code Restaurant.name} a {@code
+ * Restaurant.location}, and a {@code Restaurant.cuisine}.
  */
 public final class RestaurantHeader {
   private final long restaurantKey;
@@ -32,10 +30,7 @@ public final class RestaurantHeader {
   private final GeoPt location;
   private final List<String> cuisine;
 
-  private RestaurantHeader(long restaurantKey,
-                           String name,
-                           GeoPt location,
-                           List<String> cuisine) {
+  public RestaurantHeader(long restaurantKey, String name, GeoPt location, List<String> cuisine) {
     this.restaurantKey = restaurantKey;
     this.name = name;
     this.location = location;
@@ -43,16 +38,16 @@ public final class RestaurantHeader {
   }
 
   /**
-   * Given a {@code Restaurant} object, creates a {@code RestaurantHeader} object using the fields of the {@code Restaurant}.
+   * Given a {@code Restaurant} object, creates a {@code RestaurantHeader} object using the fields
+   * of the {@code Restaurant}.
    * @param restaurant The {@code Restaurant} from which the header information would come
    * @return A newly created RestaurantHeader object
    */
-  public static RestaurantHeader createRestaurantHeader(Restaurant restaurant) {
+
+  public static RestaurantHeader createHeaderFromRestaurant(Restaurant restaurant) {
     return new RestaurantHeader(
-        restaurant.getRestaurantKey().orElse(0L),
-        restaurant.getName(),
-        restaurant.getLocation(),
-        restaurant.getCuisine());
+        restaurant.getRestaurantKey().orElseThrow(IllegalArgumentException::new),
+        restaurant.getName(), restaurant.getLocation(), restaurant.getCuisine());
   }
 
   public long getRestaurantKey() {

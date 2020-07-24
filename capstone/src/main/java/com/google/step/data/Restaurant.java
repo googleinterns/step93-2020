@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /** A restaurant to be displayed. */
 public final class Restaurant {
@@ -103,50 +104,23 @@ public final class Restaurant {
    * equals method for use in testing.
    */
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
+  public boolean equals(Object other) {
+    if (!(other instanceof Restaurant)) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+
+    Restaurant otherRestaurant = (Restaurant) other;
+    if (other.hashCode() != this.hashCode()) {
       return false;
-    Restaurant other = (Restaurant) obj;
-    if (cuisine == null) {
-      if (other.cuisine != null)
-        return false;
-    } else if (!cuisine.equals(other.cuisine))
-      return false;
-    if (location == null) {
-      if (other.location != null)
-        return false;
-    } else if (!location.equals(other.location))
-      return false;
-    if (name == null) {
-      if (other.name != null)
-        return false;
-    } else if (!name.equals(other.name))
-      return false;
-    if (phone == null) {
-      if (other.phone != null)
-        return false;
-    } else if (!phone.equals(other.phone))
-      return false;
-    if (status == null) {
-      if (other.status != null)
-        return false;
-    } else if (!status.equals(other.status))
-      return false;
-    if (story == null) {
-      if (other.story != null)
-        return false;
-    } else if (!story.equals(other.story))
-      return false;
-    if (website == null) {
-      if (other.website != null)
-        return false;
-    } else if (!website.equals(other.website))
-      return false;
-    return true;
+    }
+
+    return otherRestaurant.getCuisine().equals(this.cuisine)
+        && otherRestaurant.getLocation().equals(this.location)
+        && otherRestaurant.getName().equals(this.name)
+        && otherRestaurant.getPhone().equals(this.phone)
+        && otherRestaurant.getStatus().equals(this.status)
+        && otherRestaurant.getStory().equals(this.story)
+        && otherRestaurant.getWebsite().equals(this.website);
   }
 
   /**
@@ -154,16 +128,14 @@ public final class Restaurant {
    */
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((cuisine == null) ? 0 : cuisine.hashCode());
-    result = prime * result + ((location == null) ? 0 : location.hashCode());
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((phone == null) ? 0 : phone.hashCode());
-    result = prime * result + (int) (restaurantKey ^ (restaurantKey >>> 32));
-    result = prime * result + ((status == null) ? 0 : status.hashCode());
-    result = prime * result + ((story == null) ? 0 : story.hashCode());
-    result = prime * result + ((website == null) ? 0 : website.hashCode());
-    return result;
+    return new HashCodeBuilder(17, 37)
+        .append(cuisine)
+        .append(location)
+        .append(name)
+        .append(phone)
+        .append(status)
+        .append(story)
+        .append(website)
+        .toHashCode();
   }
 }

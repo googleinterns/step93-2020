@@ -95,6 +95,7 @@ public class MetricsClientTests {
         metricsClient.putPageView("1");
         metricsClient.putPageView("1");
         metricsClient.putPageView("1");
+        // Checks if the putPageView method is correctly putting and updating an entity in dataStore.
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int week = calendar.get(Calendar.WEEK_OF_YEAR);

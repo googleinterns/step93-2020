@@ -25,9 +25,9 @@ async function setRestaurantDetails() {
   const response = await fetch(responsePath);
   const resp = await response.json();
 
-  if (resp.restaurant !== null) {
+  if (resp !== null) {
     // Retrieve and parse restaurant JSON from get restaurant response
-    const currRestaurant = JSON.parse(resp.restaurant);
+    const currRestaurant = resp.value;
     // Set UI elements
     if (document.getElementById('restaurant-detail-area') !== null) {
       document.getElementById('current-restaurant-title').innerText =
@@ -50,6 +50,9 @@ async function setRestaurantDetails() {
         appendCuisineTag(currRestaurant.cuisine[i]);
       }
     }
+
+    // Update page views for this restaurant
+    await updatePageViews(restaurantKey);
   }
 }
 
@@ -106,4 +109,19 @@ function appendCuisineTag(cuisineName) {
     document.getElementById('current-restaurant-cuisines')
         .appendChild(outerDiv);
   }
+}
+
+/**
+ * Update the page views for a restaurant using the PageViewServlet.
+ * @param restaurantKey
+ * @param restaurantName
+ * @return {Promise<void>}
+ */
+async function updatePageViews(restaurantKey) {
+  const params = 'restaurantKey=' + restaurantKey;
+  await fetch('/page-view', {
+    method: 'post',
+    body: params,
+    headers: {'content-type': 'application/x-www-form-urlencoded'},
+  });
 }

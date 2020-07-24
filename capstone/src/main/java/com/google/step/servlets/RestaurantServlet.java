@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -88,8 +90,6 @@ public class RestaurantServlet extends HttpServlet {
         new Restaurant(null, name, geoPoint, story, cuisineList, phone, website, status);
 
     restaurantClient.putRestaurant(restaurant, email);
-
-    response.sendRedirect("/index.html");
   }
 
   private String changeNonNumericCharacters(String num) {
@@ -128,12 +128,8 @@ public class RestaurantServlet extends HttpServlet {
 
       // Send the JSON as the response
       response.setContentType("application/json;");
-
-      JsonObject ret = new JsonObject();
-      ret.addProperty("restaurant", json);
-      response.getWriter().println(ret);
-    }
-    else {
+      response.getWriter().println(json);
+    } else {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }
   }

@@ -14,17 +14,21 @@
 
 package com.google.step.servlets;
 
+import com.google.appengine.api.datastore.GeoPt;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.step.clients.RestaurantClient;
 import com.google.step.data.Restaurant;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /** Servlet responsible for getting restaurants from Datastore. */
 @WebServlet("/restaurants")
@@ -53,14 +57,12 @@ public class RestaurantsServlet extends HttpServlet {
     List<Restaurant> restaurants = restaurantClient.getRestaurantsNoFilter();
 
     // Format restaurant List to JSON for return
-    Gson gson = new Gson();
-    String json = gson.toJson(restaurants);
+    JSONArray restaurantsListJson = new JSONArray(restaurants);
 
     // Send the JSON as the response
     response.setContentType("application/json;");
 
-    JsonObject ret = new JsonObject();
-    ret.addProperty("restaurants", json);
-    response.getWriter().println(ret);
+    JSONObject ret = new JSONObject().put("restaurants", restaurantsListJson);
+    response.getWriter().println(ret.toString());
   }
 }
