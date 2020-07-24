@@ -58,7 +58,13 @@ public class MetricsClientTests {
     @Test
     public void testPutPageView() {
         // Checks if the putPageView method is correctly putting data into dataStore.
-        metricsClient.putPageView("Mc Donald's", "1");
+        Entity entity = new Entity("RestaurantInfo");
+        entity.setProperty("name", "Marlows");
+        entity.setProperty("restaurantKey", "1");
+
+        datastoreService.put(entity);
+
+        metricsClient.putPageView("1");
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int week = calendar.get(Calendar.WEEK_OF_YEAR);
@@ -73,15 +79,22 @@ public class MetricsClientTests {
         Query query = new Query("PageViews").setFilter(compositeFilter);
         PreparedQuery results = datastoreService.prepare(query);
         Entity resultEntity = results.asSingleEntity();
+        Assert.assertEquals("Name", entity.getProperty("name"), resultEntity.getProperty("restaurantName").toString());
         Assert.assertEquals("Count", (long) 1, resultEntity.getProperty("count"));
     }
 
     @Test
     public void testSeveralPutPageViews() {
+        Entity entity = new Entity("RestaurantInfo");
+        entity.setProperty("name", "Marlows");
+        entity.setProperty("restaurantKey", "1");
+
+        datastoreService.put(entity);
+
         // Checks if the putPageView method is correctly putting and updating an entity in dataStore.
-        metricsClient.putPageView("Mc Donald's", "1");
-        metricsClient.putPageView("Mc Donald's", "1");
-        metricsClient.putPageView("Mc Donald's", "1");
+        metricsClient.putPageView("1");
+        metricsClient.putPageView("1");
+        metricsClient.putPageView("1");
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int week = calendar.get(Calendar.WEEK_OF_YEAR);
@@ -96,6 +109,7 @@ public class MetricsClientTests {
         Query query = new Query("PageViews").setFilter(compositeFilter);
         PreparedQuery results = datastoreService.prepare(query);
         Entity resultEntity = results.asSingleEntity();
+        Assert.assertEquals("Name", entity.getProperty("name"), resultEntity.getProperty("restaurantName").toString());
         Assert.assertEquals("Count", (long) 3, resultEntity.getProperty("count"));
     }
 

@@ -154,11 +154,10 @@ public class MetricsClient {
 
     /**
      * Adds an entity for the current week for that restaurant or updates an existing one.
-     * @param restaurantName name of the restaurant to input into dataStore.
      * @param restaurantKey key of the restaurant we want to update or create.
      * @return boolean that expresses true if the transaction was completed successfully or false if otherwise.
      */
-    public boolean putPageView(String restaurantName, String restaurantKey) {
+    public boolean putPageView(String restaurantKey) {
         Transaction transaction = dataStore.beginTransaction();
 
         try {
@@ -177,6 +176,14 @@ public class MetricsClient {
             PreparedQuery results = dataStore.prepare(query);
             Entity resultsEntity = results.asSingleEntity();
             if (resultsEntity == null) {
+                // Query for the name
+                Query nameQuery = new Query("RestaurantInfo")
+                        .setFilter(new FilterPredicate(
+                                "restaurantKey", Query.FilterOperator.EQUAL, restaurantKey));
+                PreparedQuery nameResult = dataStore.prepare(nameQuery);
+                Entity restaurant = nameResult.asSingleEntity();
+                String restaurantName = restaurant.getProperty("name").toString();
+
                 //Create entity
                 Entity entity = new Entity("PageViews");
                 entity.setProperty("restaurantKey", restaurantKey);
