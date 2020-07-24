@@ -21,6 +21,7 @@ import com.google.step.data.RestaurantPageViews;
 public class PageViewServlet extends HttpServlet {
 
     private static MetricsClient metricsClient = new MetricsClient();
+    private static Gson gson = new Gson();
 
     /**
      *
@@ -57,16 +58,16 @@ public class PageViewServlet extends HttpServlet {
         if (restaurantKey == null && year == 0) {
             // getAllPageViews()
             List<RestaurantPageViews> restaurantPageViewsList = metricsClient.getAllPageViews();
-            json = convertRestaurantPageViewListToJsonUsingGson(restaurantPageViewsList);
+            json = gson.toJson(restaurantPageViewsList);
         } else if (year == 0 && restaurantKey != null) {
             // getCurrentPageViews()
             WeeklyPageView weeklyPageView = metricsClient.getCurrentPageViews(restaurantKey);
-            json = convertWeeklyPageViewToJsonUsingGson(weeklyPageView);
+            json = gson.toJson(weeklyPageView);
 
         } else if (year != 0 && restaurantKey != null) {
             // getYearRestaurantPageViews
             List<WeeklyPageView> weeklyPageViewList = metricsClient.getYearRestaurantPageViews(year, restaurantKey);
-            json = convertWeeklyPageViewListToJsonUsingGson(weeklyPageViewList);
+            json = gson.toJson(weeklyPageViewList);
         } else {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
@@ -87,46 +88,12 @@ public class PageViewServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String restaurantKey = request.getParameter("restaurantKey");
-        String restaurantName = request.getParameter("restaurantName");
 
-        if (restaurantKey == null || restaurantName == null) {
+        if (restaurantKey == null) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
 
-        metricsClient.putPageView(restaurantName, restaurantKey);
-    }
-
-    /**
-     * Converts to Json using Gson.
-     * @param weeklyPageView Map to convert to Gson.
-     * @return String in Json format.
-     */
-    private static String convertWeeklyPageViewToJsonUsingGson(WeeklyPageView weeklyPageView) {
-        Gson gson = new Gson();
-        String json = gson.toJson(weeklyPageView);
-        return json;
-    }
-
-    /**
-     * Converts a list of weeklyPageViews to Json using Gson.
-     * @param list of weeklyPageviews.
-     * @return String in Json format.
-     */
-    private static String convertWeeklyPageViewListToJsonUsingGson(List<WeeklyPageView> list) {
-        Gson gson = new Gson();
-        String json = gson.toJson(list);
-        return json;
-    }
-
-    /**
-     * Converts a list of restaurantPageViews to Json using Gson.
-     * @param list of restaurantPageViews
-     * @return String in Json format.
-     */
-    private static String convertRestaurantPageViewListToJsonUsingGson(List<RestaurantPageViews> list) {
-        Gson gson = new Gson();
-        String json = gson.toJson(list);
-        return json;
+        metricsClient.putPageView(restaurantKey);
     }
 }

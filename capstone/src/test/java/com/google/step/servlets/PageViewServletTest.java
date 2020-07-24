@@ -345,13 +345,17 @@ public class PageViewServletTest {
     public void testDoPostCreateEntity() throws SAXException, IOException {
         // Tests the doPost by having to create the entity which we are calling the doPost request for.
 
+        Entity entity = new Entity("RestaurantInfo");
+        entity.setProperty("restaurantKey", "1");
+        entity.setProperty("name", "Marlows");
+        datastoreService.put(entity);
+
         ServletRunner sr = new ServletRunner();
         sr.registerServlet("page-views", PageViewServlet.class.getName());
         ServletUnitClient sc = sr.newClient();
 
         // Make the request.
         WebRequest request = new PostMethodWebRequest("http://localhost:8080/page-views");
-        request.setParameter("restaurantName", "Marlows");
         request.setParameter("restaurantKey", "1");
         sc.getResponse(request);
 
@@ -363,6 +367,7 @@ public class PageViewServletTest {
         // This would error if there was more than 1 entity.
         Entity result = results.asSingleEntity();
 
+        Assert.assertEquals("Name", entity.getProperty("name").toString(), result.getProperty("restaurantName").toString());
         Assert.assertEquals("count", "1", result.getProperty("count").toString());
     }
 
