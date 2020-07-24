@@ -76,4 +76,55 @@ public class RestaurantsServletTest {
     assertEquals(allHeaders, returnedHeaders);
     assertEquals(200, response.getStatus());
   }
+
+  @Test
+  public void testDoPost() throws IOException {
+    List<RestaurantHeader> burgerRestaurants = Arrays.asList(header2, header4);
+
+    RestaurantHeaderSearchClient mockSearchClient = mock(RestaurantHeaderSearchClient.class);
+    when(mockSearchClient.queryRestaurantHeaders("burgers")).thenReturn(burgerRestaurants);
+
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    MockHttpServletResponse response = new MockHttpServletResponse();
+
+    request.addParameter("query", "burgers");
+
+    RestaurantsServlet restaurantsServlet = new RestaurantsServlet(mockSearchClient);
+    restaurantsServlet.doPost(request, response);
+    assertEquals(response.getContentType(), Json.MEDIA_TYPE);
+
+    JSONObject responseBody = new JSONObject(response.getContentAsString());
+    JSONArray responseHeadersJson = responseBody.getJSONArray("restaurants");
+
+    List<RestaurantHeader> returnedHeaders = getRestaurantHeaders(responseHeadersJson);
+
+    assertEquals(burgerRestaurants, returnedHeaders);
+    assertEquals(200, response.getStatus());
+  }
+
+  @Test
+  public void testDoPostUntrimmedQueryString() throws IOException {
+    RestaurantHeaderSearchClient mockSearchClient = mock(RestaurantHeaderSearchClient.class);
+
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    MockHttpServletResponse response = new MockHttpServletResponse();
+
+    request.addParameter("query", "     \n   burgers  \n\t");
+
+    RestaurantsServlet restaurantsServlet = new RestaurantsServlet(mockSearchClient);
+    restaurantsServlet.doPost(request, response);
+
+    verify(mockSearchClient).queryRestaurantHeaders("burgers");
+  }
+
+  List<RestaurantHeader> getRestaurantHeaders(JSONArray headersJson) {
+    List<RestaurantHeader> headers = new ArrayList<>();
+    JSONObject headerJson;
+    for(int i = 0; i < headersJson.length(); i++) {
+      headerJson = headersJson.getJSONObject(i);
+      headers.add(gson.fromJson(headerJson.toString(), RestaurantHeader.class));
+    }
+
+    return headers;
+  }
 }
