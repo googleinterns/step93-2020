@@ -151,20 +151,24 @@ test('Test getFirstDate with empty restaurantPageViews data', () => {
       .toMatchObject({'minWeek': null, 'minYear': null});
 });
 
-test('Test getFirstDate with simple restaurantPageViews with two date options', () => {
-  expect(functions.getFirstDate(pageViewExample1))
-      .toMatchObject({'minWeek': 10, 'minYear': 2020});
-});
+test(
+    'Test getFirstDate with simple restaurantPageViews with two date options',
+    () => {
+      expect(functions.getFirstDate(pageViewExample1))
+          .toMatchObject({'minWeek': 10, 'minYear': 2020});
+    });
 
 test('Test getFirstDate with restaurantPageViews data that skips weeks', () => {
   expect(functions.getFirstDate(pageViewExample2))
       .toMatchObject({'minWeek': 11, 'minYear': 2020});
 });
 
-test('Test getFirstDate with restaurantPageViews data in different years', () => {
-  expect(functions.getFirstDate(pageViewExample3))
-      .toMatchObject({'minWeek': 25, 'minYear': 2019});
-});
+test(
+    'Test getFirstDate with restaurantPageViews data in different years',
+    () => {
+      expect(functions.getFirstDate(pageViewExample3))
+          .toMatchObject({'minWeek': 25, 'minYear': 2019});
+    });
 
 /**
  * Tests for getDateFromWeekYear to ensure it finds the correct Date from
@@ -239,23 +243,23 @@ test('Test getNumWeeksBetween across a month boundary', () => {
 
 test('Test getNumWeeksBetween with the same date', () => {
   expect(functions.getNumWeeksBetween(
-      new Date(2020, 6, 21), new Date(2020, 6, 21)))
+             new Date(2020, 6, 21), new Date(2020, 6, 21)))
       .toBe(0);
 });
 
 test('Test getNumWeeksBetween across a year boundary', () => {
   expect(functions.getNumWeeksBetween(
-      new Date(2019, 11, 22), new Date(2020, 0, 19)))
+             new Date(2019, 11, 22), new Date(2020, 0, 19)))
       .toBe(4);
 });
 
 test('Test getNumWeeksBetween with the later date as the first param', () => {
   expect(functions.getNumWeeksBetween(
-      new Date(2020, 6, 28), new Date(2020, 6, 21)))
+             new Date(2020, 6, 28), new Date(2020, 6, 21)))
       .toBe(1);
 });
 
-test('Test getNumWeeksBetween with the later date as the first param across a month boundary', () => {
+test('Test getNumWeeksBetween across a month boundary', () => {
   expect(
       functions.getNumWeeksBetween(new Date(2020, 7, 4), new Date(2020, 6, 21)))
       .toBe(2);
@@ -267,7 +271,9 @@ test('Test setUpVisualizationData with two restaurants and two weeks', () => {
       .toMatchObject(visualizationDataExample1);
 });
 
-test('Test setUpVisualizationData with three restaurants and three weeks', () => {
-  expect(functions.setUpVisualizationData(pageViewExample2, dateArr2))
-      .toMatchObject(visualizationDataExample2);
-});
+test(
+    'Test setUpVisualizationData with three restaurants and three weeks',
+    () => {
+      expect(functions.setUpVisualizationData(pageViewExample2, dateArr2))
+          .toMatchObject(visualizationDataExample2);
+    });
