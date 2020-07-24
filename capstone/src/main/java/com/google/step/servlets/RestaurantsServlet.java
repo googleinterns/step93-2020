@@ -27,14 +27,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet responsible for getting restaurants from Datastore. */
+/** Servlet responsible for getting restaurants from the search index */
 @WebServlet("/search/restaurants")
 public class RestaurantsServlet extends HttpServlet {
   private final RestaurantHeaderSearchClient searchClient;
@@ -48,41 +47,33 @@ public class RestaurantsServlet extends HttpServlet {
   }
 
   /**
-   * Returns a list of RestaurantHeaders, with a snapshot of restaurant details.
-   * @param response A list of restaurant details, in the following json format:
-    {
-      "restaurantHeaders" : [
-        {
-          "name": <String>,
-          "cuisine": <List<String>>,
-          "message": <String, details status of restaurant based on score>,
-        },
-        ...
-      ]
-    }
-   * @param request Specifies relevant search params. //TODO: update exact search param format
-   * @throws //TODO: add any error codes thrown once search is implemented.
+   * Request headers from the search server for restaurants without any particular query
+   * @param response  a servlet response with a JSON object holding restaurant details in the
+   *                 response body. The restaurant details can be found in the "restaurants" field
+   * @param request simple get request. Takes no parameters
+   * @throws IOException thrown if writing the response fails
    */
-  // TODO: Change this to be connected to search functionality.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    List<RestaurantHeader> restaurantHeaders = searchClient.getRandomRestaurants();
-
-    // Format restaurant List to JSON for return
+    List<RestaurantHeader> restaurantHeaders = searchClient.searchRestaurants("");
     JSONObject responseJson = new JSONObject()
         .put("restaurants", new JSONArray(restaurantHeaders));
 
-    // Send the JSON as the response
     response.setContentType(Json.MEDIA_TYPE);
-
     response.getWriter().println(responseJson);
   }
 
+  /**
+   * Query the search server for a specific subset of matching restaurants
+   * @param request servlet request with "query" parameter set to search query
+   * @param response  servlet response with a JSON body. The "restaurants" field of the body
+   *                  contains an array of restaurant details JSON objects
+   * @throws IOException thrown if writing the response fails
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String queryString = request.getParameter("query").trim();
-    List<RestaurantHeader> searchResults = searchClient.queryRestaurantHeaders(queryString);
+    List<RestaurantHeader> searchResults = searchClient.searchRestaurants(queryString);
 
     JSONObject responseJson = new JSONObject()
         .put("restaurants", new JSONArray(searchResults));
