@@ -52,7 +52,7 @@ async function setRestaurantDetails() {
     }
 
     // Update page views for this restaurant
-    await updatePageViews(restaurantKey, currRestaurant.name);
+    await updatePageViews(restaurantKey);
   }
 }
 
@@ -117,9 +117,8 @@ function appendCuisineTag(cuisineName) {
  * @param restaurantName
  * @return {Promise<void>}
  */
-async function updatePageViews(restaurantKey, restaurantName) {
-  const params =
-      'restaurantKey=' + restaurantKey + '&restaurantName=' + restaurantName;
+async function updatePageViews(restaurantKey) {
+  const params = 'restaurantKey=' + restaurantKey;
   await fetch('/page-view', {
     method: 'post',
     body: params,
