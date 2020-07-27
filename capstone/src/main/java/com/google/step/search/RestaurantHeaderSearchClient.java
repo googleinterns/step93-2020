@@ -12,8 +12,9 @@ import java.util.List;
 public interface RestaurantHeaderSearchClient {
 
   /**
-   * Given a {@link RestaurantHeader}, sends HTTP request to the search server to add a document
-   * that represents a {@link RestaurantHeader} to the "restaurants" index.
+   * Given a {@link RestaurantHeader}, updates search index with a document representing the
+   * restaurant header. If the document for the restaurant header does not currently exist a new
+   * document will be created. Otherwise, a new document is created.
    * @param restaurantHeader a {@link RestaurantHeader} that will be updated in the search index
    * @throws IOException if request cannot be made or executed properly
    */
