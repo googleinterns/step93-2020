@@ -15,9 +15,10 @@ public class RestaurantClient {
   private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   /**
-   * Puts a single entity of type RestaurantInfo into datastore.
-   * @param restaurant, to be processed into an Entity and put into datastore
-   * @param ownerEmail, separate from Restaurant class and passed from UserService in the servlet
+   * Puts a single entity of type RestaurantInfo into Datastore.
+   * @param restaurant  to be processed into an Entity and put into Datastore
+   * @param ownerEmail  separate from Restaurant class and passed from UserService in the servlet
+   * @return newly created restaurantKey
    */
   public long putRestaurant(Restaurant restaurant, String ownerEmail) {
     // Retrieve restaurant properties
