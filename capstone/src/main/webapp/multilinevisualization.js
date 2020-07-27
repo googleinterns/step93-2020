@@ -45,12 +45,14 @@ function getDataForMultilineVisualization() {
   };
 }
 
+/**
+ * Creates a multi-line graph with x-axis being the week/date,
+ * y-axis being the number of page views, and lines for each
+ * restaurant going across weeks. Hovering over a line will
+ * display the restaurant's name and grey out the rest of the lines.
+ */
 function createMultilineVisualization() {
   const d3 = window.d3;
-  /**
-   * Setup dummy data for sample visualization
-   */
-
   const data = getDataForMultilineVisualization();
   const height = 400;
   const width = 600;
