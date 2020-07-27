@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet responsible for sending/getting a restaurant to/from Datastore. */
+/** Servlet responsible for getting and setting restaurant data. */
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
   private final RestaurantClient restaurantClient = new RestaurantClient();
@@ -50,19 +50,20 @@ public class RestaurantServlet extends HttpServlet {
   }
 
   /**
-   * Will put the information gathered from the signup page and add the
-   * information into their respective properties for .
-   * @param request sent by the frontend. Requires the user to be logged in
-   *                and have the following parameters in the request body:
-   *                "name": name of the restaurant,
-   *                "cuisine": list of cuisines of the restaurant as CSV,
-   *                "story": story of the restaurant,
-   *                "phone": cellphone of the restaurant,
-   *                "website": link to their website,
-   * @param response will redirect to the home page of the website. If the
-   *                 user is not logged in when requesting the POST, the
+   * Using the {@code request} parameters, extracts restaurant information and sends a request to
+   * the {@link RestaurantClient} and the {@link RestaurantHeaderSearchClient} to update the
+   * restaurant data.
+   * @param request sent by the frontend. Requires the user to be logged in and have the following
+   *                parameters in the request body:
+   *                  "name": name of the restaurant,
+   *                  "cuisine": list of cuisines of the restaurant as CSV,
+   *                  "story": story of the restaurant,
+   *                  "phone": cellphone of the restaurant,
+   *                  "website": link to their website,
+   * @param response  a servlet response that will not contain a body. If the user iis not logged in
+   *                  when sending user is not logged in when sending the POST request, the
    *                 response will have a SC_FORBIDDEN status.
-   * @throws IOException
+   * @throws IOException thrown if response writer fails
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
