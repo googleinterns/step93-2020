@@ -1,0 +1,33 @@
+{
+  "name": "step93-2020",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "jest",
+    "clear_jest": "jest --clearCache"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/googleinterns/step93-2020.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/googleinterns/step93-2020/issues"
+  },
+  "homepage": "https://github.com/googleinterns/step93-2020#readme",
+  "devDependencies": {
+    "jest": "^26.1.0"
+  },
+  "dependencies": {
+    "babel-jest": "^26.1.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "@jest/globals": "latest"
+  },
+  "babel": {
+    "plugins": [
+      "transform-es2015-modules-commonjs"
+    ]
+  }
+}
