@@ -4,6 +4,9 @@ import com.google.step.data.RestaurantPageViews;
 import com.google.step.data.RestaurantScore;
 
 import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+
 
 /**
  * Will take care of calculating the score for each restaurant.
@@ -99,6 +102,7 @@ public class ScoreClient {
     }
 
     /**
+<<<<<<< HEAD
      * Standardizes the scores for the entire map of scores using z - score.
      * @param scoreMap map that holds the restaurant id as a key and the score of that restaurant as a value.
      * @param restaurantIds list that holds the restaurant ids to get the values of the map.
@@ -127,6 +131,7 @@ public class ScoreClient {
     }
 
     /**
+<<<<<<< HEAD
      * Normalizes the scores into a range between 0 and 1 using min max normalizing.
      * It also inverts the score so a 1 is a low score and a 0 is a high score.
      * @param scoreMap map that holds the restaurant id as a key and the score of that restaurant as a value.
