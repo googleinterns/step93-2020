@@ -129,8 +129,7 @@ public class RestaurantServlet extends HttpServlet {
       // Send the JSON as the response
       response.setContentType("application/json;");
       response.getWriter().println(json);
-    }
-    else {
+    } else {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }
   }

@@ -50,7 +50,13 @@ async function setRestaurantDetails() {
         appendCuisineTag(currRestaurant.cuisine[i]);
       }
     }
+
+    // Update page views for this restaurant
+    await updatePageViews(restaurantKey);
   }
+
+  // Update page views for this restaurant
+  await updatePageViews(restaurantKey);
 }
 
 /**
@@ -106,4 +112,19 @@ function appendCuisineTag(cuisineName) {
     document.getElementById('current-restaurant-cuisines')
         .appendChild(outerDiv);
   }
+}
+
+/**
+ * Update the page views for a restaurant using the PageViewServlet.
+ * @param restaurantKey
+ * @param restaurantName
+ * @return {Promise<void>}
+ */
+async function updatePageViews(restaurantKey) {
+  const params = 'restaurantKey=' + restaurantKey;
+  await fetch('/page-view', {
+    method: 'post',
+    body: params,
+    headers: {'content-type': 'application/x-www-form-urlencoded'},
+  });
 }

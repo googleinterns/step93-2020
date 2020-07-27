@@ -23,11 +23,10 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.Json;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.step.data.RestaurantHeader;
-import org.apache.http.client.utils.URIBuilder;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import org.apache.http.client.utils.URIBuilder;
 
 /**
  * The {@code ElasticsearchClient} is a class that sends requests to add {@code RestaurantHeaders}
@@ -43,10 +42,7 @@ public class ElasticsearchClient {
   ElasticsearchClient(HttpTransport transport, String hostname, short port) {
     requestFactory = transport.createRequestFactory();
 
-    URIBuilder uriBuilder = new URIBuilder()
-        .setScheme("http")
-        .setHost(hostname)
-        .setPort(port);
+    URIBuilder uriBuilder = new URIBuilder().setScheme("http").setHost(hostname).setPort(port);
     elasticsearchUriString = uriBuilder.toString();
   }
 
@@ -67,8 +63,8 @@ public class ElasticsearchClient {
     requestUrl.setPathParts(Arrays.asList("", RESTAURANTS, "_doc", restaurantKey));
 
     String requestBody = gson.toJson(restaurantHeader);
-    HttpContent putRequestContent = new ByteArrayContent(Json.MEDIA_TYPE,
-        requestBody.getBytes(StandardCharsets.UTF_8));
+    HttpContent putRequestContent =
+        new ByteArrayContent(Json.MEDIA_TYPE, requestBody.getBytes(StandardCharsets.UTF_8));
 
     requestFactory.buildPutRequest(requestUrl, putRequestContent).execute();
   }

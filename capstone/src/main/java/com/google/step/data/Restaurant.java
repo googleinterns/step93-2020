@@ -115,12 +115,12 @@ public final class Restaurant {
     }
 
     return otherRestaurant.getCuisine().equals(this.cuisine)
-            && otherRestaurant.getLocation().equals(this.location)
-            && otherRestaurant.getName().equals(this.name)
-            && otherRestaurant.getPhone().equals(this.phone)
-            && otherRestaurant.getStatus().equals(this.status)
-            && otherRestaurant.getStory().equals(this.story)
-            && otherRestaurant.getWebsite().equals(this.website);
+        && otherRestaurant.getLocation().equals(this.location)
+        && otherRestaurant.getName().equals(this.name)
+        && otherRestaurant.getPhone().equals(this.phone)
+        && otherRestaurant.getStatus().equals(this.status)
+        && otherRestaurant.getStory().equals(this.story)
+        && otherRestaurant.getWebsite().equals(this.website);
   }
 
   /**
@@ -129,13 +129,13 @@ public final class Restaurant {
   @Override
   public int hashCode() {
     return new HashCodeBuilder(17, 37)
-            .append(cuisine)
-            .append(location)
-            .append(name)
-            .append(phone)
-            .append(status)
-            .append(story)
-            .append(website)
-            .toHashCode();
+        .append(cuisine)
+        .append(location)
+        .append(name)
+        .append(phone)
+        .append(status)
+        .append(story)
+        .append(website)
+        .toHashCode();
   }
 }
