@@ -59,7 +59,6 @@ public class RestaurantServletTest {
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
 
         // Create dummy RestaurantInfo entity and add it to the mock Datastore
-        long restaurantKey = 4;
         String name =  "Wildfire";
         String story = "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.";
         List<String> cuisineList = Arrays.asList("Steakhouse", "American");
@@ -69,7 +68,6 @@ public class RestaurantServletTest {
         String status = "STRUGGLING";
         GeoPt location = new GeoPt((float) 42.17844, (float) -87.92843);
         Entity restaurantInfo1 = new Entity("RestaurantInfo");
-        restaurantInfo1.setProperty("restaurantKey", restaurantKey);
         restaurantInfo1.setProperty("name", name);
         restaurantInfo1.setProperty("location", location);
         restaurantInfo1.setProperty("story", story);
@@ -86,7 +84,8 @@ public class RestaurantServletTest {
         ServletUnitClient sc = sr.newClient();
 
         // This can throw the SAXException.
-        WebRequest request = new GetMethodWebRequest("http://localhost:8080/restaurant?restaurantKey=4");
+        long restaurantKey = restaurantInfo1.getKey().getId();
+        WebRequest request = new GetMethodWebRequest("http://localhost:8080/restaurant?restaurantKey=" + restaurantKey);
         WebResponse response = sc.getResponse(request);
         assertNotNull("No response received", response);
         assertEquals("content type", "application/json", response.getContentType());
@@ -94,7 +93,6 @@ public class RestaurantServletTest {
 
         JSONObject restaurantObject = new JSONObject(responseText).getJSONObject("value");
 
-        assertEquals(restaurantKey, ((Integer)restaurantObject.get("restaurantKey")).longValue());
         assertEquals(name, restaurantObject.get("name"));
         assertEquals(location.getLatitude(), ((Double)restaurantObject.getJSONObject("location").get("latitude")).floatValue(), 0);
         assertEquals(location.getLongitude(), ((Double)restaurantObject.getJSONObject("location").get("longitude")).floatValue(), 0);
@@ -122,7 +120,7 @@ public class RestaurantServletTest {
         ServletUnitClient sc = sr.newClient();
 
         // This call to getResponse should throw an exception
-        WebRequest request = new GetMethodWebRequest("http://localhost:8080/restaurant?restaurantKey=0");
+        WebRequest request = new GetMethodWebRequest("http://localhost:8080/restaurant?restaurantKey=1");
         sc.getResponse(request);
     }
 
