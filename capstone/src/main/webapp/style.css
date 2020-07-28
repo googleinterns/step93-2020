@@ -5,6 +5,12 @@
   width: 600px;
 }
 
+.multiLineChart {
+  height: 600px;
+  margin-left: 50px;
+  width: 800px;
+}
+
 #main-content {
   margin: 0 auto;
   max-width: 85vw;
@@ -49,4 +55,10 @@
 
 .restaurant-name-link {
   color: black;
+}
+
+.multiLineChart {
+  height: 600px;
+  margin-left: 50px;
+  width: 800px;
 }
