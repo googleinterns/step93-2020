@@ -21,18 +21,12 @@ public interface RestaurantHeaderSearchClient {
   void updateRestaurantHeader(RestaurantHeader restaurantHeader) throws IOException;
 
   /**
-   * Queries search server for {@link RestaurantHeader} fields that match {@code query} by either
-   * "name" or "cuisine" field.
-   * @param query valid query string
+   * Queries search server for {@link RestaurantHeader} objects that match {@code query} by either
+   * "name" or "cuisine" field, if the query is not empty. If the query is empty, returns a random
+   * assortment of restaurant headers.
+   * @param query valid query string, or empty string
    * @return list of {@link RestaurantHeader} objects sorted by descending relevance score
-   * @throws IOException if request cannot be made or executed properly
+   * @throws IOException thrown if request cannot be made or executed properly
    */
-  List<RestaurantHeader> queryRestaurantHeaders(String query) throws IOException;
-
-  /**
-   * Queries search server, matching everything possible.
-   * @return list of {@link RestaurantHeader} objects sorted arbitrarily
-   * @throws IOException if request cannot be made or executed properly
-   */
-  List<RestaurantHeader> getRandomRestaurants() throws IOException;
+  List<RestaurantHeader> searchRestaurants(String query) throws IOException;
 }

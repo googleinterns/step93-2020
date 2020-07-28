@@ -74,22 +74,14 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
   }
 
   /**
-   * Queries search server for {@link RestaurantHeader} objects that match {@code query} by either
-   * "name" or "cuisine" field, if the query is not empty. If the query is empty, returns a random
-   * assortment of restaurant headers.
-   * @param query valid query string, or empty string
-   * @return list of {@link RestaurantHeader} objects sorted by descending relevance score
-   * @throws IOException thrown if request cannot be made or executed properly
+   * {@inheritDoc}
    */
+  @Override
   public List<RestaurantHeader> searchRestaurants(String query) throws IOException {
     return query.isEmpty() ? getRandomRestaurants() : queryRestaurantHeaders(query);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<RestaurantHeader> queryRestaurantHeaders(String query) throws IOException {
+  private List<RestaurantHeader> queryRestaurantHeaders(String query) throws IOException {
     List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
 
     String requestBody = new JSONObject()
@@ -105,11 +97,7 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
     return convertElasticsearchResponseBodyToHeaders(response);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<RestaurantHeader> getRandomRestaurants() throws IOException {
+  private List<RestaurantHeader> getRandomRestaurants() throws IOException {
     List<String> requestPath = Arrays.asList("", "_search");
 
     String requestBody = new JSONObject()
