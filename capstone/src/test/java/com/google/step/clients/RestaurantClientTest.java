@@ -82,7 +82,7 @@ public final class RestaurantClientTest {
     datastoreService.put(restaurantEntity1);
 
     // Get restaurant key from entity that was put into Datastore, as it was assigned by Datastore
-    long restaurantKey = (long)restaurantEntity1.getProperty("restaurantKey");
+    long restaurantKey = restaurantEntity1.getKey().getId();
 
     // Run client method
     RestaurantClient restaurantClient = new RestaurantClient();
@@ -111,8 +111,8 @@ public final class RestaurantClientTest {
     datastoreService.put(restaurantEntity2);
 
     // Get restaurant keys from entities that were put into Datastore, as they were assigned by Datastore
-    long restaurantKey1 = (long)restaurantEntity1.getProperty("restaurantKey");
-    long restaurantKey2 = (long)restaurantEntity1.getProperty("restaurantKey");
+    long restaurantKey1 = restaurantEntity1.getKey().getId();
+    long restaurantKey2 = restaurantEntity2.getKey().getId();
 
     // Create expected list
     // TODO: make expected list be of RestaurantHeaders.
@@ -178,8 +178,6 @@ public final class RestaurantClientTest {
    */
   public static Entity makeRestaurantInfoEntityWithVals(String name, GeoPt location, String story, List<String> cuisine, String phone, String website, long score, String status) {
     Entity restaurantInfo = new Entity("RestaurantInfo");
-    long id = restaurantInfo.getKey().getId();
-    restaurantInfo.setProperty("restaurantKey", id);
     restaurantInfo.setProperty("name", name);
     restaurantInfo.setProperty("location", location);
     restaurantInfo.setProperty("story", story);
@@ -203,7 +201,7 @@ public final class RestaurantClientTest {
     PreparedQuery results = datastoreService.prepare(query);
     Entity entity = results.asSingleEntity();
 
-    long restaurantKey = (Long) entity.getProperty("restaurantKey");
+    long restaurantKey = entity.getKey().getId();
     GeoPt location = (GeoPt) entity.getProperty("location");
     String story = (String) entity.getProperty("story");
     List<String> cuisine = (List<String>) entity.getProperty("cuisine");

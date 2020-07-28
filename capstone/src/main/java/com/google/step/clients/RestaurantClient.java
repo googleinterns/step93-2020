@@ -1,11 +1,8 @@
 package com.google.step.clients;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.GeoPt;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.*;
+import com.google.appengine.repackaged.com.google.datastore.v1.PropertyFilter;
+import com.google.apphosting.datastore.DatastoreV4;
 import com.google.step.data.Restaurant;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +53,7 @@ public class RestaurantClient {
   public Optional<Restaurant> getSingleRestaurant(long restaurantKey) {
     Query query = new Query("RestaurantInfo")
                       .setFilter(new Query.FilterPredicate(
-                          "restaurantKey", Query.FilterOperator.EQUAL, restaurantKey));
+                          Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, KeyFactory.createKey("RestaurantInfo", restaurantKey)));
     PreparedQuery results = datastore.prepare(query);
     Entity resultEntity = results.asSingleEntity();
     if (resultEntity == null) {
@@ -97,7 +94,7 @@ public class RestaurantClient {
       throw new IllegalArgumentException(
           "Element of type " + entity.getKind() + ", should be RestaurantInfo");
     }
-    long restaurantKey = (Long) entity.getProperty("restaurantKey");
+    long restaurantKey = entity.getKey().getId();
     String name = (String) entity.getProperty("name");
     GeoPt location = (GeoPt) entity.getProperty("location");
     String story = (String) entity.getProperty("story");
