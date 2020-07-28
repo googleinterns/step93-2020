@@ -7,6 +7,7 @@ import com.google.step.data.Restaurant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class RestaurantClient {
   private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
