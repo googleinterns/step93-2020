@@ -175,6 +175,7 @@ function createMultilineVisualization() {
     function moved() {
       d3.event.preventDefault();
       // Get current mouse position
+      // eslint-disable-next-line no-invalid-this
       const mouse = d3.mouse(this);
       // The invert function will return the value from the domain given
       // a value from the range
