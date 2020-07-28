@@ -166,9 +166,10 @@ public class ElasticsearchClient {
 
     JSONObject responseJson = new JSONObject(responseString);
 
-    List<RestaurantHeader> headers = new ArrayList<>();
+    // Elasticsearch response body stores match information in { hits: { hits : [] } }
     JSONArray elasticsearchMatches = responseJson.getJSONObject("hits").getJSONArray("hits");
 
+    List<RestaurantHeader> headers = new ArrayList<>();
     for (int i = 0; i < elasticsearchMatches.length(); i ++) {
       JSONObject matchJson = elasticsearchMatches.getJSONObject(i);
       JSONObject source = matchJson.getJSONObject("_source");
