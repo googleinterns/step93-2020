@@ -62,10 +62,3 @@ function createP(content) {
   pTag.appendChild(node);
   return pTag;
 }
-
-// /**
-//  * Return to home landing page.
-//  */
-// function returnHome() {
-//   window.location.href = '/';
-// }
