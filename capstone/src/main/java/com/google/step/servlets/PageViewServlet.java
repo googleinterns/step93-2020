@@ -15,16 +15,16 @@ import com.google.step.data.WeeklyPageView;
 import com.google.step.data.RestaurantPageViews;
 
 /**
- * Servlet that will call the metricsClient for any doGet or doPost requests.
+ * Servlet that will read and write page view metrics to and from a persistent store.
  */
 @WebServlet("/page-view")
 public class PageViewServlet extends HttpServlet {
 
-    private static MetricsClient metricsClient = new MetricsClient();
+    private final MetricsClient metricsClient = new MetricsClient();
     private static Gson gson = new Gson();
 
     /**
-     *
+     * Method that retrieves different page view metrics depending on the query parameters.
      * @param request with a mix of the following parameters: <String, restaurantKey> and <int, year>.
      *                These can be in the request or not at all, and depending on the mix a different
      *                method from the client will be called.
@@ -42,11 +42,9 @@ public class PageViewServlet extends HttpServlet {
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String restaurantKey;
+        String restaurantKey = null;
         if (request.getParameter("restaurantKey") != null) {
             restaurantKey = request.getParameter("restaurantKey");
-        } else {
-            restaurantKey = null;
         }
 
         int year = 0;
@@ -55,21 +53,18 @@ public class PageViewServlet extends HttpServlet {
         }
 
         String json;
-        if (restaurantKey == null && year == 0) {
-            // getAllPageViews()
+        if (restaurantKey == null && year <= 0) {
             List<RestaurantPageViews> restaurantPageViewsList = metricsClient.getAllPageViews();
             json = gson.toJson(restaurantPageViewsList);
-        } else if (year == 0 && restaurantKey != null) {
-            // getCurrentPageViews()
+        } else if (year <= 0 && restaurantKey != null) {
             WeeklyPageView weeklyPageView = metricsClient.getCurrentPageViews(restaurantKey);
             json = gson.toJson(weeklyPageView);
 
         } else if (year != 0 && restaurantKey != null) {
-            // getYearRestaurantPageViews
             List<WeeklyPageView> weeklyPageViewList = metricsClient.getYearRestaurantPageViews(year, restaurantKey);
             json = gson.toJson(weeklyPageViewList);
         } else {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
@@ -90,7 +85,7 @@ public class PageViewServlet extends HttpServlet {
         String restaurantKey = request.getParameter("restaurantKey");
 
         if (restaurantKey == null) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 

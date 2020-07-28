@@ -291,7 +291,7 @@ public class PageViewServletTest {
         try {
             sc.getResponse(request);
         } catch (HttpException e) {
-            Assert.assertEquals("Error code", HttpServletResponse.SC_FORBIDDEN, e.getResponseCode());
+            Assert.assertEquals("Error code", HttpServletResponse.SC_BAD_REQUEST, e.getResponseCode());
         }
     }
 
@@ -386,7 +386,7 @@ public class PageViewServletTest {
         try {
             sc.getResponse(request);
         } catch (HttpException e) {
-            Assert.assertEquals("Error code", HttpServletResponse.SC_FORBIDDEN, e.getResponseCode());
+            Assert.assertEquals("Error code", HttpServletResponse.SC_BAD_REQUEST, e.getResponseCode());
         }
     }
 
