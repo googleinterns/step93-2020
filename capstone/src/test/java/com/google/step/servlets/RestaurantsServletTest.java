@@ -59,7 +59,7 @@ public class RestaurantsServletTest {
         header4
     );
     RestaurantHeaderSearchClient mockSearchClient = mock(RestaurantHeaderSearchClient.class);
-    when(mockSearchClient.getRandomRestaurants()).thenReturn(allHeaders);
+    when(mockSearchClient.searchRestaurants("")).thenReturn(allHeaders);
 
     MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpServletResponse response = new MockHttpServletResponse();
@@ -82,7 +82,7 @@ public class RestaurantsServletTest {
     List<RestaurantHeader> burgerRestaurants = Arrays.asList(header2, header4);
 
     RestaurantHeaderSearchClient mockSearchClient = mock(RestaurantHeaderSearchClient.class);
-    when(mockSearchClient.queryRestaurantHeaders("burgers")).thenReturn(burgerRestaurants);
+    when(mockSearchClient.searchRestaurants("burgers")).thenReturn(burgerRestaurants);
 
     MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpServletResponse response = new MockHttpServletResponse();
@@ -114,7 +114,7 @@ public class RestaurantsServletTest {
     RestaurantsServlet restaurantsServlet = new RestaurantsServlet(mockSearchClient);
     restaurantsServlet.doPost(request, response);
 
-    verify(mockSearchClient).queryRestaurantHeaders("burgers");
+    verify(mockSearchClient).searchRestaurants("burgers");
   }
 
   List<RestaurantHeader> getRestaurantHeaders(JSONArray headersJson) {
