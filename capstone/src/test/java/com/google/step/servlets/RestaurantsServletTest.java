@@ -1,3 +1,17 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.step.servlets;
 
 import com.google.api.client.json.Json;
@@ -22,41 +36,43 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class RestaurantsServletTest {
-  RestaurantHeader header1 =
+  private final RestaurantHeader HEADER_1 =
       new RestaurantHeader(
           1111L,
           "Restaurant 1",
           new GeoPt(11, 11),
           Arrays.asList("soup"));
-  RestaurantHeader header2 = new RestaurantHeader(
-      2222L,
-      "Restaurant 2",
-      new GeoPt(22, 22),
-      Arrays.asList("barbecue", "burgers"));
 
-  RestaurantHeader header3 =
+  private final RestaurantHeader HEADER_2 =
+      new RestaurantHeader(
+          2222L,
+          "Restaurant 2",
+          new GeoPt(22, 22),
+          Arrays.asList("barbecue", "burgers"));
+
+  private final RestaurantHeader HEADER_3 =
       new RestaurantHeader(
           3333L,
           "Restaurant 3",
           new GeoPt(33, 33),
           Arrays.asList("noodle", "Thai"));
 
-  RestaurantHeader header4 =
+  private final RestaurantHeader HEADER_4 =
       new RestaurantHeader(
           4444L,
           "Restaurant 4",
           new GeoPt(44, 44),
           Arrays.asList("burgers", "chicken", "sandwich"));
 
-  Gson gson = new Gson();
+  private final Gson gson = new Gson();
 
   @Test
   public void testDoGet() throws IOException {
     List<RestaurantHeader> allHeaders = Arrays.asList(
-        header1,
-        header2,
-        header3,
-        header4
+        HEADER_1,
+        HEADER_2,
+        HEADER_3,
+        HEADER_4
     );
     RestaurantHeaderSearchClient mockSearchClient = mock(RestaurantHeaderSearchClient.class);
     when(mockSearchClient.searchRestaurants("")).thenReturn(allHeaders);
@@ -79,7 +95,7 @@ public class RestaurantsServletTest {
 
   @Test
   public void testDoPost() throws IOException {
-    List<RestaurantHeader> burgerRestaurants = Arrays.asList(header2, header4);
+    List<RestaurantHeader> burgerRestaurants = Arrays.asList(HEADER_2, HEADER_4);
 
     RestaurantHeaderSearchClient mockSearchClient = mock(RestaurantHeaderSearchClient.class);
     when(mockSearchClient.searchRestaurants("burgers")).thenReturn(burgerRestaurants);
@@ -119,6 +135,7 @@ public class RestaurantsServletTest {
 
   List<RestaurantHeader> getRestaurantHeaders(JSONArray headersJson) {
     List<RestaurantHeader> headers = new ArrayList<>();
+
     JSONObject headerJson;
     for(int i = 0; i < headersJson.length(); i++) {
       headerJson = headersJson.getJSONObject(i);
