@@ -21,7 +21,7 @@ import com.google.step.data.RestaurantPageViews;
 public class PageViewServlet extends HttpServlet {
 
     private final MetricsClient metricsClient = new MetricsClient();
-    private static Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     /**
      * Method that retrieves different page view metrics depending on the query parameters.
@@ -31,7 +31,7 @@ public class PageViewServlet extends HttpServlet {
      *                String restaurantKey -> getCurrentPageViews()
      *                int year, String restaurantKey -> getYearRestaurantPageViews()
      *                empty -> getAllPageViews();
-     *                A SC_FORBIDDEN status will be set if none of these three specified combinations
+     *                A SC_BAD_REQUEST status will be set if none of these three specified combinations
      *                is present.
      * @param response Json String response that varies depending of the method called by the mix of
      *                 parameters in the request.
@@ -59,7 +59,6 @@ public class PageViewServlet extends HttpServlet {
         } else if (year <= 0 && restaurantKey != null) {
             WeeklyPageView weeklyPageView = metricsClient.getCurrentPageViews(restaurantKey);
             json = gson.toJson(weeklyPageView);
-
         } else if (year != 0 && restaurantKey != null) {
             List<WeeklyPageView> weeklyPageViewList = metricsClient.getYearRestaurantPageViews(year, restaurantKey);
             json = gson.toJson(weeklyPageViewList);
@@ -73,9 +72,9 @@ public class PageViewServlet extends HttpServlet {
     }
 
     /**
-     *
+     * Post request that updates this week's pageViews for a specific restaurant.
      * @param request should contain the <String, restaurantKey> and <String, restaurantName> as
-     *                parameters. A SC_FORBIDDEN status can be sent to the frontend if one of these
+     *                parameters. A SC_BAD_REQUEST status can be sent to the frontend if one of these
      *                parameters is not present.
      * @param response no response.
      * @throws IOException can be thrown by the response.
