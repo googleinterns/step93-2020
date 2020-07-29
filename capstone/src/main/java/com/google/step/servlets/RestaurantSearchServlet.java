@@ -30,14 +30,14 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet responsible for getting restaurants from the search index */
 @WebServlet("/search/restaurants")
-public class RestaurantsServlet extends HttpServlet {
+public class RestaurantSearchServlet extends HttpServlet {
   private final RestaurantHeaderSearchClient searchClient;
 
-  public RestaurantsServlet() {
+  public RestaurantSearchServlet() {
     this(new ElasticsearchClient("localhost", (short)9200));
   }
 
-  RestaurantsServlet(RestaurantHeaderSearchClient searchClient) {
+  RestaurantSearchServlet(RestaurantHeaderSearchClient searchClient) {
     this.searchClient = searchClient;
   }
 
