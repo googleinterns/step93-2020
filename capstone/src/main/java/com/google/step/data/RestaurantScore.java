@@ -6,16 +6,16 @@ package com.google.step.data;
 public class RestaurantScore {
 
     // The name should always remain the same but the score will change when calculating it.
-    private final String restaurantName;
+    private final String restaurantKey;
     private double score;
 
     /**
      * Constructor for the class.
-     * @param restaurantName name of the restaurant.
+     * @param restaurantKey name of the restaurant.
      * @param score for the restaurant.
      */
-    public RestaurantScore(String restaurantName, double score) {
-        this.restaurantName = restaurantName;
+    public RestaurantScore(String restaurantKey, double score) {
+        this.restaurantKey = restaurantKey;
         this.score = score;
     }
 
@@ -23,8 +23,8 @@ public class RestaurantScore {
      * Get the restaurant Name.
      * @return String representing the restaurant name.
      */
-    public String getRestaurantName() {
-        return restaurantName;
+    public String getRestaurantKey() {
+        return restaurantKey;
     }
 
     /**
