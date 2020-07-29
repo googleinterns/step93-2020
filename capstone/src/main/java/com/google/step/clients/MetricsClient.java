@@ -14,15 +14,9 @@
 
 package com.google.step.clients;
 
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
-import com.google.appengine.api.datastore.Transaction;
 
 import com.google.step.data.RestaurantPageViews;
 import com.google.step.data.WeeklyPageView;
@@ -179,7 +173,7 @@ public class MetricsClient {
                 // Query for the name
                 Query nameQuery = new Query("RestaurantInfo")
                         .setFilter(new FilterPredicate(
-                                "restaurantKey", Query.FilterOperator.EQUAL, restaurantKey));
+                                Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, KeyFactory.createKey("RestaurantInfo", Long.parseLong(restaurantKey))));
                 PreparedQuery nameResult = dataStore.prepare(nameQuery);
                 Entity restaurant = nameResult.asSingleEntity();
                 String restaurantName = restaurant.getProperty("name").toString();

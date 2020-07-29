@@ -51,9 +51,14 @@ function getDataForMultilineVisualization() {
  * restaurant going across weeks. Hovering over a line will
  * display the restaurant's name and grey out the rest of the lines.
  */
-function createMultilineVisualization() {
+async function createMultilineVisualization() {
   const d3 = window.d3;
-  const data = getDataForMultilineVisualization();
+  // Need to disable validator because parseData is defined in another file
+  // Can't import it because then this file would have to become a module,
+  // causing other issues
+  // eslint-disable-next-line no-undef
+  const data = await parseData();
+  console.log(data);
   const height = 400;
   const width = 600;
   const margin = ({top: 20, right: 20, bottom: 30, left: 30});
