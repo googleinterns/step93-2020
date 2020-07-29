@@ -52,7 +52,6 @@ async function setRestaurantDetails() {
     }
 
     // Update page views for this restaurant
-    console.log(restaurantKey);
     await updatePageViews(restaurantKey);
   }
 
