@@ -80,7 +80,7 @@ public class RestaurantSearchServletTest {
     MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpServletResponse response = new MockHttpServletResponse();
 
-    request.addParameter("query", "");
+    request.addParameter("query");
 
     RestaurantSearchServlet restaurantSearchServlet = new RestaurantSearchServlet(mockSearchClient);
     restaurantSearchServlet.doGet(request, response);
