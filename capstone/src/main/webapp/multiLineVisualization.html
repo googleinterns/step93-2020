@@ -4,9 +4,39 @@
     <meta charset="UTF-8" />
     <title>STEP Capstone</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="details.js"></script>
+    <link
+            href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+            rel="stylesheet"
+    />
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGsIKEhbCWc-Ej9169cT4xCivgixDZzKY"></script>
+    <script src="script.js"></script>
+    <script src="visualizationdata.js"></script>
+    <script type="module" src="style.js"></script>
   </head>
   <body onload="createMultilineVisualization()">
-    <svg class="multiLineChart" focusable="true"></svg>
+  <div class="mdc-drawer-scrim"></div>
+  <div class="mdc-drawer-app-content">
+    <header class="mdc-top-app-bar mdc-top-app-bar--fixed" id="app-bar">
+      <div class="mdc-top-app-bar__row">
+        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+          <a class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button" href="/" aria-current="page">
+            <i class="material-icons mdc-list-item__graphic-fill-color($ffff)" aria-hidden="true">home</i>
+          </a>
+          <span class="mdc-top-app-bar__title top-app-bar-title">EpiCURE</span>
+        </section>
+      </div>
+    </header>
+  </div>
+
+  <main id="main-content">
+    <div class="mdc-top-app-bar--fixed-adjust"></div>
+    <section id="restaurant-detail-area" class="visualization-box">
+      <svg class="multiLineChart" focusable="true"></svg>
+    </section>
+  </main>
 
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="multilinevisualization.js"></script>
