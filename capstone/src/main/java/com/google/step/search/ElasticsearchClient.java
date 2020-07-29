@@ -98,7 +98,7 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
   }
 
   private List<RestaurantHeader> getRandomRestaurants() throws IOException {
-    List<String> requestPath = Arrays.asList("", "_search");
+    List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
 
     String requestBody = new JSONObject()
         .put("query", new JSONObject()
