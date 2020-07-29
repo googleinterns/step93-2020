@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +51,7 @@ public class RestaurantSearchServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String queryString = request.getParameter("query").trim();
+    String queryString = Optional.ofNullable(request.getParameter("query")).orElse("").trim();
     List<RestaurantHeader> searchResults = searchClient.searchRestaurants(queryString);
 
     JSONObject responseJson = new JSONObject()
