@@ -42,31 +42,14 @@ public class RestaurantsServlet extends HttpServlet {
   }
 
   /**
-   * Request headers from the search server for restaurants without any particular query
+   * Query the search server for a specific subset of matching restaurants
    * @param response  a servlet response with a JSON object holding restaurant details in the
    *                 response body. The restaurant details can be found in the "restaurants" field
-   * @param request simple get request. Takes no parameters
+   * @param request servlet request with "query" parameter set to search query
    * @throws IOException thrown if writing the response fails
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<RestaurantHeader> restaurantHeaders = searchClient.searchRestaurants("");
-    JSONObject responseJson = new JSONObject()
-        .put("restaurants", new JSONArray(restaurantHeaders));
-
-    response.setContentType(Json.MEDIA_TYPE);
-    response.getWriter().println(responseJson);
-  }
-
-  /**
-   * Query the search server for a specific subset of matching restaurants
-   * @param request servlet request with "query" parameter set to search query
-   * @param response  servlet response with a JSON body. The "restaurants" field of the body
-   *                  contains an array of restaurant details JSON objects
-   * @throws IOException thrown if writing the response fails
-   */
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String queryString = request.getParameter("query").trim();
     List<RestaurantHeader> searchResults = searchClient.searchRestaurants(queryString);
 
