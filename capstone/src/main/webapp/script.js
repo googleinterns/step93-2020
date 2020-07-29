@@ -19,7 +19,7 @@
  */
 function getRestaurants() {
   const params = new URLSearchParams();
-  params.append("query", "");
+  params.append('query', '');
 
   fetch('/search', {method: 'GET', body: params}).then(function(response) {
     const restaurantsList = document.getElementById('restaurants-list');
