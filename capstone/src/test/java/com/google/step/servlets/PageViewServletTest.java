@@ -1,10 +1,6 @@
 package com.google.step.servlets;
 
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.*;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -346,9 +342,10 @@ public class PageViewServletTest {
         // Tests the doPost by having to create the entity which we are calling the doPost request for.
 
         Entity entity = new Entity("RestaurantInfo");
-        entity.setProperty("restaurantKey", "1");
+//        entity.setProperty("restaurantKey", "1");
         entity.setProperty("name", "Marlows");
         datastoreService.put(entity);
+        long restaurantKey = entity.getKey().getId();
 
         ServletRunner sr = new ServletRunner();
         sr.registerServlet("page-views", PageViewServlet.class.getName());
@@ -356,12 +353,12 @@ public class PageViewServletTest {
 
         // Make the request.
         WebRequest request = new PostMethodWebRequest("http://localhost:8080/page-views");
-        request.setParameter("restaurantKey", "1");
+        request.setParameter("restaurantKey", "" + restaurantKey);
         sc.getResponse(request);
 
         // Check if the put worked.
         Query query = new Query("PageViews").setFilter(new Query.FilterPredicate("restaurantKey",
-                Query.FilterOperator.EQUAL, "1"));
+                Query.FilterOperator.EQUAL, "" + restaurantKey));
         PreparedQuery results = datastoreService.prepare(query);
 
         // This would error if there was more than 1 entity.
