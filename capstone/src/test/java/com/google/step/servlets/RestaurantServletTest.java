@@ -167,7 +167,7 @@ public class RestaurantServletTest {
         PreparedQuery results = datastoreService.prepare(query);
         Entity resultEntity = results.asSingleEntity();
 
-        long restaurantKey = (long)resultEntity.getProperty("restaurantKey");
+        long restaurantKey = resultEntity.getKey().getId();
         GeoPt expectedLocation = new GeoPt(42.23422f, -87.234987f);
         List<String> expectedCuisineList = Arrays.asList("Steakhouse", "American");
         RestaurantHeader header =
