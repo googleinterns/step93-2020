@@ -40,7 +40,6 @@ public class RestaurantClient {
 
     // The following value is hardcoded while we implement the properties.
     restaurantInfo.setProperty("score", 2.5);
-
     datastore.put(restaurantInfo);
     return restaurantInfo.getKey().getId();
   }
