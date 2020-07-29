@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
-// @SuppressWarnings("serial")
 @WebServlet("/remote-api")
 public class RemoteServlet extends HttpServlet {
   @Override

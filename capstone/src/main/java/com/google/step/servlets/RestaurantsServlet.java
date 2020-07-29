@@ -54,12 +54,10 @@ public class RestaurantsServlet extends HttpServlet {
   // TODO: Change this to be connected to search functionality.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("IM here");
     List<Restaurant> restaurants = restaurantClient.getRestaurantsNoFilter();
 
     // Format restaurant List to JSON for return
     JSONArray restaurantsListJson = new JSONArray(restaurants);
-    System.out.println(restaurantsListJson);
 
     // Send the JSON as the response
     response.setContentType("application/json;");
