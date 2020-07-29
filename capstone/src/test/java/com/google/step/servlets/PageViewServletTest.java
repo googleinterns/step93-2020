@@ -342,7 +342,6 @@ public class PageViewServletTest {
         // Tests the doPost by having to create the entity which we are calling the doPost request for.
 
         Entity entity = new Entity("RestaurantInfo");
-//        entity.setProperty("restaurantKey", "1");
         entity.setProperty("name", "Marlows");
         datastoreService.put(entity);
         long restaurantKey = entity.getKey().getId();
