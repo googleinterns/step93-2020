@@ -35,7 +35,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class RestaurantsServletTest {
+public class RestaurantSearchServletTest {
   private final RestaurantHeader HEADER_1 =
       new RestaurantHeader(
           1111L,
@@ -80,8 +80,10 @@ public class RestaurantsServletTest {
     MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpServletResponse response = new MockHttpServletResponse();
 
-    RestaurantsServlet restaurantsServlet = new RestaurantsServlet(mockSearchClient);
-    restaurantsServlet.doGet(request, response);
+    request.addParameter("query", "");
+
+    RestaurantSearchServlet restaurantSearchServlet = new RestaurantSearchServlet(mockSearchClient);
+    restaurantSearchServlet.doGet(request, response);
     assertEquals(response.getContentType(), Json.MEDIA_TYPE);
 
     JSONObject responseBody = new JSONObject(response.getContentAsString());
@@ -94,7 +96,7 @@ public class RestaurantsServletTest {
   }
 
   @Test
-  public void testDoPost() throws IOException {
+  public void testDoGetWithQueryParam() throws IOException {
     List<RestaurantHeader> burgerRestaurants = Arrays.asList(HEADER_2, HEADER_4);
 
     RestaurantHeaderSearchClient mockSearchClient = mock(RestaurantHeaderSearchClient.class);
@@ -105,8 +107,8 @@ public class RestaurantsServletTest {
 
     request.addParameter("query", "burgers");
 
-    RestaurantsServlet restaurantsServlet = new RestaurantsServlet(mockSearchClient);
-    restaurantsServlet.doPost(request, response);
+    RestaurantSearchServlet restaurantSearchServlet = new RestaurantSearchServlet(mockSearchClient);
+    restaurantSearchServlet.doGet(request, response);
     assertEquals(response.getContentType(), Json.MEDIA_TYPE);
 
     JSONObject responseBody = new JSONObject(response.getContentAsString());
@@ -119,7 +121,7 @@ public class RestaurantsServletTest {
   }
 
   @Test
-  public void testDoPostUntrimmedQueryString() throws IOException {
+  public void testDoGetUntrimmedQueryString() throws IOException {
     RestaurantHeaderSearchClient mockSearchClient = mock(RestaurantHeaderSearchClient.class);
 
     MockHttpServletRequest request = new MockHttpServletRequest();
@@ -127,8 +129,8 @@ public class RestaurantsServletTest {
 
     request.addParameter("query", "     \n   burgers  \n\t");
 
-    RestaurantsServlet restaurantsServlet = new RestaurantsServlet(mockSearchClient);
-    restaurantsServlet.doPost(request, response);
+    RestaurantSearchServlet restaurantSearchServlet = new RestaurantSearchServlet(mockSearchClient);
+    restaurantSearchServlet.doGet(request, response);
 
     verify(mockSearchClient).searchRestaurants("burgers");
   }
