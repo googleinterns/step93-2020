@@ -18,7 +18,6 @@
  * restaurant data
  */
 function getRestaurants() {
-
   fetch('/search/restaurants').then(function(response) {
     const restaurantsList = document.getElementById('restaurants-list');
 
