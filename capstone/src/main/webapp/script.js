@@ -18,10 +18,8 @@
  * restaurant data
  */
 function getRestaurants() {
-  const params = new URLSearchParams();
-  params.append('query', '');
 
-  fetch('/search', {method: 'GET', body: params}).then(function(response) {
+  fetch('/search/restaurants').then(function(response) {
     const restaurantsList = document.getElementById('restaurants-list');
 
     if (response.ok) {
