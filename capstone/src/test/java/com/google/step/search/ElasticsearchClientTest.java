@@ -153,7 +153,7 @@ public class ElasticsearchClientTest {
         URL urlFromString = new URL(url);
         assertEquals(elasticsearchHostname, urlFromString.getHost());
         assertEquals(elasticsearchPort, urlFromString.getPort());
-        assertEquals("/_search", urlFromString.getPath());
+        assertEquals("/restaurants/_search", urlFromString.getPath());
 
         return new MockLowLevelHttpRequest() {
           @Override
@@ -193,7 +193,7 @@ public class ElasticsearchClientTest {
             .setScheme("http")
             .setHost(elasticsearchHostname)
             .setPort(elasticsearchPort)
-            .setPath("/_search")
+            .setPath("/restaurants/_search")
             .toString();
 
     List<RestaurantHeader> searchResults = esClient.searchRestaurants("");
