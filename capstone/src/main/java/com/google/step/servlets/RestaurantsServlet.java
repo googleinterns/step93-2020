@@ -31,7 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /** Servlet responsible for getting restaurants from Datastore. */
-@WebServlet("/restaurants")
+@WebServlet("/search")
 public class RestaurantsServlet extends HttpServlet {
   private RestaurantClient restaurantClient = new RestaurantClient();
 
