@@ -148,7 +148,6 @@ async function createMultilineVisualization() {
   // All the lines can be grouped in one 'g' element
   const path = svg.append('g')
                    .attr('fill', 'none')
-                   // .attr('stroke', 'darkviolet')
                    .attr('stroke-width', 1.5)
                    .attr('stroke-linejoin', 'round')
                    .attr('stroke-linecap', 'round')
