@@ -13,6 +13,18 @@
   width: 800px;
 }
 
+.barChart {
+  height: 600px;
+  margin-bottom: 20px;
+  margin-left: 50px;
+  width: 600px;
+}
+
+.legend {
+  height: 50px;
+  margin-bottom: 20px;
+}
+
 .main-content {
   margin: 0 auto;
   max-width: 85vw;
