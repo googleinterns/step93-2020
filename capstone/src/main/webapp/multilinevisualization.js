@@ -57,8 +57,7 @@ async function createMultilineVisualization() {
   // Can't import it because then this file would have to become a module,
   // causing other issues
   // eslint-disable-next-line no-undef
-  // const data = await parseData();
-  const data = getDataForMultilineVisualization();
+  const data = await parseData();
   const height = 400;
   const width = 600;
   const margin = ({top: 20, right: 20, bottom: 30, left: 30});
