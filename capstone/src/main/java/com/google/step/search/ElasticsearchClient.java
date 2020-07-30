@@ -78,37 +78,45 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
    */
   @Override
   public List<RestaurantHeader> searchRestaurants(String query) throws IOException {
-    return query.isEmpty() ? getRandomRestaurants() : queryRestaurantHeaders(query);
-  }
-
-  private List<RestaurantHeader> queryRestaurantHeaders(String query) throws IOException {
     List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
 
-    String requestBody = new JSONObject()
+    JSONObject queryRequest = query.isEmpty() ? createMatchAllQuery() : createBasicSearchQuery(query);
+    String requestBody = addBoostingToQuery(queryRequest).toString();
+
+    HttpRequest request = buildElasticsearchHttpRequest("POST", requestPath, requestBody);
+    HttpResponse response = request.execute();
+
+    return convertElasticsearchResponseBodyToHeaders(response);
+  }
+
+  private JSONObject addBoostingToQuery(JSONObject queryJson) {
+    return new JSONObject()
+        .put("query", new  JSONObject()
+            .put("boosting", new JSONObject()
+                .put("positive", new JSONObject()
+                    .put("function_score", queryJson
+                        .put("functions", new JSONArray()
+                            .put(new JSONObject()
+                                .put("field_value_factor", new JSONObject()
+                                    .put("field", "metrics_score")
+                                    .put("factor", 2))))))));
+  }
+
+  private JSONObject createBasicSearchQuery(String query) {
+    List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
+
+    return new JSONObject()
         .put("query", new JSONObject()
             .put("multi_match", new JSONObject()
                 .put("query", query)
-                .put("fields", new JSONArray(Arrays.asList("name", "cuisine")))))
-        .toString();
-
-    HttpRequest request = buildElasticsearchHttpRequest("POST", requestPath, requestBody);
-    HttpResponse response = request.execute();
-
-    return convertElasticsearchResponseBodyToHeaders(response);
+                .put("fields", new JSONArray(Arrays.asList("name", "cuisine")))));
   }
 
-  private List<RestaurantHeader> getRandomRestaurants() throws IOException {
-    List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
-
-    String requestBody = new JSONObject()
+  private JSONObject createMatchAllQuery() {
+    return  new JSONObject().put("function_score", new JSONObject()
         .put("query", new JSONObject()
-            .put("match_all", new JSONObject()))
-        .toString();
-
-    HttpRequest request = buildElasticsearchHttpRequest("POST", requestPath, requestBody);
-    HttpResponse response = request.execute();
-
-    return convertElasticsearchResponseBodyToHeaders(response);
+            .put("match_all", new JSONObject())))
+        .put("functions", new JSONArray().put(""));
   }
 
   /**
