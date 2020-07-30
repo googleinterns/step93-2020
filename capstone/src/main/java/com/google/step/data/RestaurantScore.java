@@ -7,7 +7,7 @@ public class RestaurantScore {
 
     // The name should always remain the same but the score will change when calculating it.
     private final long restaurantKey;
-    private double score;
+    private final double score;
 
     /**
      * Constructor for the class.
@@ -33,14 +33,6 @@ public class RestaurantScore {
      */
     public double getScore() {
         return score;
-    }
-
-    /**
-     * Set the score to a new value.
-     * @param score double representing the new score.
-     */
-    public void setScore(double score) {
-        this.score = score;
     }
 
 }
