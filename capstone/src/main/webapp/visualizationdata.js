@@ -208,6 +208,65 @@ function getNumWeeksBetween(date1, date2) {
   return Math.round(Math.abs(date2 - date1) / MILLISECONDS_ONE_WEEK);
 }
 
+async function parseBarChartData() {
+  const restaurantPageViews = await getPageViewData();
+
+  const averages = getAveragePageViewArray(restaurantPageViews);
+  const currDate = new Date();
+  const dateArray = getFullDateArray(firstDateObj, currDate);
+
+  return setUpVisualizationData(restaurantPageViews, dateArray);
+}
+
+function getAveragePageViewArray(restaurantPageViews) {
+  // Check for if there is no data stored yet
+  if (restaurantPageViews == null || restaurantPageViews.length <= 0) {
+    return [];
+  }
+
+  const averagePageViews = [];
+  // Iterate through all page view data for each restaurant
+  // and push average for each to return array
+  for (let i = 0; i < restaurantPageViews.length; i++) {
+    const currRestaurantPageViews = restaurantPageViews[i].pageViews;
+    let sum = 0;
+    for (let j = 0; j < currRestaurantPageViews.length; j++) {
+      sum += currRestaurantPageViews[j].count;
+    }
+    const count = currRestaurantPageViews.length;
+    const average = sum/count;
+    averagePageViews.push(average);
+  }
+
+  return averagePageViews;
+}
+
+function getLastWeekPageViewArray(restaurantPageViews) {
+  const currDate = new Date();
+  const currWeek = getNumWeeksBetween(new Date(currDate.getFullYear(), 0, 1), currDate);
+  // Check for if there is no data stored yet
+  if (restaurantPageViews == null || restaurantPageViews.length <= 0) {
+    return [];
+  }
+
+  const averagePageViews = [];
+  // Iterate through all page view data for each restaurant
+  // and push average for each to return array
+  for (let i = 0; i < restaurantPageViews.length; i++) {
+    const currRestaurantPageViews = restaurantPageViews[i];
+    // The reduce() method reduces an array to one value
+    // In this case it adds all the numbers in the array
+    const sum = currRestaurantPageViews.reduce(function(a, b) {
+      return a+b;
+    }, 0);
+    const count = currRestaurantPageViews.length;
+    const average = sum/count;
+    averagePageViews.push(average);
+  }
+
+  return averagePageViews;
+}
+
 // Export the functions for the Jest testing
 module.exports = {
   getFirstDate,
