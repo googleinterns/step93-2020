@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class RemoteApiExample {
+public class RemoteApiSeedPageViewData {
   public static void main(String[] args) throws IOException {
     String serverString = args[0];
     System.out.println(serverString);
