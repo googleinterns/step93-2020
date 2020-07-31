@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>STEP Capstone</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body onload="createBarVisualization(); setLegend();">
+    <svg id="barChart" class="barChart" focusable="true"></svg>
+    <br />
+    <svg class="legend" id="legend" focusable="true"></svg>
+    <button type="submit" onclick="createBarVisualization('stacked')">Stacked</button>
+    <button type="submit" onclick="createBarVisualization('grouped')">Grouped</button>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="barvisualization.js"></script>
+  </body>
+</html>
