@@ -32,6 +32,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -46,13 +47,15 @@ public class ElasticsearchClientTest {
       12345L,
       "The Goog Noodle",
       new GeoPt(37.4220621f, -122.0862784f),
-      Arrays.asList("pizza", "American"));
+      Arrays.asList("pizza", "American"),
+      Optional.of(0.2));
 
   private final RestaurantHeader HEADER_2 = new RestaurantHeader(
       1111L,
       "The Statue",
       new GeoPt(40.6892494f,-74.0445004f),
-      Collections.singletonList("Indian"));
+      Collections.singletonList("Indian"),
+      Optional.of(0.7));
 
 
   @Test
