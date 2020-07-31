@@ -208,16 +208,38 @@ function getNumWeeksBetween(date1, date2) {
   return Math.round(Math.abs(date2 - date1) / MILLISECONDS_ONE_WEEK);
 }
 
+/**
+ * Returns data for the bar chart visualization.
+ * @return data object of the form:
+ * {
+ *     'data': [
+ *          [last week's page views for restaurant x1, last week's page views
+ * for restaurant x2, ...] [average page views for restaurant x1, average page
+ * views for restaurant x2, ...],
+ *     ],
+ *     'restaurantNames': [x1, x2, ...]
+ * }
+ */
 async function parseBarChartData() {
   const restaurantPageViews = await getPageViewData();
 
   const averages = getAveragePageViewArray(restaurantPageViews);
-  const currDate = new Date();
-  const dateArray = getFullDateArray(firstDateObj, currDate);
+  const lastWeekVals = getLastWeekPageViewArray();
+  const data = [lastWeekVals, averages];
 
-  return setUpVisualizationData(restaurantPageViews, dateArray);
+  const restaurantNames = getRestaurantNames(restaurantPageViews);
+
+  return {
+    'data': data,
+    'restaurantNames': restaurantNames,
+  };
 }
 
+/**
+ * Returns an array of the average page views for each restaurant.
+ * @param restaurantPageViews
+ * @return array of averages or empty array if no data
+ */
 function getAveragePageViewArray(restaurantPageViews) {
   // Check for if there is no data stored yet
   if (restaurantPageViews == null || restaurantPageViews.length <= 0) {
@@ -234,38 +256,76 @@ function getAveragePageViewArray(restaurantPageViews) {
       sum += currRestaurantPageViews[j].count;
     }
     const count = currRestaurantPageViews.length;
-    const average = sum/count;
+    const average = sum / count;
     averagePageViews.push(average);
   }
 
   return averagePageViews;
 }
 
+/**
+ * Returns an array of the last week's page views for each restaurant.
+ * @param restaurantPageViews
+ * @return array of page view counts or empty array if no data
+ */
 function getLastWeekPageViewArray(restaurantPageViews) {
-  const currDate = new Date();
-  const currWeek = getNumWeeksBetween(new Date(currDate.getFullYear(), 0, 1), currDate);
   // Check for if there is no data stored yet
   if (restaurantPageViews == null || restaurantPageViews.length <= 0) {
     return [];
   }
 
-  const averagePageViews = [];
+  // Calculate current week number
+  const currDate = new Date();
+  const currWeek =
+      getNumWeeksBetween(new Date(currDate.getFullYear(), 0, 1), currDate);
+
+  const lastWeekPageViews = [];
   // Iterate through all page view data for each restaurant
-  // and push average for each to return array
+  // and push last week's page view data
   for (let i = 0; i < restaurantPageViews.length; i++) {
-    const currRestaurantPageViews = restaurantPageViews[i];
-    // The reduce() method reduces an array to one value
-    // In this case it adds all the numbers in the array
-    const sum = currRestaurantPageViews.reduce(function(a, b) {
-      return a+b;
-    }, 0);
-    const count = currRestaurantPageViews.length;
-    const average = sum/count;
-    averagePageViews.push(average);
+    const currRestaurantPageViews = restaurantPageViews[i].pageViews;
+    let found = false;
+    // Need to check last two elements, since we could have data for this
+    // week and last week, could only have data for last week, or could have
+    // data for neither
+    for (let j = currRestaurantPageViews.length - 2;
+         j < currRestaurantPageViews.length; j++) {
+      if (j >= 0 && currRestaurantPageViews[j].week === (currWeek - 1)) {
+        // We found last week's data
+        lastWeekPageViews.push(currRestaurantPageViews[j].count);
+        found = true;
+        break;
+      }
+    }
+    // If had no data for last week, insert a 0
+    if (!found) {
+      lastWeekPageViews.push(0);
+    }
   }
 
-  return averagePageViews;
+  return lastWeekPageViews;
 }
+
+/**
+ * Returns an array of the names of each restaurant.
+ * @param restaurantPageViews
+ * @return array of names or empty array if no data
+ */
+function getRestaurantNames(restaurantPageViews) {
+  // Check for if there is no data stored yet
+  if (restaurantPageViews == null || restaurantPageViews.length <= 0) {
+    return [];
+  }
+
+  const restaurantNames = [];
+  // Iterate through all restaurants and add names to array
+  for (let i = 0; i < restaurantPageViews.length; i++) {
+    restaurantNames.push(restaurantPageViews[i].name);
+  }
+
+  return restaurantNames;
+}
+
 
 // Export the functions for the Jest testing
 module.exports = {
@@ -274,4 +334,8 @@ module.exports = {
   getFullDateArray,
   getNumWeeksBetween,
   setUpVisualizationData,
+  parseBarChartData,
+  getAveragePageViewArray,
+  getLastWeekPageViewArray,
+  getRestaurantNames,
 };
