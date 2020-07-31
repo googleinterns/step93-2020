@@ -6,6 +6,9 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.tools.remoteapi.RemoteApiInstaller;
 import com.google.appengine.tools.remoteapi.RemoteApiOptions;
+import com.google.step.clients.RestaurantClient;
+import com.google.step.data.Restaurant;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +16,6 @@ import java.util.List;
 public class RemoteApiSeedPageViewData {
   public static void main(String[] args) throws IOException {
     String serverString = args[0];
-    System.out.println(serverString);
     RemoteApiOptions options;
     if (serverString.equals("localhost")) {
       options = new RemoteApiOptions().server(serverString, 8080).useDevelopmentServerCredential();
@@ -23,9 +25,19 @@ public class RemoteApiSeedPageViewData {
     RemoteApiInstaller installer = new RemoteApiInstaller();
     installer.install(options);
     try {
+      RestaurantClient restaurantClient = new RestaurantClient();
       DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+      final String STATUS_GOOD = "GOOD";
+      final String STATUS_OKAY = "OKAY";
+      final String STATUS_STRUGGLING = "STRUGGLING";
+      Restaurant restaurant1 = new Restaurant(null, "Wildfire Restaurant",
+              new GeoPt((float) 42.1784405, (float) -87.9284299),
+              "Swanky American steakhouse",
+              Arrays.asList("Steakhouse", "American"), "847-234-5678",
+              "https://wildfirerestaurant.com", STATUS_STRUGGLING);
+      long restaurantKey1 = restaurantClient.putRestaurant(restaurant1, "wildfire@gmail.com");
       Entity pageViews1 = new Entity("PageViews");
-      pageViews1.setProperty("restaurantKey", 1);
+      pageViews1.setProperty("restaurantKey", restaurantKey1);
       pageViews1.setProperty("restaurantName", "Wildfire Restaurant");
       pageViews1.setProperty("year", 2020);
       pageViews1.setProperty("week", 26);
