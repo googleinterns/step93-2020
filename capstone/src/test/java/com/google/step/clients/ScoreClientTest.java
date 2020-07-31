@@ -84,5 +84,4 @@ public class ScoreClientTest {
             Assert.assertEquals(expected.get(i).getScore(), actual.get(i).getScore(), 0.0002d);
         }
     }
-
 }
