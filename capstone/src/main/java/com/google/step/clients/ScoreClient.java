@@ -5,6 +5,7 @@ import com.google.step.data.RestaurantScore;
 
 import java.util.*;
 
+
 /**
  * Will take care of calculating the score for each restaurant.
  */
@@ -43,7 +44,7 @@ public class ScoreClient {
         normalizeScores(scoreMap, restaurantIds);
 
         for (Long restaurantId: restaurantIds) {
-            scores.add(new RestaurantScore(restaurantId, scoreMap.get(restaurantId)));
+            scores.add(new RestaurantScore(restaurantId.toString(), scoreMap.get(restaurantId)));
         }
 
         return Collections.unmodifiableList(scores);
