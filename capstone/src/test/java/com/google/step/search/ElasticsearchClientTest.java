@@ -104,10 +104,15 @@ public class ElasticsearchClientTest {
           public LowLevelHttpResponse execute() throws IOException {
 
             String expectedQueryBody = new JSONObject()
-                .put("query", new JSONObject()
-                    .put("multi_match", new JSONObject()
-                        .put("query", "goog")
-                        .put("fields", new JSONArray(Arrays.asList("name", "cuisine")))))
+                .put("query", new  JSONObject()
+                    .put("function_score", new JSONObject()
+                        .put("query", new JSONObject()
+                            .put("multi_match", new JSONObject()
+                                .put("query", "goog")
+                                .put("fields", new JSONArray(Arrays.asList("name", "cuisine")))))
+                        .put("field_value_factor", new JSONObject()
+                            .put("field", "metricsScore")
+                            .put("factor", 2))))
                 .toString();
 
             String queryRequestBody = getContentAsString();
@@ -163,9 +168,13 @@ public class ElasticsearchClientTest {
           public LowLevelHttpResponse execute() throws IOException {
 
             String expectedRequestBody = new JSONObject()
-                .put("query", new JSONObject()
-                    .put("match_all", new JSONObject()))
-                .toString();
+                .put("query", new  JSONObject()
+                    .put("function_score", new JSONObject()
+                        .put("query", new JSONObject()
+                            .put("match_all", new JSONObject()))
+                        .put("field_value_factor", new JSONObject()
+                            .put("field", "metricsScore")
+                            .put("factor", 2)))).toString();
 
             String queryRequestBody = getContentAsString();
 

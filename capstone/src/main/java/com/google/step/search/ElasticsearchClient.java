@@ -92,14 +92,10 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
   private JSONObject addBoostingToQuery(JSONObject queryJson) {
     return new JSONObject()
         .put("query", new  JSONObject()
-            .put("boosting", new JSONObject()
-                .put("positive", new JSONObject()
-                    .put("function_score", queryJson
-                        .put("functions", new JSONArray()
-                            .put(new JSONObject()
-                                .put("field_value_factor", new JSONObject()
-                                    .put("field", "metrics_score")
-                                    .put("factor", 2))))))));
+            .put("function_score", queryJson
+                .put("field_value_factor", new JSONObject()
+                    .put("field", "metricsScore")
+                    .put("factor", 2))));
   }
 
   private JSONObject createBasicSearchQuery(String query) {
@@ -113,10 +109,9 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
   }
 
   private JSONObject createMatchAllQuery() {
-    return  new JSONObject().put("function_score", new JSONObject()
+    return  new JSONObject()
         .put("query", new JSONObject()
-            .put("match_all", new JSONObject())))
-        .put("functions", new JSONArray().put(""));
+            .put("match_all", new JSONObject()));
   }
 
   /**
