@@ -373,7 +373,7 @@ public class MetricsClientTests {
         datastoreService.put(entity5);
         datastoreService.put(entity6);
 
-        List<RestaurantPageViews> actual = metricsClient.getAllPageViews();
+        List<RestaurantPageViews> actual = metricsClient.getAllPageViews("restaurantName");
 
         for (int i = 0; i < actual.size(); i++) {
             Assert.assertEquals("name", expected.get(i).getName(), actual.get(i).getName());

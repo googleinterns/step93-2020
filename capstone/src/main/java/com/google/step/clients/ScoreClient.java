@@ -3,8 +3,7 @@ package com.google.step.clients;
 import com.google.step.data.RestaurantPageViews;
 import com.google.step.data.RestaurantScore;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Will take care of calculating the score for each restaurant.
@@ -20,7 +19,11 @@ public class ScoreClient {
      */
     public List<RestaurantScore> calculateScores() {
         List<RestaurantScore> scores = new ArrayList<>();
-        List<RestaurantPageViews> allPageViews = metricsClient.getAllPageViews();
+
+        Map<Long, Double> scoreMap = new HashMap<>();
+        List<Long> restaurantIds = new ArrayList<>();
+        List<RestaurantPageViews> allPageViews = metricsClient.getAllPageViews("restaurantKey");
+
         double systemAverage = getSystemAverage(allPageViews);
 
         // Calculate score
@@ -32,13 +35,18 @@ public class ScoreClient {
             int latestPageView = restaurant.getPageViews().get(lastPageViewIndex).getCount();
 
             double score = calculateRawScore(latestPageView, restaurantAverage, systemAverage);
-            scores.add(new RestaurantScore(restaurant.getName(), score));
+            restaurantIds.add(Long.parseLong(restaurant.getName()));
+            scoreMap.put(Long.parseLong(restaurant.getName()), score);
         }
 
-        standardizeScores(scores);
-        normalizeScores(scores);
+        standardizeScores(scoreMap, restaurantIds);
+        normalizeScores(scoreMap, restaurantIds);
 
-        return scores;
+        for (Long restaurantId: restaurantIds) {
+            scores.add(new RestaurantScore(restaurantId, scoreMap.get(restaurantId)));
+        }
+
+        return Collections.unmodifiableList(scores);
     }
 
     /**
@@ -91,53 +99,56 @@ public class ScoreClient {
     }
 
     /**
-     * Standardizes the scores for the entire list of scores using z - score.
-     * @param scores list of restaurantScores to be standardized.
+     * Standardizes the scores for the entire map of scores using z - score.
+     * @param scoreMap map that holds the restaurant id as a key and the score of that restaurant as a value.
+     * @param restaurantIds list that holds the restaurant ids to get the values of the map.
      */
-    private void standardizeScores(List<RestaurantScore> scores) {
+    private void standardizeScores(Map<Long, Double> scoreMap, List<Long> restaurantIds) {
         double sum = 0.0f;
 
-        for (RestaurantScore score : scores) {
-            sum += score.getScore();
+        for (Long restaurantId : restaurantIds) {
+            sum += scoreMap.get(restaurantId);
         }
 
-        double mean = sum / scores.size();
+        double mean = sum / restaurantIds.size();
 
         double standardDeviation = 0.0f;
-        for (RestaurantScore score : scores) {
-            standardDeviation += Math.pow(score.getScore() - mean, 2);
+        for (Long restaurantId : restaurantIds) {
+            standardDeviation += Math.pow(scoreMap.get(restaurantId) - mean, 2);
         }
 
-        standardDeviation = Math.sqrt(standardDeviation / (scores.size() - 1));
+        standardDeviation = Math.sqrt(standardDeviation / (restaurantIds.size() - 1));
 
         double standardizedScore;
-        for (RestaurantScore score : scores) {
-            standardizedScore = (score.getScore() - mean) / standardDeviation;
-            score.setScore(standardizedScore);
+        for (Long restaurantId : restaurantIds) {
+            standardizedScore = (scoreMap.get(restaurantId) - mean) / standardDeviation;
+            scoreMap.put(restaurantId, standardizedScore);
         }
     }
 
     /**
-     * Normalizess the scores into a range between 0 and 1 using min max normalizing.
-     * @param scores list of restaurantScores to be normalized.
+     * Normalizes the scores into a range between 0 and 1 using min max normalizing.
+     * It also inverts the score so a 1 is a low score and a 0 is a high score.
+     * @param scoreMap map that holds the restaurant id as a key and the score of that restaurant as a value.
+     * @param restaurantIds list that holds the restaurant ids to get the values of the map.
      */
-    private void normalizeScores(List<RestaurantScore> scores) {
+    private void normalizeScores(Map<Long, Double> scoreMap, List<Long> restaurantIds) {
         double min = Integer.MAX_VALUE;
         double max = Integer.MIN_VALUE;
 
-        for (RestaurantScore score : scores) {
-            if (score.getScore() < min) {
-                min = score.getScore();
+        for (Long restaurantId : restaurantIds) {
+            if (scoreMap.get(restaurantId) < min) {
+                min = scoreMap.get(restaurantId);
             }
-            if (score.getScore() > max) {
-                max = score.getScore();
+            if (scoreMap.get(restaurantId) > max) {
+                max = scoreMap.get(restaurantId);
             }
         }
 
-        double standardizedScore;
-        for (RestaurantScore score : scores) {
-            standardizedScore = (score.getScore() - min) / (max - min);
-            score.setScore(standardizedScore);
+        double normalizedScore;
+        for (Long restaurantId : restaurantIds) {
+            normalizedScore = 1 - ((scoreMap.get(restaurantId) - min) / (max - min));
+            scoreMap.put(restaurantId, normalizedScore);
         }
     }
 }

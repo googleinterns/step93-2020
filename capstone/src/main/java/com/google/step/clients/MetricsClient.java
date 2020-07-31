@@ -116,7 +116,7 @@ public class MetricsClient {
      * @return returns List<RestaurantPageViews> with the PageView list inside each instance
      *         of RestaurantPageViews sorted by week and year in ascending order.
      */
-    public List<RestaurantPageViews> getAllPageViews() {
+    public List<RestaurantPageViews> getAllPageViews(String identificationType) {
         // Query with double sort so the first element of every restaurant should be
         // the earliest week and year.
         Query query = new Query("PageViews")
@@ -130,7 +130,7 @@ public class MetricsClient {
         Map<String, List<WeeklyPageView>> restaurantNameMap = new HashMap<>();
 
         for (Entity entity : results) {
-            String name = entity.getProperty("restaurantName").toString();
+            String name = entity.getProperty(identificationType).toString();
             int year = Integer.parseInt(entity.getProperty("year").toString());
             int week = Integer.parseInt(entity.getProperty("week").toString());
             int count = Integer.parseInt(entity.getProperty("count").toString());
