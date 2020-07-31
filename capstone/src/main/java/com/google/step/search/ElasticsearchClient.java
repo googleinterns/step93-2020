@@ -28,6 +28,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import com.google.step.data.RestaurantHeader;
 
+import com.google.step.data.RestaurantScore;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -87,6 +88,31 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
     HttpResponse response = request.execute();
 
     return convertElasticsearchResponseBodyToHeaders(response);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void updateRestaurantScores(List<RestaurantScore> scores) throws IOException {
+    List<String> requestPath = Arrays.asList("", RESTAURANTS, "_bulk");
+
+    StringBuilder sb = new StringBuilder();
+    scores.forEach(score -> {
+      String updateString = new JSONObject()
+          .put("update", new JSONObject()
+              .put("_id", score.getRestaurantKey()))
+          .toString();
+      String scoreContent = new JSONObject()
+          .put("metricsScore", score.getScore())
+          .toString();
+      sb.append(updateString).append("\n").append(scoreContent).append("\n");
+    });
+
+    String requestBody = sb.toString();
+
+    HttpRequest request = buildElasticsearchHttpRequest("POST", requestPath, requestBody);
+    request.execute();
   }
 
   private JSONObject addBoostingToQuery(JSONObject queryJson) {
