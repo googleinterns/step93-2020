@@ -16,7 +16,7 @@
     <script src="visualizationdata.js"></script>
     <script type="module" src="style.js"></script>
   </head>
-  <body onload="createMultilineVisualization()">
+  <body onload="createMultilineVisualization(); createBarVisualization(); setLegend();">
     <div class="mdc-drawer-scrim"></div>
     <div class="mdc-drawer-app-content">
       <header class="mdc-top-app-bar mdc-top-app-bar--fixed" id="app-bar">
@@ -36,9 +36,19 @@
       <section id="restaurant-detail-area" class="visualization-box">
         <svg class="multiLineChart" focusable="true"></svg>
       </section>
+      <section class="visualization-box">
+        <svg id="barChart" class="bar-chart" focusable="true"></svg>
+        <br />
+        <svg class="legend" id="legend" focusable="true"></svg>
+        <div class="chart-buttons">
+        <button type="submit" onclick="createBarVisualization('stacked')">Stacked</button>
+        <button type="submit" onclick="createBarVisualization('grouped')">Grouped</button>
+        </div>
+      </section>
     </main>
 
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="multilinevisualization.js"></script>
+    <script src="barvisualization.js"></script>
   </body>
 </html>
