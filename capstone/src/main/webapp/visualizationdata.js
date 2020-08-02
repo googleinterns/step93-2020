@@ -256,7 +256,10 @@ function getAveragePageViewArray(restaurantPageViews) {
       sum += currRestaurantPageViews[j].count;
     }
     const count = currRestaurantPageViews.length;
-    const average = sum / count;
+    let average = 0;
+    if (count !== 0) {
+      average = sum / count;
+    }
     averagePageViews.push(average);
   }
 
