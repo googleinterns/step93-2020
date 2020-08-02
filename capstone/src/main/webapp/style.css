@@ -16,8 +16,12 @@
 .bar-chart {
   height: 600px;
   margin-bottom: 20px;
-  margin-left: 50px;
+  margin-left: 125px;
   width: 600px;
+}
+
+.chart-buttons {
+  margin-left: 400px;
 }
 
 .legend {

@@ -37,7 +37,7 @@ function createBarVisualization(type) {
   const height = 600;
   const width = 600;
   const margin = ({top: 0, right: 0, bottom: 10, left: 0});
-  const parsedData = getDataForBarVisualization();
+  const parsedData = parseBarChartData();
   const restaurantNames = parsedData.restaurantNames;
   const data = parsedData.data;
 
