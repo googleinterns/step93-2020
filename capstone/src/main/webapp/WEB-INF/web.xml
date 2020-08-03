@@ -56,5 +56,27 @@
   <servlet-mapping>
     <servlet-name>RestaurantServlet</servlet-name>
     <url-pattern>/restaurant</url-pattern>
-    </servlet-mapping>
+  </servlet-mapping>
+
+  <servlet>
+    <display-name>Score Servlet</display-name>
+    <servlet-name>ScoreServlet</servlet-name>
+    <servlet-class>com.google.step.servlets.ScoreServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ScoreServlet</servlet-name>
+    <url-pattern>/update-score</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <display-name>Seed Data Servlet</display-name>
+    <servlet-name>SeedData</servlet-name>
+    <servlet-class>com.google.step.servlets.SeedData</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SeedData</servlet-name>
+    <url-pattern>/seed-data</url-pattern>
+  </servlet-mapping>
   </web-app>
