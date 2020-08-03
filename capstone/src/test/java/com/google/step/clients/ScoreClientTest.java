@@ -3,6 +3,7 @@ package com.google.step.clients;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.step.data.RestaurantScore;
@@ -34,7 +35,6 @@ public class ScoreClientTest {
     @Test
     public void checkScore() {
         // Test checks if the score is being calculated properly and gets the accurate result.
-
         Entity entity1 = new Entity("PageViews");
         entity1.setProperty("restaurantKey", "1");
         entity1.setProperty("year", 2015);
