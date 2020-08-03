@@ -9,6 +9,6 @@
   </static-files>
 
   <vpc-access-connector>
-  <name>projects/joshwash-new-step-2020/locations/us-central1/connectors/elasticsearch-connector</name>
-</vpc-access-connector>
+    <name>projects/joshwash-new-step-2020/locations/us-central1/connectors/elasticsearch-connector</name>
+  </vpc-access-connector>
 </appengine-web-app>
