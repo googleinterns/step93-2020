@@ -116,7 +116,7 @@ public class MetricsClient {
      * @return returns List<RestaurantPageViews> with the PageView list inside each instance
      *         of RestaurantPageViews sorted by week and year in ascending order.
      */
-    public List<RestaurantPageViews> getAllPageViews(String identificationType) {
+    public List<RestaurantPageViews> getAllPageViews() {
         // Query with double sort so the first element of every restaurant should be
         // the earliest week and year.
         Query query = new Query("PageViews")
@@ -128,9 +128,11 @@ public class MetricsClient {
         // Map to maintain a reference to each restaurantList and make searching for them easy.
         // The map and the list share the reference to each restaurantPageViews.
         Map<String, List<WeeklyPageView>> restaurantNameMap = new HashMap<>();
+        Map<String, String> restaurantIdMap = new HashMap<>();
 
         for (Entity entity : results) {
-            String name = entity.getProperty(identificationType).toString();
+            String name = entity.getProperty("restaurantName").toString();
+            String id = entity.getProperty("restaurantKey").toString();
             int year = Integer.parseInt(entity.getProperty("year").toString());
             int week = Integer.parseInt(entity.getProperty("week").toString());
             int count = Integer.parseInt(entity.getProperty("count").toString());
@@ -140,13 +142,14 @@ public class MetricsClient {
                 List<WeeklyPageView> currRestaurantList = new ArrayList<>();
                 currRestaurantList.add(new WeeklyPageView(week, year, count));
                 restaurantNameMap.put(name, currRestaurantList);
+                restaurantIdMap.put(name, id);
             }
         }
 
         // Build the return list
         List<RestaurantPageViews> restaurantPageViewsList = new ArrayList<>();
         for (Map.Entry<String, List<WeeklyPageView>> entry : restaurantNameMap.entrySet()) {
-            restaurantPageViewsList.add(new RestaurantPageViews(entry.getKey(), entry.getValue()));
+            restaurantPageViewsList.add(new RestaurantPageViews(entry.getKey(), restaurantIdMap.get(entry.getKey()), entry.getValue()));
         }
 
         return restaurantPageViewsList;

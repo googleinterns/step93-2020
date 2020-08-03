@@ -16,18 +16,18 @@ import java.util.Collections;
  */
 public class ScoreClient {
 
-    private final float minimum = 10.0f;
+    private final double minimumWeeks = 10.0;
     private final MetricsClient metricsClient = new MetricsClient();
 
     /**
-     * Only method to be called and calculates the scores of each restaurant.
+     * Calculates the scores of each restaurant.
      * @return an unmodifiable list of restaurantScore class.
      */
     public List<RestaurantScore> calculateScores() {
         Map<Long, Double> scoreMap = new HashMap<>();
         List<Long> restaurantIds = new ArrayList<>();
 
-        List<RestaurantPageViews> allPageViews = metricsClient.getAllPageViews("restaurantKey");
+        List<RestaurantPageViews> allPageViews = metricsClient.getAllPageViews();
 
         double systemAverage = getSystemAverage(allPageViews);
 
@@ -36,12 +36,13 @@ public class ScoreClient {
             double restaurantAverage = calculateRestaurantAveragePageViews(restaurant);
 
             // Since the data is sorted we can just get the latest pageView for that restaurant.
-            int lastPageViewIndex = restaurant.getPageViews().size() - 1;
-            int latestPageView = restaurant.getPageViews().get(lastPageViewIndex).getCount();
+            List<WeeklyPageView> pageViewList = restaurant.getPageViews();
+            int lastPageViewIndex = pageViewList.size() - 1;
+            int latestPageView = pageViewList.get(lastPageViewIndex).getCount();
 
             double score = calculateRawScore(latestPageView, restaurantAverage, systemAverage);
-            restaurantIds.add(Long.parseLong(restaurant.getName()));
-            scoreMap.put(Long.parseLong(restaurant.getName()), score);
+            restaurantIds.add(Long.parseLong(restaurant.getId()));
+            scoreMap.put(Long.parseLong(restaurant.getId()), score);
         }
 
         standardizeScores(scoreMap, restaurantIds);
@@ -102,8 +103,8 @@ public class ScoreClient {
      * @return double representing the score for that specific restaurant.
      */
     private double calculateRawScore(int latestPageViews, double restaurantAverage, double systemAverage) {
-        double score = (latestPageViews / (latestPageViews + minimum)) * restaurantAverage
-                + (minimum / (latestPageViews + minimum)) * systemAverage;
+        double score = (latestPageViews / (latestPageViews + minimumWeeks)) * restaurantAverage
+                + (minimumWeeks / (latestPageViews + minimumWeeks)) * systemAverage;
         return score;
     }
 

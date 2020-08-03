@@ -341,6 +341,7 @@ public class MetricsClientTests {
         pageViewList1.add(pageView6);
         RestaurantPageViews restaurantPageView1 = new RestaurantPageViews(
                 entity1.getProperty("restaurantName").toString(),
+                entity1.getProperty("restaurantKey").toString(),
                 pageViewList1
         );
 
@@ -359,6 +360,7 @@ public class MetricsClientTests {
         pageViewList5.add(pageView5);
         RestaurantPageViews restaurantPageView2 = new RestaurantPageViews(
                 entity5.getProperty("restaurantName").toString(),
+                entity5.getProperty("restaurantKey").toString(),
                 pageViewList5
         );
 
@@ -373,7 +375,7 @@ public class MetricsClientTests {
         datastoreService.put(entity5);
         datastoreService.put(entity6);
 
-        List<RestaurantPageViews> actual = metricsClient.getAllPageViews("restaurantName");
+        List<RestaurantPageViews> actual = metricsClient.getAllPageViews();
 
         for (int i = 0; i < actual.size(); i++) {
             Assert.assertEquals("name", expected.get(i).getName(), actual.get(i).getName());

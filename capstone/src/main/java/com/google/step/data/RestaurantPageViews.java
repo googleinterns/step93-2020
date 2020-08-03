@@ -10,10 +10,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class RestaurantPageViews {
 
     private final String name;
+    private final String id;
     private final List<WeeklyPageView> pageViews;
 
-    public RestaurantPageViews(String name, List<WeeklyPageView> pageViews) {
+    public RestaurantPageViews(String name, String id, List<WeeklyPageView> pageViews) {
         this.name = name;
+        this.id = id;
         this.pageViews = Collections.unmodifiableList(pageViews);
     }
 
@@ -34,6 +36,12 @@ public class RestaurantPageViews {
     }
 
     /**
+     * Gets the id of the instance
+     * @return String representing the id of the restaurant.
+     */
+    public String getId() { return id; }
+
+    /**
      * Equals method for comparisons
      * @param other object to compare to
      */
@@ -47,6 +55,7 @@ public class RestaurantPageViews {
         }
         RestaurantPageViews restaurantPageViews = (RestaurantPageViews) other;
         return this.name.equals(restaurantPageViews.getName())
+                && this.id.equals(restaurantPageViews.getId())
                 && this.pageViews.equals(restaurantPageViews.getPageViews());
     }
 
@@ -58,6 +67,7 @@ public class RestaurantPageViews {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(name)
+                .append(id)
                 .append(pageViews)
                 .toHashCode();
     }

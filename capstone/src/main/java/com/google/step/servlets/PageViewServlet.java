@@ -54,7 +54,7 @@ public class PageViewServlet extends HttpServlet {
 
         String json;
         if (restaurantKey == null && year <= 0) {
-            List<RestaurantPageViews> restaurantPageViewsList = metricsClient.getAllPageViews("restaurantName");
+            List<RestaurantPageViews> restaurantPageViewsList = metricsClient.getAllPageViews();
             json = gson.toJson(restaurantPageViewsList);
         } else if (year <= 0 && restaurantKey != null) {
             WeeklyPageView weeklyPageView = metricsClient.getCurrentPageViews(restaurantKey);

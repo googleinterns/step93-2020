@@ -36,30 +36,35 @@ public class ScoreClientTest {
     public void checkScore() {
         // Test checks if the score is being calculated properly and gets the accurate result.
         Entity entity1 = new Entity("PageViews");
+        entity1.setProperty("restaurantName", "Marlows");
         entity1.setProperty("restaurantKey", "1");
         entity1.setProperty("year", 2015);
         entity1.setProperty("week", 4);
         entity1.setProperty("count", 10);
 
         Entity entity2 = new Entity("PageViews");
+        entity2.setProperty("restaurantName", "Marlows");
         entity2.setProperty("restaurantKey", "1");
         entity2.setProperty("year", 2015);
         entity2.setProperty("week", 5);
         entity2.setProperty("count", 20);
 
         Entity entity3 = new Entity("PageViews");
+        entity3.setProperty("restaurantName", "Marlows");
         entity3.setProperty("restaurantKey", "1");
         entity3.setProperty("year", 2015);
         entity3.setProperty("week", 6);
         entity3.setProperty("count", 30);
 
         Entity entity4 = new Entity("PageViews");
+        entity4.setProperty("restaurantName", "Subway");
         entity4.setProperty("restaurantKey", "2");
         entity4.setProperty("year", 2015);
         entity4.setProperty("week", 4);
         entity4.setProperty("count", 40);
 
         Entity entity5 = new Entity("PageViews");
+        entity5.setProperty("restaurantName", "Subway");
         entity5.setProperty("restaurantKey", "2");
         entity5.setProperty("year", 2015);
         entity5.setProperty("week", 5);
