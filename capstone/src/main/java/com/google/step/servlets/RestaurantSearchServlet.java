@@ -35,7 +35,7 @@ public class RestaurantSearchServlet extends HttpServlet {
   private final RestaurantHeaderSearchClient searchClient;
 
   public RestaurantSearchServlet() {
-    this(new ElasticsearchClient("localhost", (short)9200));
+    this(new ElasticsearchClient("search-instance.c.joshwash-new-step-2020.internal", (short)9200));
   }
 
   RestaurantSearchServlet(RestaurantHeaderSearchClient searchClient) {
