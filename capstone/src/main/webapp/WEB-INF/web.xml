@@ -15,14 +15,14 @@
   </servlet-mapping>
 
   <servlet>
-    <display-name>Restaurants Servlet</display-name>
-    <servlet-name>RestaurantsServlet</servlet-name>
-    <servlet-class>com.google.step.servlets.RestaurantsServlet</servlet-class>
+    <display-name>Restaurant Search Servlet</display-name>
+    <servlet-name>RestaurantSearchServlet</servlet-name>
+    <servlet-class>com.google.step.servlets.RestaurantSearchServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
-    <servlet-name>RestaurantsServlet</servlet-name>
-    <url-pattern>/restaurants</url-pattern>
+    <servlet-name>RestaurantSearchServlet</servlet-name>
+    <url-pattern>/search/restaurants</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -68,15 +68,4 @@
     <servlet-name>ScoreServlet</servlet-name>
     <url-pattern>/update-score</url-pattern>
   </servlet-mapping>
-
-  <servlet>
-    <display-name>Seed Data Servlet</display-name>
-    <servlet-name>SeedData</servlet-name>
-    <servlet-class>com.google.step.servlets.SeedData</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>SeedData</servlet-name>
-    <url-pattern>/seed-data</url-pattern>
-  </servlet-mapping>
-  </web-app>
+</web-app>

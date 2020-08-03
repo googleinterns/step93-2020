@@ -7,9 +7,7 @@ import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.tools.remoteapi.RemoteApiInstaller;
 import com.google.appengine.tools.remoteapi.RemoteApiOptions;
 import com.google.step.clients.RestaurantClient;
-import com.google.step.search.ElasticsearchClient;
 import com.google.step.data.Restaurant;
-import com.google.step.data.RestaurantHeader;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,7 +27,6 @@ public class RemoteApiSeedPageViewData {
     try {
       RestaurantClient restaurantClient = new RestaurantClient();
       DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-      ElasticsearchClient elasticsearchClient = new ElasticsearchClient("search-instance.c.joshwash-new-step-2020.internal", 9200);
       final String STATUS_GOOD = "GOOD";
       final String STATUS_OKAY = "OKAY";
       final String STATUS_STRUGGLING = "STRUGGLING";
@@ -39,8 +36,6 @@ public class RemoteApiSeedPageViewData {
               Arrays.asList("Steakhouse", "American"), "847-234-5678",
               "https://wildfirerestaurant.com", STATUS_STRUGGLING);
       long restaurantKey1 = restaurantClient.putRestaurant(restaurant1, "wildfire@gmail.com");
-      RestaurantHeader restaurantHeader1 = new RestaurantHeader(restaurantKey1, "Wildfire Restaurant", new GeoPt((float) 42.1784405, (float) -87.9284299), Arrays.asList("Steakhouse", "American"));
-
 
       Entity pageViews1 = new Entity("PageViews");
       pageViews1.setProperty("restaurantKey", restaurantKey1);
