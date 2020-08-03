@@ -2,6 +2,7 @@ package com.google.step.clients;
 
 import com.google.step.data.RestaurantPageViews;
 import com.google.step.data.RestaurantScore;
+import com.google.step.data.WeeklyPageView;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -65,9 +66,10 @@ public class ScoreClient {
         double count = 0;
 
         for (RestaurantPageViews restaurant : allPageViews) {
-            for (int i = 0; i < restaurant.getPageViews().size(); i++) {
-                sum += restaurant.getPageViews().get(i).getCount();
-                count++;
+            List<WeeklyPageView> pageViews = restaurant.getPageViews();
+            count += pageViews.size();
+            for (int i = 0; i < pageViews.size(); i++) {
+                sum += pageViews.get(i).getCount();
             }
         }
 
@@ -80,12 +82,13 @@ public class ScoreClient {
      * @return double representing the average pageViews for that restaurant.
      */
     private double calculateRestaurantAveragePageViews(RestaurantPageViews restaurant) {
-        double sum = 0;
-        double count = 0;
+        List<WeeklyPageView> pageViews = restaurant.getPageViews();
 
-        for (int i = 0; i < restaurant.getPageViews().size(); i++) {
-            sum += restaurant.getPageViews().get(i).getCount();
-            count++;
+        double sum = 0;
+        double count = pageViews.size();
+
+        for (int i = 0; i < pageViews.size(); i++) {
+            sum += pageViews.get(i).getCount();
         }
 
         return sum / count;
