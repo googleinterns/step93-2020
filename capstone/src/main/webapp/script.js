@@ -60,7 +60,7 @@ function addRestaurant(restaurant, containerElement) {
  */
 function createRestaurantNameDiv(restaurant) {
   const params = new URLSearchParams();
-  params.append('restaurantKey', restaurant.restaurantKey.split(0, restaurant.restaurantKey.length-1));
+  params.append('restaurantKey', restaurant.restaurantKey);
 
   const linkElement = document.createElement('a');
   linkElement.classList.add('restaurant-name-link');
