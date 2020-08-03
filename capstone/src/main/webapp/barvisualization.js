@@ -32,34 +32,39 @@ function getDataForBarVisualization() {
  * or the number for last week. Can be viewed in either a stacked or grouped
  * format.
  */
-function createBarVisualization(type) {
+async function createBarVisualization(type) {
   const d3 = window.d3;
   const height = 600;
   const width = 600;
   const margin = ({top: 0, right: 0, bottom: 10, left: 0});
-  const parsedData = parseBarChartData();
+  const parsedData = await parseBarChartData();
   const restaurantNames = parsedData.restaurantNames;
   const data = parsedData.data;
 
   // Create the stacked data for the stacked option
   const dataStack = d3.stack()
-                        .keys(d3.range(2))(d3.transpose(data))  // stacked data
-                        .map((d, i) => d.map(([y0, y1]) => [y0, y1, i]));
+      .keys(d3.range(2))(d3.transpose(data))  // stacked data
+      .map((d, i) => d.map(([y0, y1]) => [y0, y1, i]));
 
   // Need an x tick for each restaurant
   const xVals = d3.range(restaurantNames.length);
 
   const x = d3.scaleBand()
-                .domain(xVals)
-                .rangeRound([margin.left, width - margin.right])
-                .padding(0.08);
+      .domain(xVals)
+      .rangeRound([margin.left, width - margin.right])
+      .padding(0.08);
 
   // Print restaurant names along x-axis
   const xAxis = (svg) =>
       svg.append('g')
           .attr('transform', `translate(0,${height - margin.bottom})`)
           .call(d3.axisBottom(x).tickSizeOuter(0).tickFormat(
-              (i) => restaurantNames[i]));
+              (i) => restaurantNames[i]))
+          .selectAll("text")
+          .attr("transform", "rotate(-70)")
+          .style("text-anchor", "end")
+          .attr("dx", "-.8em")
+          .attr("dy", ".15em");
 
   // Interpolate purples will switch between light and dark purples
   // for each average/last week value pairing
@@ -80,21 +85,21 @@ function createBarVisualization(type) {
       g.attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y));
 
   const svg = d3.select('#barChart')
-                  .attr('viewBox', [0, 0, width, height])
-                  .style('overflow', 'visible');
+      .attr('viewBox', [0, 0, width, height])
+      .style('overflow', 'visible');
 
   // Create rectangles for each value in the stacked data set
   const rect = svg.selectAll('g')
-                   .data(dataStack)
-                   .join('g')
-                   .attr('fill', (d, i) => z(i))
-                   .selectAll('rect')
-                   .data((d) => d)
-                   .join('rect')
-                   .attr('x', (d, i) => x(i))
-                   .attr('y', height - margin.bottom)
-                   .attr('width', x.bandwidth())
-                   .attr('height', 0);
+      .data(dataStack)
+      .join('g')
+      .attr('fill', (d, i) => z(i))
+      .selectAll('rect')
+      .data((d) => d)
+      .join('rect')
+      .attr('x', (d, i) => x(i))
+      .attr('y', height - margin.bottom)
+      .attr('width', x.bandwidth())
+      .attr('height', 0);
 
   // Append basic x-axis
   svg.append('g').call(xAxis);

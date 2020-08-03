@@ -224,7 +224,7 @@ async function parseBarChartData() {
   const restaurantPageViews = await getPageViewData();
 
   const averages = getAveragePageViewArray(restaurantPageViews);
-  const lastWeekVals = getLastWeekPageViewArray();
+  const lastWeekVals = getLastWeekPageViewArray(restaurantPageViews);
   const data = [lastWeekVals, averages];
 
   const restaurantNames = getRestaurantNames(restaurantPageViews);
