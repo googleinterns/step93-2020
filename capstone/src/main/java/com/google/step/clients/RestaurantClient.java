@@ -50,9 +50,10 @@ public class RestaurantClient {
    * @return Optional<Restaurant>, parsed from the datastore properties or empty if not found
    */
   public Optional<Restaurant> getSingleRestaurant(long restaurantKey) {
-    Query query = new Query("RestaurantInfo")
-                      .setFilter(new Query.FilterPredicate(
-                          Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, KeyFactory.createKey("RestaurantInfo", restaurantKey)));
+    Query query =
+        new Query("RestaurantInfo")
+            .setFilter(new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY,
+                Query.FilterOperator.EQUAL, KeyFactory.createKey("RestaurantInfo", restaurantKey)));
     PreparedQuery results = datastore.prepare(query);
     Entity resultEntity = results.asSingleEntity();
     if (resultEntity == null) {

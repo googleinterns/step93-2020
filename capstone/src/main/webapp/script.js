@@ -20,7 +20,8 @@
 function getRestaurants() {
   const params = new URLSearchParams(window.location.search);
 
-  const queryParam = ((params.get('query') !== null) ? params.get('query'): '');
+  const queryParam =
+      ((params.get('query') !== null) ? params.get('query') : '');
   fetch('/search/restaurants?query=' + queryParam).then(function(response) {
     const restaurantsList = document.getElementById('restaurants-list');
 
@@ -35,9 +36,7 @@ function getRestaurants() {
   });
 }
 
-function searchRestaurants() {
-
-}
+function searchRestaurants() {}
 
 /**
  * Creates a Material card holding restaurant data and adds it to an outer HTML

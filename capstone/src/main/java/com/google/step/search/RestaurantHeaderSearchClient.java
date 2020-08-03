@@ -1,7 +1,6 @@
 package com.google.step.search;
 
 import com.google.step.data.RestaurantHeader;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -10,7 +9,6 @@ import java.util.List;
  *  {@code RestaurantHeaders} in a search Index.
  */
 public interface RestaurantHeaderSearchClient {
-
   /**
    * Given a {@link RestaurantHeader}, updates search index with a document representing the
    * restaurant header. If the document for the restaurant header does not currently exist, a new
