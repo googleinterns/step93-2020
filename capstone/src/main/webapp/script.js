@@ -18,7 +18,10 @@
  * restaurant data
  */
 function getRestaurants() {
-  fetch('/search/restaurants').then(function(response) {
+  const params = new URLSearchParams(window.location.search);
+
+  const queryParam = ((params.get('query') !== null) ? params.get('query'): '');
+  fetch('/search/restaurants?query=' + queryParam).then(function(response) {
     const restaurantsList = document.getElementById('restaurants-list');
 
     if (response.ok) {
@@ -30,6 +33,10 @@ function getRestaurants() {
       });
     }
   });
+}
+
+function searchRestaurants() {
+
 }
 
 /**
