@@ -24,7 +24,7 @@ public class RestaurantQueryParams {
      * @param query String representing a search query
      * @return {@code this} builder
      */
-    public Builder setQuery(String query) {
+    public Builder query(String query) {
       this.query = query;
       return this;
     }
@@ -35,18 +35,8 @@ public class RestaurantQueryParams {
      * @param cuisineList list of strings representing cuisines
      * @return {@code this} builder
      */
-    public Builder setCuisine(List<String> cuisineList) {
-      this.cuisine = cuisineList;
-      return this;
-    }
-
-    /**
-     * Add {@code cuisineItem} to list of cuisines to search for.
-     * @param cuisineItem a string representing a cuisine to search for
-     * @return {@code this} builder
-     */
-    public Builder addCuisine(String cuisineItem) {
-      this.cuisine.add(cuisineItem);
+    public Builder cuisine(List<String> cuisineList) {
+      this.cuisine = Collections.unmodifiableList(cuisineList);
       return this;
     }
 
@@ -55,15 +45,19 @@ public class RestaurantQueryParams {
      * @param email a string representing an email address.
      * @return {@code this} builder
      */
-    public Builder setEmail(String email) {
+    public Builder email(String email) {
       this.email = email;
       return this;
+    }
+
+    public RestaurantQueryParams build() {
+      return new RestaurantQueryParams(this);
     }
   }
 
   private RestaurantQueryParams(Builder builder) {
     this.query = builder.query;
-    this.cuisine = Collections.unmodifiableList(builder.cuisine);
+    this.cuisine = builder.cuisine;
     this.email = builder.email;
   }
 
