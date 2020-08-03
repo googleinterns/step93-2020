@@ -130,7 +130,12 @@ public class MetricsClient {
         Map<String, List<WeeklyPageView>> restaurantNameMap = new HashMap<>();
 
         for (Entity entity : results) {
-            String name = entity.getProperty(identificationType).toString();
+            String name;
+            if (identificationType.equals("restaurantKey")) {
+                name = ((Long) entity.getKey().getId()).toString();
+            } else {
+                name = entity.getProperty(identificationType).toString();
+            }
             int year = Integer.parseInt(entity.getProperty("year").toString());
             int week = Integer.parseInt(entity.getProperty("week").toString());
             int count = Integer.parseInt(entity.getProperty("count").toString());
