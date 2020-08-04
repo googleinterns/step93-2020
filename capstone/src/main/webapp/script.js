@@ -36,8 +36,6 @@ function getRestaurants() {
   });
 }
 
-function searchRestaurants() {}
-
 /**
  * Creates a Material card holding restaurant data and adds it to an outer HTML
  * element
