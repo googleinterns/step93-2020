@@ -147,7 +147,9 @@ public class ElasticsearchClientTest {
             .setPath("/restaurants/_search")
             .toString();
 
-    List<RestaurantHeader> queryResult = esClient.searchRestaurants("goog");
+
+    List<RestaurantHeader> queryResult =
+        esClient.searchRestaurants(new RestaurantQueryParams.Builder().query("goog").build());
 
     verify(transportSpy).buildRequest("POST", expectedUrl);
     assertEquals(Collections.singletonList(HEADER_1), queryResult);
@@ -210,7 +212,8 @@ public class ElasticsearchClientTest {
             .setPath("/restaurants/_search")
             .toString();
 
-    List<RestaurantHeader> searchResults = esClient.searchRestaurants("");
+    List<RestaurantHeader> searchResults =
+        esClient.searchRestaurants(new RestaurantQueryParams.Builder().build());
 
     verify(transportSpy).buildRequest("POST", expectedUrl);
     assertEquals(Arrays.asList(HEADER_1, HEADER_2), searchResults);
