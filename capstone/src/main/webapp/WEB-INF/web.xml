@@ -20,8 +20,7 @@
     <servlet-class>com.google.step.servlets.RestaurantSearchServlet</servlet-class>
     <init-param>
       <param-name>search-hostname</param-name>
-      <param-value>localhost</param-value>
-<!--      <param-value>search-instance.c.joshwash-new-step-2020.internal</param-value>-->
+      <param-value>search-instance.c.joshwash-new-step-2020.internal</param-value>
     </init-param>
     <init-param>
       <param-name>search-port</param-name>
@@ -61,8 +60,7 @@
     <servlet-class>com.google.step.servlets.RestaurantServlet</servlet-class>
     <init-param>
       <param-name>search-hostname</param-name>
-      <param-value>localhost</param-value>
-      <!--      <param-value>search-instance.c.joshwash-new-step-2020.internal</param-value>-->
+      <param-value>search-instance.c.joshwash-new-step-2020.internal</param-value>
     </init-param>
     <init-param>
       <param-name>search-port</param-name>

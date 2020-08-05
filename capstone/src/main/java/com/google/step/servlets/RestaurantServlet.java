@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,14 +40,20 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
   private final RestaurantClient restaurantClient = new RestaurantClient();
-  private final RestaurantHeaderSearchClient searchClient;
+  private RestaurantHeaderSearchClient searchClient;
 
-  public RestaurantServlet() {
-    this(new ElasticsearchClient("localhost", (short) 9200));
-  }
+  public RestaurantServlet() { }
 
   RestaurantServlet(RestaurantHeaderSearchClient searchClient) {
     this.searchClient = searchClient;
+  }
+
+  @Override
+  public void init() {
+    String hostname = getInitParameter("search-hostname");
+    short port = Short.parseShort(getInitParameter("search-port"));
+
+    this.searchClient = new ElasticsearchClient(hostname, port);
   }
 
   /**
@@ -71,7 +78,7 @@ public class RestaurantServlet extends HttpServlet {
 
     // Only available if the user is logged in.
     if (!userService.isUserLoggedIn()) {
-      response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+      response.sendError(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
 

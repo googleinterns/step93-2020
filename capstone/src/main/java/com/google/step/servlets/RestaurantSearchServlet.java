@@ -18,28 +18,34 @@ import com.google.api.client.json.Json;
 import com.google.step.data.RestaurantHeader;
 import com.google.step.search.ElasticsearchClient;
 import com.google.step.search.RestaurantHeaderSearchClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /** Servlet responsible for getting restaurants from the search index */
 @WebServlet("/search/restaurants")
 public class RestaurantSearchServlet extends HttpServlet {
-  private final RestaurantHeaderSearchClient searchClient;
-
-  public RestaurantSearchServlet() {
-    this(new ElasticsearchClient("search-instance.c.joshwash-new-step-2020.internal", (short)9200));
-  }
+  private RestaurantHeaderSearchClient searchClient;
 
   RestaurantSearchServlet(RestaurantHeaderSearchClient searchClient) {
     this.searchClient = searchClient;
+  }
+
+  public RestaurantSearchServlet() {}
+
+  @Override
+  public void init() {
+    String hostname = getInitParameter("search-hostname");
+    short port = Short.parseShort(getInitParameter("search-port"));
+
+    this.searchClient = new ElasticsearchClient(hostname, port);
   }
 
   /**
@@ -54,8 +60,7 @@ public class RestaurantSearchServlet extends HttpServlet {
     String queryString = Optional.ofNullable(request.getParameter("query")).orElse("").trim();
     List<RestaurantHeader> searchResults = searchClient.searchRestaurants(queryString);
 
-    JSONObject responseJson = new JSONObject()
-        .put("restaurants", new JSONArray(searchResults));
+    JSONObject responseJson = new JSONObject().put("restaurants", new JSONArray(searchResults));
 
     response.setContentType(Json.MEDIA_TYPE);
     response.getWriter().println(responseJson);
