@@ -77,7 +77,7 @@ public class RestaurantServlet extends HttpServlet {
 
     // Only available if the user is logged in.
     if (!userService.isUserLoggedIn()) {
-      response.sendError(HttpServletResponse.SC_FORBIDDEN);
+      response.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
 
