@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -50,8 +49,8 @@ public class RestaurantServlet extends HttpServlet {
 
   @Override
   public void init() {
-    String hostname = getInitParameter("search-hostname");
-    short port = Short.parseShort(getInitParameter("search-port"));
+    String hostname = getServletContext().getInitParameter("search-hostname");
+    short port = Short.parseShort(getServletContext().getInitParameter("search-port"));
 
     this.searchClient = new ElasticsearchClient(hostname, port);
   }

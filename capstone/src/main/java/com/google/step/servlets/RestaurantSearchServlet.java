@@ -42,8 +42,8 @@ public class RestaurantSearchServlet extends HttpServlet {
 
   @Override
   public void init() {
-    String hostname = getInitParameter("search-hostname");
-    short port = Short.parseShort(getInitParameter("search-port"));
+    String hostname = getServletContext().getInitParameter("search-hostname");
+    short port = Short.parseShort(getServletContext().getInitParameter("search-port"));
 
     this.searchClient = new ElasticsearchClient(hostname, port);
   }

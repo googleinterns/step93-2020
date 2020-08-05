@@ -3,6 +3,16 @@
   xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   version="2.5">
+
+  <context-param>
+    <param-name>search-hostname</param-name>
+    <param-value>search-instance.c.joshwash-new-step-2020.internal</param-value>
+  </context-param>
+  <context-param>
+    <param-name>search-port</param-name>
+    <param-value>9200</param-value>
+  </context-param>
+
   <servlet>
     <display-name>Remote API Servlet</display-name>
     <servlet-name>RemoteApiServlet</servlet-name>
@@ -18,14 +28,6 @@
     <display-name>Restaurant Search Servlet</display-name>
     <servlet-name>RestaurantSearchServlet</servlet-name>
     <servlet-class>com.google.step.servlets.RestaurantSearchServlet</servlet-class>
-    <init-param>
-      <param-name>search-hostname</param-name>
-      <param-value>search-instance.c.joshwash-new-step-2020.internal</param-value>
-    </init-param>
-    <init-param>
-      <param-name>search-port</param-name>
-      <param-value>9200</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>RestaurantSearchServlet</servlet-name>
@@ -58,14 +60,6 @@
     <display-name>Restaurant Servlet</display-name>
     <servlet-name>RestaurantServlet</servlet-name>
     <servlet-class>com.google.step.servlets.RestaurantServlet</servlet-class>
-    <init-param>
-      <param-name>search-hostname</param-name>
-      <param-value>search-instance.c.joshwash-new-step-2020.internal</param-value>
-    </init-param>
-    <init-param>
-      <param-name>search-port</param-name>
-      <param-value>9200</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>RestaurantServlet</servlet-name>

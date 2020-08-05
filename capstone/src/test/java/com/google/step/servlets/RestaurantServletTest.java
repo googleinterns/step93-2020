@@ -25,6 +25,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.xml.sax.SAXException;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.util.Arrays;
@@ -81,13 +82,8 @@ public class RestaurantServletTest {
         datastoreService.put(restaurantInfo1);
 
         // Create a client to run the servlet
-        ServletRunner sr = new ServletRunner();
-
-        Hashtable<String, String> params = new Hashtable<>();
-        params.put("search-hostname", "localhost");
-        params.put("search-port", "9200");
-
-        sr.registerServlet("restaurant", RestaurantServlet.class.getName(), params);
+        ServletRunner sr = new ServletRunner(new File("src/main/webapp/WEB-INF/web.xml"));
+        sr.registerServlet("restaurant", RestaurantServlet.class.getName());
         ServletUnitClient sc = sr.newClient();
 
         // This can throw the SAXException.
@@ -208,13 +204,8 @@ public class RestaurantServletTest {
         helper.setEnvIsAdmin(false).setEnvIsLoggedIn(false);
 
         // Create a client to run the servlet
-        ServletRunner sr = new ServletRunner();
-
-        Hashtable<String, String> params = new Hashtable<>();
-        params.put("search-hostname", "localhost");
-        params.put("search-port", "9200");
-
-        sr.registerServlet("restaurant", RestaurantServlet.class.getName(), params);
+        ServletRunner sr = new ServletRunner(new File("src/main/webapp/WEB-INF/web.xml"));
+        sr.registerServlet("restaurant", RestaurantServlet.class.getName());
         ServletUnitClient sc = sr.newClient();
 
         // Build request as normal
