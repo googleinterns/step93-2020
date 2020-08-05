@@ -6,8 +6,6 @@ import com.google.step.data.WeeklyPageView;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Collections;
 
 
@@ -16,7 +14,6 @@ import java.util.Collections;
  */
 public class ScoreClient {
 
-    private final double minimumWeeks = 10.0;
     private final MetricsClient metricsClient = new MetricsClient();
 
     /**
@@ -24,15 +21,20 @@ public class ScoreClient {
      * @return an unmodifiable list of restaurantScore class.
      */
     public List<RestaurantScore> calculateScores() {
-        Map<Long, Double> scoreMap = new HashMap<>();
-        List<Long> restaurantIds = new ArrayList<>();
 
         List<RestaurantPageViews> allPageViews = metricsClient.getAllPageViews();
+        if (allPageViews.isEmpty()) {
+            return Collections.unmodifiableList(new ArrayList<>());
+        }
 
         double systemAverage = getSystemAverage(allPageViews);
 
-        // Calculate score
-        for (RestaurantPageViews restaurant: allPageViews) {
+        long[] ids = new long[allPageViews.size()];
+        double[] scores = new double[allPageViews.size()];
+        int currentIndex = 0;
+        for (RestaurantPageViews restaurant : allPageViews) {
+            ids[currentIndex] = (Long.parseLong(restaurant.getId()));
+
             double restaurantAverage = calculateRestaurantAveragePageViews(restaurant);
 
             // Since the data is sorted we can just get the latest pageView for that restaurant.
@@ -40,21 +42,20 @@ public class ScoreClient {
             int lastPageViewIndex = pageViewList.size() - 1;
             int latestPageView = pageViewList.get(lastPageViewIndex).getCount();
 
-            double score = calculateRawScore(latestPageView, restaurantAverage, systemAverage);
-            restaurantIds.add(Long.parseLong(restaurant.getId()));
-            scoreMap.put(Long.parseLong(restaurant.getId()), score);
+            double currentRestaurantScore = calculateRawScore(latestPageView, restaurantAverage, systemAverage);
+            scores[currentIndex] = currentRestaurantScore;
+            currentIndex++;
         }
 
-        standardizeScores(scoreMap, restaurantIds);
-        normalizeScores(scoreMap, restaurantIds);
+        standardizeScores(scores);
+        normalizeScores(scores);
 
-        // Build the scores return list.
-        List<RestaurantScore> scores = new ArrayList<>();
-        for (Long restaurantId: restaurantIds) {
-            scores.add(new RestaurantScore(restaurantId, scoreMap.get(restaurantId)));
+        List<RestaurantScore> restaurantScoresList = new ArrayList<>();
+        for (int i = 0; i < currentIndex; i++) {
+            restaurantScoresList.add(new RestaurantScore(ids[i], scores[i]));
         }
 
-        return Collections.unmodifiableList(scores);
+        return Collections.unmodifiableList(restaurantScoresList);
     }
 
     /**
@@ -67,10 +68,12 @@ public class ScoreClient {
         double count = 0;
 
         for (RestaurantPageViews restaurant : allPageViews) {
+            // Can't be zero because if the RestaurantPageViews exists then it will have at a minimum
+            // one pageView inside it.
             List<WeeklyPageView> pageViews = restaurant.getPageViews();
             count += pageViews.size();
-            for (int i = 0; i < pageViews.size(); i++) {
-                sum += pageViews.get(i).getCount();
+            for (WeeklyPageView pageView : pageViews) {
+                sum += pageView.getCount();
             }
         }
 
@@ -86,10 +89,13 @@ public class ScoreClient {
         List<WeeklyPageView> pageViews = restaurant.getPageViews();
 
         double sum = 0;
+
+        // This can't be zero because the instance of a RestaurantPageViews only exists if a WeeklyPageView
+        // exists as well.
         double count = pageViews.size();
 
-        for (int i = 0; i < pageViews.size(); i++) {
-            sum += pageViews.get(i).getCount();
+        for (WeeklyPageView pageView : pageViews) {
+            sum += pageView.getCount();
         }
 
         return sum / count;
@@ -103,6 +109,7 @@ public class ScoreClient {
      * @return double representing the score for that specific restaurant.
      */
     private double calculateRawScore(int latestPageViews, double restaurantAverage, double systemAverage) {
+        final double minimumWeeks = 10.0;
         double score = (latestPageViews / (latestPageViews + minimumWeeks)) * restaurantAverage
                 + (minimumWeeks / (latestPageViews + minimumWeeks)) * systemAverage;
         return score;
@@ -110,55 +117,54 @@ public class ScoreClient {
 
     /**
      * Standardizes the scores for the entire map of scores using z - score calculations.
-     * @param scoreMap map that holds the restaurant id as a key and the score of that restaurant as a value.
-     * @param restaurantIds list that holds the restaurant ids to get the values of the map.
+     * @param scores array of the current scores for each restaurant.
      */
-    private void standardizeScores(Map<Long, Double> scoreMap, List<Long> restaurantIds) {
-        double sum = 0.0f;
+    private void standardizeScores(double[] scores) {
 
-        for (Long restaurantId : restaurantIds) {
-            sum += scoreMap.get(restaurantId);
+        double sum = 0.0;
+        for (double score : scores) {
+            sum += score;
         }
 
-        double mean = sum / restaurantIds.size();
+        double mean = sum / scores.length;
 
-        double standardDeviation = 0.0f;
-        for (Long restaurantId : restaurantIds) {
-            standardDeviation += Math.pow(scoreMap.get(restaurantId) - mean, 2);
+        double standardDeviation = 0.0;
+        for (double score : scores) {
+            standardDeviation += Math.pow(score - mean, 2);
         }
 
-        standardDeviation = Math.sqrt(standardDeviation / (restaurantIds.size() - 1));
+        standardDeviation = Math.sqrt(standardDeviation / (scores.length - 1));
 
         double standardizedScore;
-        for (Long restaurantId : restaurantIds) {
-            standardizedScore = (scoreMap.get(restaurantId) - mean) / standardDeviation;
-            scoreMap.put(restaurantId, standardizedScore);
+        for (int i = 0; i < scores.length; i++) {
+            standardizedScore = ((scores[i] - mean) / standardDeviation);
+            scores[i] = standardizedScore;
         }
     }
 
     /**
      * Normalizes the scores into a range between 0 and 1 using min max normalizing.
      * It also inverts the score so a 1 is a low score and a 0 is a high score.
-     * @param scoreMap map that holds the restaurant id as a key and the score of that restaurant as a value.
-     * @param restaurantIds list that holds the restaurant ids to get the values of the map.
+     * @param scores array of the current scores for each restaurant.
      */
-    private void normalizeScores(Map<Long, Double> scoreMap, List<Long> restaurantIds) {
+    private void normalizeScores(double[] scores) {
+
         double min = Integer.MAX_VALUE;
         double max = Integer.MIN_VALUE;
 
-        for (Long restaurantId : restaurantIds) {
-            if (scoreMap.get(restaurantId) < min) {
-                min = scoreMap.get(restaurantId);
+        for (double score : scores) {
+            if (score < min) {
+                min = score;
             }
-            if (scoreMap.get(restaurantId) > max) {
-                max = scoreMap.get(restaurantId);
+            if (score > max) {
+                max = score;
             }
         }
 
         double normalizedScore;
-        for (Long restaurantId : restaurantIds) {
-            normalizedScore = 1 - ((scoreMap.get(restaurantId) - min) / (max - min));
-            scoreMap.put(restaurantId, normalizedScore);
+        for (int i = 0; i < scores.length; i++) {
+            normalizedScore = 1 - ((scores[i] - min) / (max - min));
+            scores[i] = normalizedScore;
         }
     }
 }

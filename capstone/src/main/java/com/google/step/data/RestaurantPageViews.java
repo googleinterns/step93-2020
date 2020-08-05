@@ -39,7 +39,9 @@ public class RestaurantPageViews {
      * Gets the id of the instance
      * @return String representing the id of the restaurant.
      */
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
     /**
      * Equals method for comparisons
