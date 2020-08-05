@@ -1,5 +1,8 @@
 package com.google.step.search;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -71,5 +74,29 @@ public class RestaurantQueryParams {
 
   public String getQuery() {
     return query;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+
+    if (o == null || getClass() != o.getClass()) return false;
+
+    RestaurantQueryParams that = (RestaurantQueryParams) o;
+
+    return new EqualsBuilder()
+        .append(query, that.query)
+        .append(cuisines, that.cuisines)
+        .append(email, that.email)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+        .append(query)
+        .append(cuisines)
+        .append(email)
+        .toHashCode();
   }
 }
