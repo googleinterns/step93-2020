@@ -18,7 +18,15 @@
     <display-name>Restaurant Search Servlet</display-name>
     <servlet-name>RestaurantSearchServlet</servlet-name>
     <servlet-class>com.google.step.servlets.RestaurantSearchServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
+    <init-param>
+      <param-name>search-hostname</param-name>
+      <param-value>localhost</param-value>
+<!--      <param-value>search-instance.c.joshwash-new-step-2020.internal</param-value>-->
+    </init-param>
+    <init-param>
+      <param-name>search-port</param-name>
+      <param-value>9200</param-value>
+    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>RestaurantSearchServlet</servlet-name>
@@ -51,7 +59,15 @@
     <display-name>Restaurant Servlet</display-name>
     <servlet-name>RestaurantServlet</servlet-name>
     <servlet-class>com.google.step.servlets.RestaurantServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
+    <init-param>
+      <param-name>search-hostname</param-name>
+      <param-value>localhost</param-value>
+      <!--      <param-value>search-instance.c.joshwash-new-step-2020.internal</param-value>-->
+    </init-param>
+    <init-param>
+      <param-name>search-port</param-name>
+      <param-value>9200</param-value>
+    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>RestaurantServlet</servlet-name>
