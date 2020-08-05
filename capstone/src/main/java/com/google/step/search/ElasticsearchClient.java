@@ -78,10 +78,12 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
    * {@inheritDoc}
    */
   @Override
-  public List<RestaurantHeader> searchRestaurants(String query) throws IOException {
+  public List<RestaurantHeader> searchRestaurants(RestaurantQueryParams query) throws IOException {
     List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
 
-    JSONObject queryRequest = query.isEmpty() ? createMatchAllQuery() : createBasicSearchQuery(query);
+    String queryString = query.getQuery();
+    JSONObject queryRequest =
+        queryString.isEmpty() ? createMatchAllQuery() : createBasicSearchQuery(queryString);
     String requestBody = addBoostingToQuery(queryRequest).toString();
 
     HttpRequest request = buildElasticsearchHttpRequest("POST", requestPath, requestBody);
