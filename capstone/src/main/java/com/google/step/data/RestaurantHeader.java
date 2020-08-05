@@ -17,6 +17,8 @@ package com.google.step.data;
 import com.google.appengine.api.datastore.GeoPt;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
@@ -29,12 +31,18 @@ public final class RestaurantHeader {
   private final String name;
   private final GeoPt location;
   private final List<String> cuisine;
+  private final double metricsScore;
 
-  public RestaurantHeader(long restaurantKey, String name, GeoPt location, List<String> cuisine) {
+  public RestaurantHeader(long restaurantKey, String name, GeoPt location, List<String> cuisine, Optional<Double> metricsScore) {
     this.restaurantKey = restaurantKey;
     this.name = name;
     this.location = location;
     this.cuisine = Collections.unmodifiableList(cuisine);
+    this.metricsScore = metricsScore.orElse(0.5);
+  }
+
+  public RestaurantHeader(long restaurantKey, String name, GeoPt location, List<String> cuisine) {
+    this(restaurantKey, name, location, cuisine, Optional.empty());
   }
 
   /**
@@ -47,7 +55,7 @@ public final class RestaurantHeader {
   public static RestaurantHeader createHeaderFromRestaurant(Restaurant restaurant) {
     return new RestaurantHeader(
         restaurant.getRestaurantKey().orElseThrow(IllegalArgumentException::new),
-        restaurant.getName(), restaurant.getLocation(), restaurant.getCuisine());
+        restaurant.getName(), restaurant.getLocation(), restaurant.getCuisine(), Optional.empty());
   }
 
   public long getRestaurantKey() {
@@ -64,6 +72,10 @@ public final class RestaurantHeader {
 
   public List<String> getCuisine() {
     return cuisine;
+  }
+
+  public double getMetricsScore() {
+    return metricsScore;
   }
 
   @Override

@@ -13,7 +13,6 @@ import java.util.Collections;
  * Will take care of calculating the score for each restaurant.
  */
 public class ScoreClient {
-
     private final MetricsClient metricsClient = new MetricsClient();
 
     /**

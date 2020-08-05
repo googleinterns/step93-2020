@@ -51,9 +51,13 @@ function getDataForMultilineVisualization() {
  * restaurant going across weeks. Hovering over a line will
  * display the restaurant's name and grey out the rest of the lines.
  */
-function createMultilineVisualization() {
+async function createMultilineVisualization() {
   const d3 = window.d3;
-  const data = getDataForMultilineVisualization();
+  // Need to disable validator because parseData is defined in another file
+  // Can't import it because then this file would have to become a module,
+  // causing other issues
+  // eslint-disable-next-line no-undef
+  const data = await parseData();
   const height = 400;
   const width = 600;
   const margin = ({top: 20, right: 20, bottom: 30, left: 30});
@@ -132,11 +136,17 @@ function createMultilineVisualization() {
       .attr('font-weight', 'bold')
       .text('# of Page Views');
 
+  // Create random colors array, one per line
+  const colors = [];
+  for (let i = 0; i < data.restaurantData.length; i++) {
+    const color = 'hsl(' + Math.random() * 360 + ',100%,50%';
+    colors.push(color);
+  }
+
   // Append all the lines between click data elements
   // All the lines can be grouped in one 'g' element
   const path = svg.append('g')
                    .attr('fill', 'none')
-                   .attr('stroke', 'darkviolet')
                    .attr('stroke-width', 1.5)
                    .attr('stroke-linejoin', 'round')
                    .attr('stroke-linecap', 'round')
@@ -145,7 +155,8 @@ function createMultilineVisualization() {
                    .enter()
                    .append('path')
                    .style('mix-blend-mode', 'multiply')
-                   .attr('d', (d) => line(d.clickData));
+                   .attr('d', (d) => line(d.clickData))
+                   .attr('stroke', (d, i) => colors[i]);
 
   // Triggered upon hovering over any line
   svg.call(hover, path);
@@ -209,7 +220,7 @@ function createMultilineVisualization() {
 
       // Make every line greyed out except the one currently selected by the
       // mouse
-      path.attr('stroke', (d) => d === s ? null : '#ddd')
+      path.attr('stroke', (d, i) => d === s ? colors[i] : '#ddd')
           .filter((d) => d === s)
           .raise();
 
@@ -233,7 +244,8 @@ function createMultilineVisualization() {
     function left() {
       // Allow the lines to go back to full color and hide the dot from the
       // display
-      path.style('mix-blend-mode', 'multiply').attr('stroke', null);
+      path.style('mix-blend-mode', 'multiply')
+          .attr('stroke', (d, i) => colors[i]);
       dot.attr('display', 'none');
     }
   }

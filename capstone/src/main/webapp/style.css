@@ -13,6 +13,22 @@
   width: 800px;
 }
 
+.bar-chart {
+  height: 600px;
+  margin-bottom: 20px;
+  margin-left: 125px;
+  width: 600px;
+}
+
+.chart-buttons {
+  margin-left: 400px;
+}
+
+.legend {
+  height: 50px;
+  margin-bottom: 20px;
+}
+
 .main-content {
   margin: 0 auto;
   max-width: 85vw;
@@ -44,6 +60,7 @@
 }
 
 #search-input-field {
+  background-color: #6f21de;
   color: white;
 }
 
@@ -57,4 +74,54 @@
 
 .restaurant-name-link {
   color: black;
+}
+
+.detail-box {
+  align-items: center;
+  background-color: white;
+  border: 4px solid #400080;
+  border-radius: 25px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  padding: 20px;
+  text-align: center;
+  width: 800px;
+}
+
+.signup-box {
+  background-color: white;
+  border: 4px solid #400080;
+  border-radius: 25px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  padding: 20px;
+  text-align: center;
+  width: 600px;
+}
+
+.visualization-box {
+  align-items: center;
+  background-color: white;
+  border: 4px solid #400080;
+  border-radius: 25px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  padding: 20px;
+  width: 900px;
+}
+
+.signup-input-box {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cuisine-tag {
+  align-items: center;
+  flex-direction: column;
 }
