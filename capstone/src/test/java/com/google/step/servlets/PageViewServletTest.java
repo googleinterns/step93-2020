@@ -232,12 +232,14 @@ public class PageViewServletTest {
         List<RestaurantPageViews> expected = new ArrayList<>();
         expected.add(new RestaurantPageViews(
                 "Marlows",
+                "1",
                 new ArrayList<WeeklyPageView>(
                         Arrays.asList(
                                 new WeeklyPageView(20, 2013, 100),
                                 new WeeklyPageView(2, 2014, 200)))));
         expected.add(new RestaurantPageViews(
                 "Subway",
+                "2",
                 new ArrayList<WeeklyPageView>(
                         Arrays.asList(
                                 new WeeklyPageView(3, 2015, 1000)))));

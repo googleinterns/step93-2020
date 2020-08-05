@@ -341,6 +341,7 @@ public class MetricsClientTests {
         pageViewList1.add(pageView6);
         RestaurantPageViews restaurantPageView1 = new RestaurantPageViews(
                 entity1.getProperty("restaurantName").toString(),
+                entity1.getProperty("restaurantKey").toString(),
                 pageViewList1
         );
 
@@ -359,6 +360,7 @@ public class MetricsClientTests {
         pageViewList5.add(pageView5);
         RestaurantPageViews restaurantPageView2 = new RestaurantPageViews(
                 entity5.getProperty("restaurantName").toString(),
+                entity5.getProperty("restaurantKey").toString(),
                 pageViewList5
         );
 
