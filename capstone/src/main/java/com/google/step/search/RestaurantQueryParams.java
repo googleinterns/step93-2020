@@ -9,12 +9,12 @@ import java.util.List;
  */
 public class RestaurantQueryParams {
   private final String query;
-  private final List<String> cuisine;
+  private final List<String> cuisines;
   private final String email;
 
   public static class Builder {
     private String query = "";
-    private List<String> cuisine = new ArrayList<>();
+    private List<String> cuisines = new ArrayList<>();
     private String email = "";
 
     public Builder() { }
@@ -35,8 +35,8 @@ public class RestaurantQueryParams {
      * @param cuisineList list of strings representing cuisines
      * @return {@code this} builder
      */
-    public Builder cuisine(List<String> cuisineList) {
-      this.cuisine = Collections.unmodifiableList(cuisineList);
+    public Builder cuisines(List<String> cuisineList) {
+      this.cuisines = Collections.unmodifiableList(cuisineList);
       return this;
     }
 
@@ -57,12 +57,12 @@ public class RestaurantQueryParams {
 
   private RestaurantQueryParams(Builder builder) {
     this.query = builder.query;
-    this.cuisine = builder.cuisine;
+    this.cuisines = builder.cuisines;
     this.email = builder.email;
   }
 
-  public List<String> getCuisine() {
-    return cuisine;
+  public List<String> getCuisines() {
+    return cuisines;
   }
 
   public String getEmail() {
