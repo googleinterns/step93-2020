@@ -8,6 +8,7 @@ Welcome to EpiCURE, a solution for restaurants struggling due to COVID-19!
 - Clone this repo
 - In your GCP project, set up a VM instance for elastic search use
   - Edit the [VPC access connector line in the `appengine-web.xml`](https://github.com/googleinterns/step93-2020/blob/master/capstone/src/main/webapp/WEB-INF/appengine-web.xml#L12) to include your GCP project ID, location, and search connection
+  - Edit the [`context-param` in `web.xml`](https://github.com/googleinterns/step93-2020/blob/master/capstone/src/main/webapp/WEB-INF/web.xml) to be the name of your search instance
 - Navigate into the `capstone` directory
   - Edit [line 146 of the `pom.xml`](https://github.com/googleinterns/step93-2020/blob/master/capstone/pom.xml#L146) by replacing `PROJECT-ID-HERE` with the ID of your GCP project
   - Deploy necessary datastore indices by running `mvn appengine:deployIndex`
