@@ -1,11 +1,10 @@
 package com.google.step.search;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Class to hold data for restaurant search queries.
@@ -20,7 +19,7 @@ public class RestaurantQueryParams {
     private List<String> cuisines = new ArrayList<>();
     private String email = "";
 
-    public Builder() { }
+    public Builder() {}
 
     /**
      * Sets query parameter to {@code query}
@@ -78,9 +77,11 @@ public class RestaurantQueryParams {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
+    if (this == o)
+      return true;
 
-    if (o == null || getClass() != o.getClass()) return false;
+    if (o == null || getClass() != o.getClass())
+      return false;
 
     RestaurantQueryParams that = (RestaurantQueryParams) o;
 
@@ -93,10 +94,6 @@ public class RestaurantQueryParams {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37)
-        .append(query)
-        .append(cuisines)
-        .append(email)
-        .toHashCode();
+    return new HashCodeBuilder(17, 37).append(query).append(cuisines).append(email).toHashCode();
   }
 }

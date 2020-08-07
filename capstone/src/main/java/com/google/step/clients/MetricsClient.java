@@ -70,7 +70,8 @@ public class MetricsClient {
       return new WeeklyPageView(0, 0, 0);
     }
 
-    return new WeeklyPageView(week, year, Integer.parseInt(results.getProperty("count").toString()));
+    return new WeeklyPageView(
+        week, year, Integer.parseInt(results.getProperty("count").toString()));
   }
 
   /**
@@ -101,66 +102,66 @@ public class MetricsClient {
     return pageViewsList;
   }
 
-    /**
-     * Private class to better organize the necessary information about a restaurant.
-     */
-    private static class RestaurantPageViewInformation {
-        private final String name;
-        private List<WeeklyPageView> weeklyPageViewList;
+  /**
+   * Private class to better organize the necessary information about a restaurant.
+   */
+  private static class RestaurantPageViewInformation {
+    private final String name;
+    private List<WeeklyPageView> weeklyPageViewList;
 
-        public RestaurantPageViewInformation(String name, List<WeeklyPageView> weeklyPageViewList) {
-            this.name = name;
-            this.weeklyPageViewList = weeklyPageViewList;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public List<WeeklyPageView> getWeeklyPageViewList( ){
-            return weeklyPageViewList;
-        }
+    public RestaurantPageViewInformation(String name, List<WeeklyPageView> weeklyPageViewList) {
+      this.name = name;
+      this.weeklyPageViewList = weeklyPageViewList;
     }
 
-    /**
-     * Gets all pageViews for the entire system.
-     * @return returns List<RestaurantPageViews> with the PageView list inside each instance
-     *         of RestaurantPageViews sorted by week and year in ascending order.
-     */
-    public List<RestaurantPageViews> getAllPageViews() {
-        // Query with double sort so the first element of every restaurant should be
-        // the earliest week and year.
-        Query query = new Query("PageViews")
-                .addSort("year", Query.SortDirection.ASCENDING)
-                .addSort("week", Query.SortDirection.ASCENDING);
-        PreparedQuery preparedQuery = dataStore.prepare(query);
-        List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withDefaults());
+    public String getName() {
+      return name;
+    }
 
-        // Map to maintain a reference to all the information needed about a restaurant
-        // and make searching for them easy.
-        Map<String, RestaurantPageViewInformation> restaurantIdMap = new HashMap<>();
+    public List<WeeklyPageView> getWeeklyPageViewList() {
+      return weeklyPageViewList;
+    }
+  }
 
-        for (Entity entity : results) {
-            String name = entity.getProperty("restaurantName").toString();
-            String id = entity.getProperty("restaurantKey").toString();
-            int year = Integer.parseInt(entity.getProperty("year").toString());
-            int week = Integer.parseInt(entity.getProperty("week").toString());
-            int count = Integer.parseInt(entity.getProperty("count").toString());
-            if (restaurantIdMap.containsKey(id)) {
-                restaurantIdMap.get(id).getWeeklyPageViewList().add(new WeeklyPageView(week, year, count));
-            } else {
-                List<WeeklyPageView> currRestaurantList = new ArrayList<>();
-                currRestaurantList.add(new WeeklyPageView(week, year, count));
-                restaurantIdMap.put(id, new RestaurantPageViewInformation(name, currRestaurantList));
-            }
-        }
+  /**
+   * Gets all pageViews for the entire system.
+   * @return returns List<RestaurantPageViews> with the PageView list inside each instance
+   *         of RestaurantPageViews sorted by week and year in ascending order.
+   */
+  public List<RestaurantPageViews> getAllPageViews() {
+    // Query with double sort so the first element of every restaurant should be
+    // the earliest week and year.
+    Query query = new Query("PageViews")
+                      .addSort("year", Query.SortDirection.ASCENDING)
+                      .addSort("week", Query.SortDirection.ASCENDING);
+    PreparedQuery preparedQuery = dataStore.prepare(query);
+    List<Entity> results = preparedQuery.asList(FetchOptions.Builder.withDefaults());
 
-        // Build the return list
-        List<RestaurantPageViews> restaurantPageViewsList = new ArrayList<>();
-        for (Map.Entry<String, RestaurantPageViewInformation> entry : restaurantIdMap.entrySet()) {
-            restaurantPageViewsList.add(new RestaurantPageViews(entry.getValue().getName(), entry.getKey(),
-                    entry.getValue().getWeeklyPageViewList()));
-        }
+    // Map to maintain a reference to all the information needed about a restaurant
+    // and make searching for them easy.
+    Map<String, RestaurantPageViewInformation> restaurantIdMap = new HashMap<>();
+
+    for (Entity entity : results) {
+      String name = entity.getProperty("restaurantName").toString();
+      String id = entity.getProperty("restaurantKey").toString();
+      int year = Integer.parseInt(entity.getProperty("year").toString());
+      int week = Integer.parseInt(entity.getProperty("week").toString());
+      int count = Integer.parseInt(entity.getProperty("count").toString());
+      if (restaurantIdMap.containsKey(id)) {
+        restaurantIdMap.get(id).getWeeklyPageViewList().add(new WeeklyPageView(week, year, count));
+      } else {
+        List<WeeklyPageView> currRestaurantList = new ArrayList<>();
+        currRestaurantList.add(new WeeklyPageView(week, year, count));
+        restaurantIdMap.put(id, new RestaurantPageViewInformation(name, currRestaurantList));
+      }
+    }
+
+    // Build the return list
+    List<RestaurantPageViews> restaurantPageViewsList = new ArrayList<>();
+    for (Map.Entry<String, RestaurantPageViewInformation> entry : restaurantIdMap.entrySet()) {
+      restaurantPageViewsList.add(new RestaurantPageViews(
+          entry.getValue().getName(), entry.getKey(), entry.getValue().getWeeklyPageViewList()));
+    }
 
     return restaurantPageViewsList;
   }
@@ -185,17 +186,19 @@ public class MetricsClient {
               new FilterPredicate("year", Query.FilterOperator.EQUAL, year),
               new FilterPredicate("week", Query.FilterOperator.EQUAL, week)));
 
-            Query query = new Query("PageViews").setFilter(compositeFilter);
-            PreparedQuery results = dataStore.prepare(query);
-            Entity resultsEntity = results.asSingleEntity();
-            if (resultsEntity == null) {
-                // Query for the name
-                Query nameQuery = new Query("RestaurantInfo")
-                        .setFilter(new FilterPredicate(
-                                Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, KeyFactory.createKey("RestaurantInfo", Long.parseLong(restaurantKey))));
-                PreparedQuery nameResult = dataStore.prepare(nameQuery);
-                Entity restaurant = nameResult.asSingleEntity();
-                String restaurantName = restaurant.getProperty("name").toString();
+      Query query = new Query("PageViews").setFilter(compositeFilter);
+      PreparedQuery results = dataStore.prepare(query);
+      Entity resultsEntity = results.asSingleEntity();
+      if (resultsEntity == null) {
+        // Query for the name
+        Query nameQuery =
+            new Query("RestaurantInfo")
+                .setFilter(
+                    new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL,
+                        KeyFactory.createKey("RestaurantInfo", Long.parseLong(restaurantKey))));
+        PreparedQuery nameResult = dataStore.prepare(nameQuery);
+        Entity restaurant = nameResult.asSingleEntity();
+        String restaurantName = restaurant.getProperty("name").toString();
 
         // Create entity
         Entity entity = new Entity("PageViews");

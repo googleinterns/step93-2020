@@ -9,13 +9,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class RestaurantPageViews {
   private final String name;
-    private final String id;
+  private final String id;
   private final List<WeeklyPageView> pageViews;
 
   public RestaurantPageViews(String name, String id, List<WeeklyPageView> pageViews) {
-      this.name = name;
-      this.id = id;
-      this.pageViews = Collections.unmodifiableList(pageViews);
+    this.name = name;
+    this.id = id;
+    this.pageViews = Collections.unmodifiableList(pageViews);
   }
 
   /**
@@ -39,7 +39,7 @@ public class RestaurantPageViews {
    * @return String representing the id of the restaurant.
    */
   public String getId() {
-      return id;
+    return id;
   }
 
   /**

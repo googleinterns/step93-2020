@@ -16,7 +16,6 @@ package com.google.step.search;
 
 import com.google.step.data.RestaurantHeader;
 import com.google.step.data.RestaurantScore;
-
 import java.io.IOException;
 import java.util.List;
 

@@ -40,7 +40,7 @@ public class RestaurantServlet extends HttpServlet {
   private final RestaurantClient restaurantClient = new RestaurantClient();
   private RestaurantHeaderSearchClient searchClient;
 
-  public RestaurantServlet() { }
+  public RestaurantServlet() {}
 
   RestaurantServlet(RestaurantHeaderSearchClient searchClient) {
     this.searchClient = searchClient;

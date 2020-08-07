@@ -99,13 +99,11 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
 
     StringBuilder sb = new StringBuilder();
     scores.forEach(score -> {
-      String updateString = new JSONObject()
-          .put("update", new JSONObject()
-              .put("_id", score.getRestaurantKey()))
-          .toString();
-      String scoreContent = new JSONObject()
-          .put("metricsScore", score.getScore())
-          .toString();
+      String updateString =
+          new JSONObject()
+              .put("update", new JSONObject().put("_id", score.getRestaurantKey()))
+              .toString();
+      String scoreContent = new JSONObject().put("metricsScore", score.getScore()).toString();
       sb.append(updateString).append("\n").append(scoreContent).append("\n");
     });
 
@@ -116,28 +114,24 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
   }
 
   private JSONObject addBoostingToQuery(JSONObject queryJson) {
-    return new JSONObject()
-        .put("query", new  JSONObject()
-            .put("function_score", queryJson
-                .put("field_value_factor", new JSONObject()
-                    .put("field", "metricsScore")
-                    .put("factor", 2))));
+    return new JSONObject().put("query",
+        new JSONObject().put("function_score",
+            queryJson.put("field_value_factor",
+                new JSONObject().put("field", "metricsScore").put("factor", 2))));
   }
 
   private JSONObject createBasicSearchQuery(String query) {
     List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
 
-    return new JSONObject()
-        .put("query", new JSONObject()
-            .put("multi_match", new JSONObject()
+    return new JSONObject().put("query",
+        new JSONObject().put("multi_match",
+            new JSONObject()
                 .put("query", query)
                 .put("fields", new JSONArray(Arrays.asList("name", "cuisine")))));
   }
 
   private JSONObject createMatchAllQuery() {
-    return  new JSONObject()
-        .put("query", new JSONObject()
-            .put("match_all", new JSONObject()));
+    return new JSONObject().put("query", new JSONObject().put("match_all", new JSONObject()));
   }
 
   /**
