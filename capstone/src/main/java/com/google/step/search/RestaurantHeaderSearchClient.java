@@ -52,5 +52,5 @@ public interface RestaurantHeaderSearchClient {
    * @return list of {@link RestaurantHeader} objects sorted by descending relevance score
    * @throws IOException thrown if request cannot be made or executed properly
    */
-  List<RestaurantHeader> searchRestaurants(String query) throws IOException;
+  List<RestaurantHeader> searchRestaurants(RestaurantQueryParams query) throws IOException;
 }

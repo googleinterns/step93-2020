@@ -18,6 +18,10 @@ import com.google.api.client.json.Json;
 import com.google.step.data.RestaurantHeader;
 import com.google.step.search.ElasticsearchClient;
 import com.google.step.search.RestaurantHeaderSearchClient;
+import com.google.step.search.RestaurantQueryParams;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +62,9 @@ public class RestaurantSearchServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String queryString = Optional.ofNullable(request.getParameter("query")).orElse("").trim();
-    List<RestaurantHeader> searchResults = searchClient.searchRestaurants(queryString);
+    RestaurantQueryParams params = new RestaurantQueryParams.Builder().query(queryString).build();
+
+    List<RestaurantHeader> searchResults = searchClient.searchRestaurants(params);
 
     JSONObject responseJson = new JSONObject().put("restaurants", new JSONArray(searchResults));
 
