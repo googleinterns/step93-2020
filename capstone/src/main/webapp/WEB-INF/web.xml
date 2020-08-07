@@ -28,6 +28,7 @@
     <display-name>Restaurant Search Servlet</display-name>
     <servlet-name>RestaurantSearchServlet</servlet-name>
     <servlet-class>com.google.step.servlets.RestaurantSearchServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>RestaurantSearchServlet</servlet-name>
@@ -60,6 +61,7 @@
     <display-name>Restaurant Servlet</display-name>
     <servlet-name>RestaurantServlet</servlet-name>
     <servlet-class>com.google.step.servlets.RestaurantServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>RestaurantServlet</servlet-name>
