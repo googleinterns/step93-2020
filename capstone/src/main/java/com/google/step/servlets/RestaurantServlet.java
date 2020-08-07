@@ -39,14 +39,20 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/restaurant")
 public class RestaurantServlet extends HttpServlet {
   private final RestaurantClient restaurantClient = new RestaurantClient();
-  private final RestaurantHeaderSearchClient searchClient;
+  private RestaurantHeaderSearchClient searchClient;
 
-  public RestaurantServlet() {
-    this(new ElasticsearchClient("localhost", (short) 9200));
-  }
+  public RestaurantServlet() { }
 
   RestaurantServlet(RestaurantHeaderSearchClient searchClient) {
     this.searchClient = searchClient;
+  }
+
+  @Override
+  public void init() {
+    String hostname = getServletContext().getInitParameter("search-hostname");
+    short port = Short.parseShort(getServletContext().getInitParameter("search-port"));
+
+    this.searchClient = new ElasticsearchClient(hostname, port);
   }
 
   /**
