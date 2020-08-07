@@ -18,6 +18,7 @@ import com.google.api.client.json.Json;
 import com.google.step.data.RestaurantHeader;
 import com.google.step.search.ElasticsearchClient;
 import com.google.step.search.RestaurantHeaderSearchClient;
+import com.google.step.search.RestaurantQueryParams;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -31,14 +32,20 @@ import org.json.JSONObject;
 /** Servlet responsible for getting restaurants from the search index */
 @WebServlet("/search/restaurants")
 public class RestaurantSearchServlet extends HttpServlet {
-  private final RestaurantHeaderSearchClient searchClient;
-
-  public RestaurantSearchServlet() {
-    this(new ElasticsearchClient("localhost", (short) 9200));
-  }
+  private RestaurantHeaderSearchClient searchClient;
 
   RestaurantSearchServlet(RestaurantHeaderSearchClient searchClient) {
     this.searchClient = searchClient;
+  }
+
+  public RestaurantSearchServlet() {}
+
+  @Override
+  public void init() {
+    String hostname = getServletContext().getInitParameter("search-hostname");
+    short port = Short.parseShort(getServletContext().getInitParameter("search-port"));
+
+    this.searchClient = new ElasticsearchClient(hostname, port);
   }
 
   /**
@@ -51,8 +58,9 @@ public class RestaurantSearchServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String queryString = Optional.ofNullable(request.getParameter("query")).orElse("").trim();
-    List<RestaurantHeader> searchResults = searchClient.searchRestaurants(queryString);
+    RestaurantQueryParams params = new RestaurantQueryParams.Builder().query(queryString).build();
 
+    List<RestaurantHeader> searchResults = searchClient.searchRestaurants(params);
     JSONObject responseJson = new JSONObject().put("restaurants", new JSONArray(searchResults));
 
     response.setContentType(Json.MEDIA_TYPE);

@@ -20,6 +20,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -64,5 +65,15 @@ public final class RestaurantHeaderTest {
     assertEquals(NAME_1, restaurantHeader.getName());
     assertEquals(LOC_1, restaurantHeader.getLocation());
     assertEquals(CUISINE_1, restaurantHeader.getCuisine());
+    assertEquals(0.5, restaurantHeader.getMetricsScore(), 0.001);
+  }
+
+  @Test
+  public void testRestaurantHeadersWithDifferentScoresStillEqual() {
+    RestaurantHeader restaurantHeader = RestaurantHeader.createHeaderFromRestaurant(RESTAURANT_1);
+    RestaurantHeader restaurantHeaderWithDifferentScore =
+        new RestaurantHeader(KEY_1, NAME_1, LOC_1, CUISINE_1, Optional.of(0.2));
+
+    assertEquals(restaurantHeader, restaurantHeaderWithDifferentScore);
   }
 }

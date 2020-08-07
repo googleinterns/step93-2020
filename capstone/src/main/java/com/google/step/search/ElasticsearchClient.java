@@ -27,6 +27,7 @@ import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import com.google.step.data.RestaurantHeader;
+import com.google.step.data.RestaurantScore;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -75,21 +76,13 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
    * {@inheritDoc}
    */
   @Override
-  public List<RestaurantHeader> searchRestaurants(String query) throws IOException {
-    return query.isEmpty() ? getRandomRestaurants() : queryRestaurantHeaders(query);
-  }
-
-  private List<RestaurantHeader> queryRestaurantHeaders(String query) throws IOException {
+  public List<RestaurantHeader> searchRestaurants(RestaurantQueryParams query) throws IOException {
     List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
 
-    String requestBody =
-        new JSONObject()
-            .put("query",
-                new JSONObject().put("multi_match",
-                    new JSONObject()
-                        .put("query", query)
-                        .put("fields", new JSONArray(Arrays.asList("name", "cuisine")))))
-            .toString();
+    String queryString = query.getQuery();
+    JSONObject queryRequest =
+        queryString.isEmpty() ? createMatchAllQuery() : createBasicSearchQuery(queryString);
+    String requestBody = addBoostingToQuery(queryRequest).toString();
 
     HttpRequest request = buildElasticsearchHttpRequest("POST", requestPath, requestBody);
     HttpResponse response = request.execute();
@@ -97,17 +90,54 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
     return convertElasticsearchResponseBodyToHeaders(response);
   }
 
-  private List<RestaurantHeader> getRandomRestaurants() throws IOException {
-    List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void updateRestaurantScores(List<RestaurantScore> scores) throws IOException {
+    List<String> requestPath = Arrays.asList("", RESTAURANTS, "_bulk");
 
-    String requestBody = new JSONObject()
-                             .put("query", new JSONObject().put("match_all", new JSONObject()))
-                             .toString();
+    StringBuilder sb = new StringBuilder();
+    scores.forEach(score -> {
+      String updateString = new JSONObject()
+          .put("update", new JSONObject()
+              .put("_id", score.getRestaurantKey()))
+          .toString();
+      String scoreContent = new JSONObject()
+          .put("metricsScore", score.getScore())
+          .toString();
+      sb.append(updateString).append("\n").append(scoreContent).append("\n");
+    });
+
+    String requestBody = sb.toString();
 
     HttpRequest request = buildElasticsearchHttpRequest("POST", requestPath, requestBody);
-    HttpResponse response = request.execute();
+    request.execute();
+  }
 
-    return convertElasticsearchResponseBodyToHeaders(response);
+  private JSONObject addBoostingToQuery(JSONObject queryJson) {
+    return new JSONObject()
+        .put("query", new  JSONObject()
+            .put("function_score", queryJson
+                .put("field_value_factor", new JSONObject()
+                    .put("field", "metricsScore")
+                    .put("factor", 2))));
+  }
+
+  private JSONObject createBasicSearchQuery(String query) {
+    List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
+
+    return new JSONObject()
+        .put("query", new JSONObject()
+            .put("multi_match", new JSONObject()
+                .put("query", query)
+                .put("fields", new JSONArray(Arrays.asList("name", "cuisine")))));
+  }
+
+  private JSONObject createMatchAllQuery() {
+    return  new JSONObject()
+        .put("query", new JSONObject()
+            .put("match_all", new JSONObject()));
   }
 
   /**

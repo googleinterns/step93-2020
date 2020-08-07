@@ -1,7 +1,6 @@
 package com.google.step.servlets;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 import com.google.appengine.api.datastore.*;
@@ -12,27 +11,28 @@ import com.meterware.httpunit.*;
 import com.meterware.servletunit.ServletRunner;
 
 import com.meterware.servletunit.ServletUnitClient;
-import org.json.JSONArray;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.xml.sax.SAXException;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletResponse;
 
 public class RestaurantServletTest {
     private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -46,6 +46,9 @@ public class RestaurantServletTest {
     public void tearDown() {
         helper.tearDown();
     }
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     /**
      * Test for the doGet method of the RestaurantServlet. First adds
@@ -79,7 +82,7 @@ public class RestaurantServletTest {
         datastoreService.put(restaurantInfo1);
 
         // Create a client to run the servlet
-        ServletRunner sr = new ServletRunner();
+        ServletRunner sr = new ServletRunner(new File("src/main/webapp/WEB-INF/web.xml"));
         sr.registerServlet("restaurant", RestaurantServlet.class.getName());
         ServletUnitClient sc = sr.newClient();
 
@@ -116,7 +119,7 @@ public class RestaurantServletTest {
     public void testDoGetFailure() throws IOException, SAXException {
         // Create a client to run the servlet
         ServletRunner sr = new ServletRunner();
-        sr.registerServlet("restaurant", RestaurantServlet.class.getName());
+        sr.registerServlet("RestaurantServlet", RestaurantServlet.class.getName());
         ServletUnitClient sc = sr.newClient();
 
         // This call to getResponse should throw an exception
@@ -128,10 +131,9 @@ public class RestaurantServletTest {
      * Test the doPost method of RestaurantServlet by creating a request with random params
      * then querying the mock Datastore to ensure the new restaurant was entered correctly.
      * @throws IOException
-     * @throws SAXException if the ServletRunner parser cannot handle the request
      */
     @Test
-    public void testDoPost() throws IOException, SAXException {
+    public void testDoPost() throws IOException {
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
         String name =  "Wildfire";
         String story = "Swanky American chain serving steak, chops & seafood, plus burgers, sides & cocktails.";
@@ -202,7 +204,7 @@ public class RestaurantServletTest {
         helper.setEnvIsAdmin(false).setEnvIsLoggedIn(false);
 
         // Create a client to run the servlet
-        ServletRunner sr = new ServletRunner();
+        ServletRunner sr = new ServletRunner(new File("src/main/webapp/WEB-INF/web.xml"));
         sr.registerServlet("restaurant", RestaurantServlet.class.getName());
         ServletUnitClient sc = sr.newClient();
 
@@ -215,11 +217,9 @@ public class RestaurantServletTest {
         request.setParameter("website", website);
 
         // This getResponse should cause a failing status because the user is not logged in.
-        try {
-            sc.getResponse(request);
-        } catch (HttpException e) {
-            assertEquals(HttpServletResponse.SC_FORBIDDEN, e.getResponseCode());
-        }
+        exception.expect(HttpException.class);
+        exception.expectMessage("403");
+        sc.getResponse(request);
     }
 
 }

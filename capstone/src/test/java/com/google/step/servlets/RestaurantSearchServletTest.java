@@ -17,8 +17,10 @@ package com.google.step.servlets;
 import com.google.api.client.json.Json;
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.repackaged.com.google.gson.Gson;
+import com.google.step.data.Restaurant;
 import com.google.step.data.RestaurantHeader;
 import com.google.step.search.RestaurantHeaderSearchClient;
+import com.google.step.search.RestaurantQueryParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -75,12 +77,10 @@ public class RestaurantSearchServletTest {
         HEADER_4
     );
     RestaurantHeaderSearchClient mockSearchClient = mock(RestaurantHeaderSearchClient.class);
-    when(mockSearchClient.searchRestaurants("")).thenReturn(allHeaders);
+    when(mockSearchClient.searchRestaurants(new RestaurantQueryParams.Builder().build())).thenReturn(allHeaders);
 
     MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpServletResponse response = new MockHttpServletResponse();
-
-    request.addParameter("query");
 
     RestaurantSearchServlet restaurantSearchServlet = new RestaurantSearchServlet(mockSearchClient);
     restaurantSearchServlet.doGet(request, response);
@@ -100,7 +100,8 @@ public class RestaurantSearchServletTest {
     List<RestaurantHeader> burgerRestaurants = Arrays.asList(HEADER_2, HEADER_4);
 
     RestaurantHeaderSearchClient mockSearchClient = mock(RestaurantHeaderSearchClient.class);
-    when(mockSearchClient.searchRestaurants("burgers")).thenReturn(burgerRestaurants);
+    RestaurantQueryParams params = new RestaurantQueryParams.Builder().query("burgers").build();
+    when(mockSearchClient.searchRestaurants(params)).thenReturn(burgerRestaurants);
 
     MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpServletResponse response = new MockHttpServletResponse();
@@ -132,7 +133,8 @@ public class RestaurantSearchServletTest {
     RestaurantSearchServlet restaurantSearchServlet = new RestaurantSearchServlet(mockSearchClient);
     restaurantSearchServlet.doGet(request, response);
 
-    verify(mockSearchClient).searchRestaurants("burgers");
+    RestaurantQueryParams params = new RestaurantQueryParams.Builder().query("burgers").build();
+    verify(mockSearchClient).searchRestaurants(params);
   }
 
   List<RestaurantHeader> getRestaurantHeaders(JSONArray headersJson) {

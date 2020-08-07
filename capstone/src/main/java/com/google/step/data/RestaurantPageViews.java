@@ -9,11 +9,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class RestaurantPageViews {
   private final String name;
+    private final String id;
   private final List<WeeklyPageView> pageViews;
 
-  public RestaurantPageViews(String name, List<WeeklyPageView> pageViews) {
-    this.name = name;
-    this.pageViews = Collections.unmodifiableList(pageViews);
+  public RestaurantPageViews(String name, String id, List<WeeklyPageView> pageViews) {
+      this.name = name;
+      this.id = id;
+      this.pageViews = Collections.unmodifiableList(pageViews);
   }
 
   /**
@@ -30,6 +32,14 @@ public class RestaurantPageViews {
    */
   public List<WeeklyPageView> getPageViews() {
     return pageViews;
+  }
+
+  /**
+   * Gets the id of the instance
+   * @return String representing the id of the restaurant.
+   */
+  public String getId() {
+      return id;
   }
 
   /**
@@ -55,6 +65,6 @@ public class RestaurantPageViews {
    */
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37).append(name).append(pageViews).toHashCode();
+    return new HashCodeBuilder(17, 37).append(name).append(id).append(pageViews).toHashCode();
   }
 }

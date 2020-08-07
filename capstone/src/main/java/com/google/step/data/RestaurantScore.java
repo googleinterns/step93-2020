@@ -4,7 +4,6 @@ package com.google.step.data;
  * Class that holds the score for a specific restaurant.
  */
 public class RestaurantScore {
-  // The name should always remain the same but the score will change when calculating it.
   private final long restaurantKey;
   private final double score;
 
