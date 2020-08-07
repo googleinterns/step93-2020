@@ -34,8 +34,8 @@ will need to complete the following steps:
 2. Enter the naviation menu and loog for Cloud Scheduler under the Tools section.
 3. Select 'Create Job'.
 4. Complete all the fields needed to create the job.
-    a. Choose the name for the job.
-    b. Put the frequency as: "0 6 * * 7" (this means the job will run every Sunday at 6:00 AM).
-    c. Select your desired TimeZone.
-    d. The endpoint for the job is "/update-score" (that's what should go at the end of the rest of the URL for your site).
-    e. The method should be a POST request and body should be empty.
+    - Choose the name for the job.
+    - Put the frequency as: "0 6 * * 7" (this means the job will run every Sunday at 6:00 AM).
+    - Select your desired TimeZone.
+    - The endpoint for the job is "/update-score" (that's what should go at the end of the rest of the URL for your site).
+    - The method should be a POST request and body should be empty.
