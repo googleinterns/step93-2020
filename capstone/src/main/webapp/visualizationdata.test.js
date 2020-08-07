@@ -97,7 +97,7 @@ beforeEach(() => {
       ],
     },
     {
-      'name': 'Poke DOke',
+      'name': 'Poke Doke',
       'pageViews': [
         {
           'week': 25,
@@ -277,3 +277,35 @@ test(
       expect(functions.setUpVisualizationData(pageViewExample2, dateArr2))
           .toMatchObject(visualizationDataExample2);
     });
+
+/** Tests getAveragePageViewArray using all available preset data */
+test('Test getAveragePageViewArray 1', () => {
+  expect(functions.getAveragePageViewArray(pageViewExample1)).toMatchObject([
+    6,
+    8,
+  ]);
+});
+
+test('Test getAveragePageViewArray 2', () => {
+  expect(functions.getAveragePageViewArray(pageViewExample2)).toMatchObject([
+    2,
+    10,
+    13,
+  ]);
+});
+
+/** Tests getRestaurantNames using all available preset data */
+test('Test getRestaurantNames 1', () => {
+  expect(functions.getRestaurantNames(pageViewExample1)).toMatchObject([
+    'Wildfire',
+    'Poke Doke',
+  ]);
+});
+
+test('Test getRestaurantNames 2', () => {
+  expect(functions.getRestaurantNames(pageViewExample2)).toMatchObject([
+    'The Goog Noodle',
+    'Wildfire',
+    'Clucker\'s',
+  ]);
+});
