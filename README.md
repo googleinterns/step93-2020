@@ -24,3 +24,18 @@ Welcome to EpiCURE, a solution for restaurants struggling due to COVID-19!
   - Run `cd target/` to navigate to the directory with the `jar`
   - Run `java -jar remote-1.0-SNAPSHOT-jar-with-dependencies.jar "YOUR-PROJECT-ID"`
   - Ensure that "success" is printed!
+
+
+#### Google Cloud Scheduler
+In order to implement the scheduler needed to update a restaurant's score, you
+will need to complete the following steps:
+
+1. Go to your deployed Google Cloud Project's dashboard.
+2. Enter the naviation menu and loog for Cloud Scheduler under the Tools section.
+3. Select 'Create Job'.
+4. Complete all the fields needed to create the job.
+    - Choose the name for the job.
+    - Put the frequency as: "0 6 * * 7" (this means the job will run every Sunday at 6:00 AM).
+    - Select your desired TimeZone.
+    - The endpoint for the job is "/update-score" (that's what should go at the end of the rest of the URL for your site).
+    - The method should be a POST request and body should be empty.
