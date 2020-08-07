@@ -18,10 +18,12 @@
  * restaurant data
  */
 function getRestaurants() {
-  fetch('/search/restaurants').then(function(response) {
+  const params = window.location.search;
+  fetch('/search/restaurants' + params).then(function(response) {
     const restaurantsList = document.getElementById('restaurants-list');
 
     if (response.ok) {
+      console.log(response);
       response.json().then((responseJson) => {
         restaurantsList.innerHTML = '';
         responseJson.restaurants.forEach((restaurant) => {

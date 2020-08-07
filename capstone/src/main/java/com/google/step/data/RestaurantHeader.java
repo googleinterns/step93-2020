@@ -18,7 +18,6 @@ import com.google.appengine.api.datastore.GeoPt;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
@@ -33,7 +32,8 @@ public final class RestaurantHeader {
   private final List<String> cuisine;
   private final double metricsScore;
 
-  public RestaurantHeader(long restaurantKey, String name, GeoPt location, List<String> cuisine, Optional<Double> metricsScore) {
+  public RestaurantHeader(long restaurantKey, String name, GeoPt location, List<String> cuisine,
+      Optional<Double> metricsScore) {
     this.restaurantKey = restaurantKey;
     this.name = name;
     this.location = location;

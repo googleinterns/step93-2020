@@ -27,17 +27,15 @@ import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import com.google.step.data.RestaurantHeader;
-
 import com.google.step.data.RestaurantScore;
-import org.apache.http.client.utils.URIBuilder;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.http.client.utils.URIBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * {@link RestaurantHeaderSearchClient} backed by Elasticsearch.
@@ -101,13 +99,11 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
 
     StringBuilder sb = new StringBuilder();
     scores.forEach(score -> {
-      String updateString = new JSONObject()
-          .put("update", new JSONObject()
-              .put("_id", score.getRestaurantKey()))
-          .toString();
-      String scoreContent = new JSONObject()
-          .put("metricsScore", score.getScore())
-          .toString();
+      String updateString =
+          new JSONObject()
+              .put("update", new JSONObject().put("_id", score.getRestaurantKey()))
+              .toString();
+      String scoreContent = new JSONObject().put("metricsScore", score.getScore()).toString();
       sb.append(updateString).append("\n").append(scoreContent).append("\n");
     });
 
@@ -118,28 +114,24 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
   }
 
   private JSONObject addBoostingToQuery(JSONObject queryJson) {
-    return new JSONObject()
-        .put("query", new  JSONObject()
-            .put("function_score", queryJson
-                .put("field_value_factor", new JSONObject()
-                    .put("field", "metricsScore")
-                    .put("factor", 2))));
+    return new JSONObject().put("query",
+        new JSONObject().put("function_score",
+            queryJson.put("field_value_factor",
+                new JSONObject().put("field", "metricsScore").put("factor", 2))));
   }
 
   private JSONObject createBasicSearchQuery(String query) {
     List<String> requestPath = Arrays.asList("", RESTAURANTS, "_search");
 
-    return new JSONObject()
-        .put("query", new JSONObject()
-            .put("multi_match", new JSONObject()
+    return new JSONObject().put("query",
+        new JSONObject().put("multi_match",
+            new JSONObject()
                 .put("query", query)
                 .put("fields", new JSONArray(Arrays.asList("name", "cuisine")))));
   }
 
   private JSONObject createMatchAllQuery() {
-    return  new JSONObject()
-        .put("query", new JSONObject()
-            .put("match_all", new JSONObject()));
+    return new JSONObject().put("query", new JSONObject().put("match_all", new JSONObject()));
   }
 
   /**
@@ -151,12 +143,13 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
    * @return  {@link HttpRequest} object that will connect to the Elasticsearch server
    * @throws IOException thrown if HTTP request cannot be made properly
    */
-  private HttpRequest buildElasticsearchHttpRequest(String requestMethod, List<String> urlPath, String requestBody) throws IOException {
+  private HttpRequest buildElasticsearchHttpRequest(
+      String requestMethod, List<String> urlPath, String requestBody) throws IOException {
     GenericUrl requestUrl = new GenericUrl(elasticsearchUriString);
     requestUrl.setPathParts(urlPath);
 
-    HttpContent requestContent = new ByteArrayContent(Json.MEDIA_TYPE,
-        requestBody.getBytes(Charsets.UTF_8));
+    HttpContent requestContent =
+        new ByteArrayContent(Json.MEDIA_TYPE, requestBody.getBytes(Charsets.UTF_8));
 
     return requestFactory.buildRequest(requestMethod, requestUrl, requestContent);
   }
@@ -170,7 +163,8 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
    * @return  a list of {@code RestaurantHeader} objects
    * @throws IOException thrown when {@code response.getContent()} fails
    */
-  private List<RestaurantHeader> convertElasticsearchResponseBodyToHeaders(HttpResponse response) throws IOException {
+  private List<RestaurantHeader> convertElasticsearchResponseBodyToHeaders(HttpResponse response)
+      throws IOException {
     String responseString = CharStreams.toString(new InputStreamReader(response.getContent()));
 
     JSONObject responseJson = new JSONObject(responseString);
@@ -179,7 +173,7 @@ public class ElasticsearchClient implements RestaurantHeaderSearchClient {
     JSONArray elasticsearchMatches = responseJson.getJSONObject("hits").getJSONArray("hits");
 
     List<RestaurantHeader> headers = new ArrayList<>();
-    for (int i = 0; i < elasticsearchMatches.length(); i ++) {
+    for (int i = 0; i < elasticsearchMatches.length(); i++) {
       JSONObject matchJson = elasticsearchMatches.getJSONObject(i);
       JSONObject source = matchJson.getJSONObject("_source");
       RestaurantHeader header = gson.fromJson(source.toString(), RestaurantHeader.class);

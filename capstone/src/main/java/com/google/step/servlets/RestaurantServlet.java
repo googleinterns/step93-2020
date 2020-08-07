@@ -24,7 +24,6 @@ import com.google.step.data.Restaurant;
 import com.google.step.data.RestaurantHeader;
 import com.google.step.search.ElasticsearchClient;
 import com.google.step.search.RestaurantHeaderSearchClient;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +40,7 @@ public class RestaurantServlet extends HttpServlet {
   private final RestaurantClient restaurantClient = new RestaurantClient();
   private RestaurantHeaderSearchClient searchClient;
 
-  public RestaurantServlet() { }
+  public RestaurantServlet() {}
 
   RestaurantServlet(RestaurantHeaderSearchClient searchClient) {
     this.searchClient = searchClient;

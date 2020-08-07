@@ -19,13 +19,9 @@ import com.google.step.data.RestaurantHeader;
 import com.google.step.search.ElasticsearchClient;
 import com.google.step.search.RestaurantHeaderSearchClient;
 import com.google.step.search.RestaurantQueryParams;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -65,7 +61,6 @@ public class RestaurantSearchServlet extends HttpServlet {
     RestaurantQueryParams params = new RestaurantQueryParams.Builder().query(queryString).build();
 
     List<RestaurantHeader> searchResults = searchClient.searchRestaurants(params);
-
     JSONObject responseJson = new JSONObject().put("restaurants", new JSONArray(searchResults));
 
     response.setContentType(Json.MEDIA_TYPE);

@@ -8,7 +8,6 @@ import com.google.appengine.tools.remoteapi.RemoteApiInstaller;
 import com.google.appengine.tools.remoteapi.RemoteApiOptions;
 import com.google.step.clients.RestaurantClient;
 import com.google.step.data.Restaurant;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -31,10 +30,9 @@ public class RemoteApiSeedPageViewData {
       final String STATUS_OKAY = "OKAY";
       final String STATUS_STRUGGLING = "STRUGGLING";
       Restaurant restaurant1 = new Restaurant(null, "Wildfire Restaurant",
-              new GeoPt((float) 42.1784405, (float) -87.9284299),
-              "Swanky American steakhouse",
-              Arrays.asList("Steakhouse", "American"), "847-234-5678",
-              "https://wildfirerestaurant.com", STATUS_STRUGGLING);
+          new GeoPt((float) 42.1784405, (float) -87.9284299), "Swanky American steakhouse",
+          Arrays.asList("Steakhouse", "American"), "847-234-5678", "https://wildfirerestaurant.com",
+          STATUS_STRUGGLING);
       long restaurantKey1 = restaurantClient.putRestaurant(restaurant1, "wildfire@gmail.com");
 
       Entity pageViews1 = new Entity("PageViews");
@@ -73,10 +71,10 @@ public class RemoteApiSeedPageViewData {
       pageViews5.setProperty("count", 29);
 
       Restaurant restaurant2 = new Restaurant(null, "Lazy Dog Restaurant and Bar",
-              new GeoPt((float) 42.1784888, (float) -87.9284888),
-              "Relaxed, lodge-chic chain serving global comfort fare, including stir-fries, pot roast & pastas.",
-              Arrays.asList("Comfort food", "American"), "847-780-7977",
-              "https://lazydogrestaurants.com", STATUS_OKAY);
+          new GeoPt((float) 42.1784888, (float) -87.9284888),
+          "Relaxed, lodge-chic chain serving global comfort fare, including stir-fries, pot roast & pastas.",
+          Arrays.asList("Comfort food", "American"), "847-780-7977",
+          "https://lazydogrestaurants.com", STATUS_OKAY);
       long restaurantKey2 = restaurantClient.putRestaurant(restaurant2, "lazydog@gmail.com");
 
       Entity pageViews6 = new Entity("PageViews");
@@ -115,26 +113,26 @@ public class RemoteApiSeedPageViewData {
       pageViews10.setProperty("count", 10);
 
       Restaurant restaurant3 = new Restaurant(null, "Alinea in Residence",
-              new GeoPt((float) 41.1784888, (float) -88.9284888),
-              "Chef Grant Achatz draws foodies with New American tasting menus featuring highly creative plates.",
-              Arrays.asList("Molecular gastronomy", "American"), "847-888-9999",
-              "https://alinearestaurant.com", STATUS_STRUGGLING);
+          new GeoPt((float) 41.1784888, (float) -88.9284888),
+          "Chef Grant Achatz draws foodies with New American tasting menus featuring highly creative plates.",
+          Arrays.asList("Molecular gastronomy", "American"), "847-888-9999",
+          "https://alinearestaurant.com", STATUS_STRUGGLING);
       long restaurantKey3 = restaurantClient.putRestaurant(restaurant3, "alinea@gmail.com");
- 
+
       Entity pageViews11 = new Entity("PageViews");
       pageViews11.setProperty("restaurantKey", restaurantKey3);
       pageViews11.setProperty("restaurantName", "Alinea in Residence");
       pageViews11.setProperty("year", 2020);
       pageViews11.setProperty("week", 26);
       pageViews11.setProperty("count", 19);
- 
+
       Entity pageViews12 = new Entity("PageViews");
       pageViews12.setProperty("restaurantKey", restaurantKey3);
       pageViews12.setProperty("restaurantName", "Alinea in Residence");
       pageViews12.setProperty("year", 2020);
       pageViews12.setProperty("week", 27);
       pageViews12.setProperty("count", 21);
- 
+
       Entity pageViews13 = new Entity("PageViews");
       pageViews13.setProperty("restaurantKey", restaurantKey3);
       pageViews13.setProperty("restaurantName", "Alinea in Residence");
@@ -148,7 +146,7 @@ public class RemoteApiSeedPageViewData {
       pageViews14.setProperty("year", 2020);
       pageViews14.setProperty("week", 29);
       pageViews14.setProperty("count", 12);
- 
+
       Entity pageViews15 = new Entity("PageViews");
       pageViews15.setProperty("restaurantKey", restaurantKey3);
       pageViews15.setProperty("restaurantName", "Alinea in Residence");
@@ -157,40 +155,40 @@ public class RemoteApiSeedPageViewData {
       pageViews15.setProperty("count", 4);
 
       Restaurant restaurant4 = new Restaurant(null, "Big Bowl Chinese and Thai",
-              new GeoPt((float) 42.1784404, (float) -87.9284100),
-              "Restaurant serving Chinese & Thai dishes, cocktails & craft beers in a relaxed, stylish space.",
-              Arrays.asList("Chinese", "Thai", "Dumplings"), "847-517-8881",
-              "https://bigbowl.com", STATUS_GOOD);
+          new GeoPt((float) 42.1784404, (float) -87.9284100),
+          "Restaurant serving Chinese & Thai dishes, cocktails & craft beers in a relaxed, stylish space.",
+          Arrays.asList("Chinese", "Thai", "Dumplings"), "847-517-8881", "https://bigbowl.com",
+          STATUS_GOOD);
       long restaurantKey4 = restaurantClient.putRestaurant(restaurant4, "bigbowl@gmail.com");
-    
+
       Entity pageViews16 = new Entity("PageViews");
       pageViews16.setProperty("restaurantKey", restaurantKey4);
       pageViews16.setProperty("restaurantName", "Big Bowl Chinese and Thai");
       pageViews16.setProperty("year", 2020);
       pageViews16.setProperty("week", 26);
       pageViews16.setProperty("count", 34);
-    
+
       Entity pageViews17 = new Entity("PageViews");
       pageViews17.setProperty("restaurantKey", restaurantKey4);
       pageViews17.setProperty("restaurantName", "Big Bowl Chinese and Thai");
       pageViews17.setProperty("year", 2020);
       pageViews17.setProperty("week", 27);
       pageViews17.setProperty("count", 31);
- 
+
       Entity pageViews18 = new Entity("PageViews");
       pageViews18.setProperty("restaurantKey", restaurantKey4);
       pageViews18.setProperty("restaurantName", "Big Bowl Chinese and Thai");
       pageViews18.setProperty("year", 2020);
       pageViews18.setProperty("week", 28);
       pageViews18.setProperty("count", 40);
-    
+
       Entity pageViews19 = new Entity("PageViews");
       pageViews19.setProperty("restaurantKey", 4);
       pageViews19.setProperty("restaurantName", "Big Bowl Chinese and Thai");
       pageViews19.setProperty("year", 2020);
       pageViews19.setProperty("week", 29);
       pageViews19.setProperty("count", 22);
-    
+
       Entity pageViews20 = new Entity("PageViews");
       pageViews20.setProperty("restaurantKey", restaurantKey4);
       pageViews20.setProperty("restaurantName", "Big Bowl Chinese and Thai");
@@ -199,40 +197,40 @@ public class RemoteApiSeedPageViewData {
       pageViews20.setProperty("count", 28);
 
       Restaurant restaurant5 = new Restaurant(null, "Mickey Finns Bar and Grill",
-              new GeoPt((float) 43.1784404, (float) -86.9284100),
-              "Neighborhood brewery producing ales & lagers & offering a family-friendly menu & regular live music.",
-              Arrays.asList("Burgers", "Brewery", "Bar food"), "847-362-6688",
-              "https://mickeyfunnsbrewery.com", STATUS_GOOD);
+          new GeoPt((float) 43.1784404, (float) -86.9284100),
+          "Neighborhood brewery producing ales & lagers & offering a family-friendly menu & regular live music.",
+          Arrays.asList("Burgers", "Brewery", "Bar food"), "847-362-6688",
+          "https://mickeyfunnsbrewery.com", STATUS_GOOD);
       long restaurantKey5 = restaurantClient.putRestaurant(restaurant5, "mickeyfinns@gmail.com");
-    
+
       Entity pageViews21 = new Entity("PageViews");
       pageViews21.setProperty("restaurantKey", restaurantKey5);
       pageViews21.setProperty("restaurantName", "Mickey Finns Bar and Grill");
       pageViews21.setProperty("year", 2020);
       pageViews21.setProperty("week", 26);
       pageViews21.setProperty("count", 17);
- 
+
       Entity pageViews22 = new Entity("PageViews");
       pageViews22.setProperty("restaurantKey", restaurantKey5);
       pageViews22.setProperty("restaurantName", "Mickey Finns Bar and Grill");
       pageViews22.setProperty("year", 2020);
       pageViews22.setProperty("week", 27);
       pageViews22.setProperty("count", 22);
-    
+
       Entity pageViews23 = new Entity("PageViews");
       pageViews23.setProperty("restaurantKey", restaurantKey5);
       pageViews23.setProperty("restaurantName", "Mickey Finns Bar and Grill");
       pageViews23.setProperty("year", 2020);
       pageViews23.setProperty("week", 28);
       pageViews23.setProperty("count", 29);
-    
+
       Entity pageViews24 = new Entity("PageViews");
       pageViews24.setProperty("restaurantKey", restaurantKey5);
       pageViews24.setProperty("restaurantName", "Mickey Finns Bar and Grill");
       pageViews24.setProperty("year", 2020);
       pageViews24.setProperty("week", 29);
       pageViews24.setProperty("count", 23);
-    
+
       Entity pageViews25 = new Entity("PageViews");
       pageViews25.setProperty("restaurantKey", restaurantKey5);
       pageViews25.setProperty("restaurantName", "Mickey Finns Bar and Grill");
@@ -241,12 +239,11 @@ public class RemoteApiSeedPageViewData {
       pageViews25.setProperty("count", 18);
 
       // Do a batch operation to put all the entities in parallel
-      List<Entity> pageViews = Arrays.asList(
-          pageViews1, pageViews2, pageViews3, pageViews4, pageViews5,
-          pageViews6, pageViews7, pageViews8, pageViews9, pageViews10, 
-          pageViews11, pageViews12, pageViews13,pageViews14, pageViews15,
-          pageViews16, pageViews17, pageViews18, pageViews19, pageViews20, 
-          pageViews21, pageViews22, pageViews23, pageViews24, pageViews25);
+      List<Entity> pageViews = Arrays.asList(pageViews1, pageViews2, pageViews3, pageViews4,
+          pageViews5, pageViews6, pageViews7, pageViews8, pageViews9, pageViews10, pageViews11,
+          pageViews12, pageViews13, pageViews14, pageViews15, pageViews16, pageViews17, pageViews18,
+          pageViews19, pageViews20, pageViews21, pageViews22, pageViews23, pageViews24,
+          pageViews25);
       ds.put(pageViews);
       System.out.println("success");
     } finally {
