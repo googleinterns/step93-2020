@@ -17,7 +17,7 @@ import com.google.step.data.RestaurantScore;
 @WebServlet("/update-score")
 public class ScoreServlet extends HttpServlet {
 
-    private static final ScoreClient scoreClient = new ScoreClient();
+    private final ScoreClient scoreClient = new ScoreClient();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
