@@ -37,5 +37,5 @@ will need to complete the following steps:
     a. Choose the name for the job.
     b. Put the frequency as: "0 6 * * 7" (this means the job will run every Sunday at 6:00 AM).
     c. Select your desired TimeZone.
-    d. The endpoint for the job is "/update-score" (that's what should go at the end of the rest of the URL for your site).T
-    e. he method should be a POST request and body should be empty.
+    d. The endpoint for the job is "/update-score" (that's what should go at the end of the rest of the URL for your site).
+    e. The method should be a POST request and body should be empty.
