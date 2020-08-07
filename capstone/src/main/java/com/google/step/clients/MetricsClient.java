@@ -114,7 +114,7 @@ public class MetricsClient {
     /**
      * Private class to better organize the necessary information about a restaurant.
      */
-    private class RestaurantPageViewInformation {
+    private static class RestaurantPageViewInformation {
         private final String name;
         private List<WeeklyPageView> weeklyPageViewList;
 

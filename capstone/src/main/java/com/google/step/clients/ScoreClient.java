@@ -24,7 +24,7 @@ public class ScoreClient {
 
         List<RestaurantPageViews> allPageViews = metricsClient.getAllPageViews();
         if (allPageViews.isEmpty()) {
-            return Collections.unmodifiableList(new ArrayList<>());
+            return Collections.emptyList();
         }
 
         double systemAverage = getSystemAverage(allPageViews);
